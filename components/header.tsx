@@ -55,7 +55,7 @@ export default function Header() {
     return (
       <div className="flex flex-col space-y-3">
         <Link
-          href="/"
+          href="#how-it-works"
           className={`${textColor} ${hoverColor} text-sm transition-colors py-1.5`}
           onClick={() => setMobileMenuOpen(false)}
         >
@@ -106,7 +106,7 @@ export default function Header() {
               {/* <Link href="/" className="text-white hover:text-red-500 transition-colors">
                 Home
               </Link> */}
-              <Link href="/how-it-works" className="text-white hover:text-red-500 transition-colors">
+              <Link href="#how-it-works" className="text-white hover:text-red-500 transition-colors">
                 How it Works
               </Link>
               <Link href="/pricing" className="text-white hover:text-red-500 transition-colors">

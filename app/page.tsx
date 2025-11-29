@@ -10,7 +10,9 @@ export default function Home() {
   return (
     <main className="w-full">
       <Hero />
-      <HowItWorks />
+      <div id="how-it-works">
+        <HowItWorks />
+      </div>
       <Pricing />
       <Features />
       <ImagePart />
