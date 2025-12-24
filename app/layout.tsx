@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
+import ReduxProvider from "@/redux/provider"
 import "./globals.css"
 
 const _geist = Geist({ subsets: ["latin"] })
@@ -41,13 +42,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans antialiased flex flex-col min-h-screen`}>
-        <Header />
+        <ReduxProvider>
+          <Header />
 
-        <main className="flex-grow">{children}</main>
+          <main className="flex-grow">{children}</main>
 
-        <Footer />
+          <Footer />
 
-        <Analytics />
+          <Analytics />
+        </ReduxProvider>
       </body>
     </html>
   )

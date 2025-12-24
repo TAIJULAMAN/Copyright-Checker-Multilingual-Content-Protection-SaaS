@@ -17,17 +17,21 @@ import {
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 
+import { useRegisterMutation } from "@/redux/api/authApi";
+
 export default function SignupPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
+    mobile: "",
     password: "",
     confirmPassword: "",
     agreeTerms: false,
   });
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [register, { isLoading }] = useRegisterMutation();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -39,50 +43,53 @@ export default function SignupPage() {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
 
     // Validation
     if (
-      !formData.name ||
+      !formData.firstName ||
+      !formData.lastName ||
       !formData.email ||
+      !formData.mobile ||
       !formData.password ||
       !formData.confirmPassword
     ) {
       setError("Please fill in all fields");
-      setLoading(false);
       return;
     }
 
     if (formData.password.length < 8) {
       setError("Password must be at least 8 characters");
-      setLoading(false);
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match");
-      setLoading(false);
       return;
     }
 
     if (!formData.agreeTerms) {
       setError("Please agree to the terms and conditions");
-      setLoading(false);
       return;
     }
 
-    // Simulate API call
-    setTimeout(() => {
-      const userData = {
-        name: formData.name,
+    try {
+      const result = await register({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
         email: formData.email,
-        id: Math.random().toString(36).substr(2, 9),
-      };
-      sessionStorage.setItem("user", JSON.stringify(userData));
-      setLoading(false);
-      router.push("/scan");
-    }, 1000);
+        mobile: formData.mobile,
+        password: formData.password,
+      }).unwrap();
+
+      if (result.success) {
+        // Redirection to Login after successful registration
+        router.push("/login");
+      }
+    } catch (err: any) {
+      console.error("Registration failed:", err);
+      setError(err?.data?.message || "Registration failed. Please try again.");
+    }
   };
 
   return (
@@ -103,18 +110,33 @@ export default function SignupPage() {
                 </div>
               )}
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
-                  Full Name
-                </label>
-                <Input
-                  type="text"
-                  name="name"
-                  placeholder="John Doe"
-                  value={formData.name}
-                  onChange={handleChange}
-                  disabled={loading}
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    First Name
+                  </label>
+                  <Input
+                    type="text"
+                    name="firstName"
+                    placeholder="John"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    disabled={isLoading}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    Last Name
+                  </label>
+                  <Input
+                    type="text"
+                    name="lastName"
+                    placeholder="Doe"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    disabled={isLoading}
+                  />
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -127,7 +149,21 @@ export default function SignupPage() {
                   placeholder="you@example.com"
                   value={formData.email}
                   onChange={handleChange}
-                  disabled={loading}
+                  disabled={isLoading}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Mobile
+                </label>
+                <Input
+                  type="tel"
+                  name="mobile"
+                  placeholder="+1234567890"
+                  value={formData.mobile}
+                  onChange={handleChange}
+                  disabled={isLoading}
                 />
               </div>
 
@@ -141,7 +177,7 @@ export default function SignupPage() {
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleChange}
-                  disabled={loading}
+                  disabled={isLoading}
                 />
               </div>
 
@@ -155,7 +191,7 @@ export default function SignupPage() {
                   placeholder="••••••••"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  disabled={loading}
+                  disabled={isLoading}
                 />
               </div>
 
@@ -166,7 +202,7 @@ export default function SignupPage() {
                   checked={formData.agreeTerms}
                   onChange={handleChange}
                   className="w-4 h-4 text-purple-600 border-gray-300 rounded"
-                  disabled={loading}
+                  disabled={isLoading}
                 />
                 <label className="ml-2 text-sm text-gray-600">
                   I agree to the{" "}
@@ -182,9 +218,9 @@ export default function SignupPage() {
               <Button
                 type="submit"
                 className="w-full bg-purple-600 hover:bg-purple-700"
-                disabled={loading}
+                disabled={isLoading}
               >
-                {loading ? "Creating account..." : "Sign Up"}
+                {isLoading ? "Creating account..." : "Sign Up"}
               </Button>
 
               <p className="text-center text-sm text-gray-600">
