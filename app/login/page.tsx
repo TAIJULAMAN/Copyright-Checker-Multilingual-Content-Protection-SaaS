@@ -8,38 +8,52 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useLoginMutation } from "@/redux/api/authApi"
+import { setCredentials } from "@/redux/slices/authSlice"
+import { useDispatch } from "react-redux"
+import Cookies from 'js-cookie'
 
 export default function LoginPage() {
   const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
+  const [login, { isLoading }] = useLoginMutation()
+  const dispatch = useDispatch()
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
     setError("")
 
     // Validate inputs
     if (!email || !password) {
       setError("Please fill in all fields")
-      setLoading(false)
       return
     }
 
-    // Simulate API call
-    setTimeout(() => {
-      // Store user data in session storage
-      const userData = {
-        name: "User",
-        email: email,
-        id: Math.random().toString(36).substr(2, 9),
+    try {
+      const result = await login({ email, password }).unwrap()
+      if (result.success) {
+        dispatch(
+          setCredentials({
+            user: result.data.user,
+            accessToken: result.data.accessToken,
+            refreshToken: result.data.refreshToken,
+          }),
+        )
+        // Store user data in session storage (optional if persisting redux)
+        sessionStorage.setItem("user", JSON.stringify(result.data.user))
+        
+        // Store tokens in cookies
+        Cookies.set('accessToken', result.data.accessToken)
+        Cookies.set('refreshToken', result.data.refreshToken)
+        
+        router.push("/scan")
       }
-      sessionStorage.setItem("user", JSON.stringify(userData))
-      setLoading(false)
-      router.push("/scan")
-    }, 1000)
+    } catch (err: any) {
+      console.error("Login failed:", err)
+      setError(err?.data?.message || "Login failed. Please check your credentials.")
+    }
   }
 
   return (
@@ -60,7 +74,7 @@ export default function LoginPage() {
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                disabled={loading}
+                disabled={isLoading}
               />
             </div>
 
@@ -76,12 +90,12 @@ export default function LoginPage() {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                disabled={loading}
+                disabled={isLoading}
               />
             </div>
 
-            <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700" disabled={loading}>
-              {loading ? "Logging in..." : "Login"}
+            <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700" disabled={isLoading}>
+              {isLoading ? "Logging in..." : "Login"}
             </Button>
 
             <p className="text-center text-sm text-gray-600">
