@@ -8,21 +8,35 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search, InfoIcon } from "lucide-react"
 
+import { useCheckProfileMutation } from "@/redux/api/copyrightApi"
+
 export default function ScanForm() {
   const [profileLink, setProfileLink] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
   const router = useRouter()
+  const [checkProfile, { isLoading }] = useCheckProfileMutation()
 
   const handleScan = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!profileLink.trim()) return
+    setError("")
 
-    setIsLoading(true)
-    // Store the profile link in session/context for later use
-    sessionStorage.setItem("instagramProfileLink", profileLink)
-    setTimeout(() => {
-      router.push("/pricing")
-    }, 1000)
+    try {
+      // Store the profile link in session/context for later use
+      sessionStorage.setItem("instagramProfileLink", profileLink)
+      
+      const result = await checkProfile({
+        profileUrl: profileLink,
+        maxVideos: 1 // Default to 1 as per requirement
+      }).unwrap()
+
+      if (result.success) {
+        router.push("/pricing")
+      }
+    } catch (err: any) {
+      console.error("Scan failed:", err)
+      setError(err?.data?.message || "Scan failed. Please verify the link and try again.")
+    }
   }
 
   return (
@@ -33,6 +47,13 @@ export default function ScanForm() {
       </div>
 
       <form onSubmit={handleScan} className="space-y-6">
+        {/* Error Message */}
+        {error && (
+          <div className="bg-red-50 text-red-600 p-3 rounded text-sm mb-4">
+            {error}
+          </div>
+        )}
+
         {/* Input Field */}
         <div className="relative">
           <Input
@@ -41,6 +62,7 @@ export default function ScanForm() {
             value={profileLink}
             onChange={(e) => setProfileLink(e.target.value)}
             className="w-full px-4 py-3 text-lg rounded-lg border border-gray-300 bg-gray-50 transition-all"
+            disabled={isLoading}
           />
           
         </div>
