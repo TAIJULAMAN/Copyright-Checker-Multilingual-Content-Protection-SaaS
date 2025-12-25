@@ -1,15 +1,51 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import PageHeader from "@/components/page-header"
+import { useCreateContactMutation } from "@/redux/api/contactApi"
+import { useState } from "react"
+import type React from "react"
 
 export default function ContactUs() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  })
+  const [status, setStatus] = useState<{ type: "success" | "error" | ""; message: string }>({ type: "", message: "" })
+  const [createContact, { isLoading }] = useCreateContactMutation()
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setStatus({ type: "", message: "" })
+
+    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+      setStatus({ type: "error", message: "Please fill in all fields" })
+      return
+    }
+
+    try {
+      const result = await createContact(formData).unwrap()
+      if (result.success) {
+        setStatus({ type: "success", message: "Message sent successfully!" })
+        setFormData({ name: "", email: "", subject: "", message: "" })
+      }
+    } catch (err: any) {
+      console.error("Failed to send message:", err)
+      setStatus({ type: "error", message: err?.data?.message || "Failed to send message. Please try again." })
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <PageHeader
-        title="Contact Us"
-        description="We'd love to hear from you"
-        backLink={{ href: "/", text: "Back to Home" }}
-      />
+      <PageHeader title="Contact Us" description="We'd love to hear from you" backLink={{ href: "/", text: "Back to Home" }} />
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -17,41 +53,62 @@ export default function ContactUs() {
           {/* Contact Form */}
           <div className="bg-white rounded-lg border border-gray-200 p-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Send us a message</h2>
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              {status.message && (
+                <div className={`p-3 rounded text-sm ${status.type === "success" ? "bg-green-50 text-green-600" : "bg-red-50 text-red-600"}`}>
+                  {status.message}
+                </div>
+              )}
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-2">Name</label>
                 <input
                   type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-red-600"
                   placeholder="Your name"
+                  disabled={isLoading}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-2">Email</label>
                 <input
                   type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-red-600"
                   placeholder="your@email.com"
+                  disabled={isLoading}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-2">Subject</label>
                 <input
                   type="text"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-red-600"
                   placeholder="How can we help?"
+                  disabled={isLoading}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-2">Message</label>
                 <textarea
                   rows={5}
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-red-600"
                   placeholder="Your message..."
+                  disabled={isLoading}
                 ></textarea>
               </div>
-              <Button className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-semibold">
-                Send Message
+              <Button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-semibold" disabled={isLoading}>
+                {isLoading ? "Sending..." : "Send Message"}
               </Button>
             </form>
           </div>
