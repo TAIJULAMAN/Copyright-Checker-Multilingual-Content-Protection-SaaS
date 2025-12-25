@@ -47,6 +47,11 @@ export default function Footer() {
                   Help Center
                 </Link>
               </li>
+              <li>
+                <Link href="/blog" className="hover:text-white">
+                  Blog
+                </Link>
+              </li>
             </ul>
           </div>
 

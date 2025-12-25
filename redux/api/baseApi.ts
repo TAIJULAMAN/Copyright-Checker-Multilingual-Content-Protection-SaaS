@@ -1,6 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { BASE_URL } from './config';
-import Cookies from 'js-cookie';
 
 export const baseApi = createApi({
   reducerPath: 'api',
@@ -11,5 +10,5 @@ export const baseApi = createApi({
     },
   }),
   endpoints: () => ({}),
-  tagTypes: ['Auth'], // Add tag types here as needed
+  tagTypes: ['Auth', 'faq', 'privacy', 'blog'],
 });

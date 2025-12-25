@@ -5,37 +5,17 @@ import { ChevronDown } from "lucide-react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import PageHeader from "@/components/page-header"
+import { useGetAllFaqQuery } from "@/redux/api/faqApi"
 
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
-  const faqItems = [
-    {
-      question: "How does this tool work?",
-      answer:
-        "Our tool uses advanced AI algorithms to scan your Instagram reels and detect copyrighted music content by comparing audio fingerprints against a comprehensive database of protected tracks.",
-    },
-    {
-      question: "Do I need to log in?",
-      answer:
-        "No, you don't need to create an account. Simply paste your Instagram profile link and we'll analyze your public reels instantly. No signup required.",
-    },
-    {
-      question: "How accurate is the scan?",
-      answer:
-        "Our scanning technology is 99.8% accurate. We use advanced machine learning models trained on millions of audio samples to detect copyrighted content with high precision.",
-    },
-    {
-      question: "What if my reel is private?",
-      answer:
-        "We only analyze public reels. Private reels cannot be scanned through our tool. Please make your reels public temporarily to run the copyright check.",
-    },
-    {
-      question: "What payment methods are supported?",
-      answer:
-        "We accept all major payment methods including PayPal, Visa, Mastercard, and American Express. All payments are processed securely through our PayPal integration.",
-    },
-  ]
+  // Fetch FAQs from API
+  const { data, isLoading, isError } = useGetAllFaqQuery(undefined)
+
+  // Extract FAQ items from API response
+  const faqItems = data?.data || []
+
 
   return (
     <div className="min-h-screen bg-white">
@@ -47,27 +27,45 @@ export default function FAQ() {
 
       {/* FAQ Accordion */}
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="space-y-4">
-          {faqItems.map((item, index) => (
-            <div
-              key={index}
-              className="border border-gray-200 rounded-lg overflow-hidden bg-white hover:shadow-sm transition-shadow"
-            >
-              <button
-                onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                className="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
+        {/* Loading State */}
+        {isLoading && (
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
+          </div>
+        )}
+
+        {/* Error State */}
+        {isError && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+            <p className="text-red-800 font-semibold">Failed to load FAQs</p>
+            <p className="text-red-600 text-sm mt-2">Please try again later.</p>
+          </div>
+        )}
+
+        {/* FAQ Items */}
+        {!isLoading && !isError && (
+          <div className="space-y-4">
+            {faqItems?.map((item, index) => (
+              <div
+                key={item?._id || index}
+                className="border border-gray-200 rounded-lg overflow-hidden bg-white hover:shadow-sm transition-shadow"
               >
-                <span className="text-lg font-semibold text-gray-900">{item.question}</span>
-                <ChevronDown
-                  className={`w-5 h-5 text-gray-600 transition-transform ${openIndex === index ? "rotate-180" : ""}`}
-                />
-              </button>
-              {openIndex === index && (
-                <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 text-gray-700">{item.answer}</div>
-              )}
-            </div>
-          ))}
-        </div>
+                <button
+                  onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                  className="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
+                >
+                  <span className="text-lg font-semibold text-gray-900">{item?.question}</span>
+                  <ChevronDown
+                    className={`w-5 h-5 text-gray-600 transition-transform ${openIndex === index ? "rotate-180" : ""}`}
+                  />
+                </button>
+                {openIndex === index && (
+                  <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 text-gray-700">{item?.answer}</div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Contact Support Section */}
         <div className="mt-16 text-center">
