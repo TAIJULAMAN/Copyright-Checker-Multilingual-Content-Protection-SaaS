@@ -1,35 +1,15 @@
+"use client"
+
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { Button } from "./ui/button";
+import { useGetAllBlogsQuery } from "@/redux/api/blogApi";
+import { getImageUrl } from "@/redux/api/config";
 
 export default function Blog() {
-  const posts = [
-    {
-      image: "/b1.png",
-      title: "What is Lorem Ipsum?",
-      date: "Posted on Sept 22, 2025",
-      excerpt: "Simply dummy text of the printing and typesetting industry...",
-    },
-    {
-      image: "/b2.png",
-      title: "What is Lorem Ipsum?",
-      date: "Posted on Aug 23, 2025",
-      excerpt: "Simply dummy text of the printing and typesetting industry...",
-    },
-    {
-      image: "/b3.png",
-      title: "What is Lorem Ipsum?",
-      date: "Posted on April 20, 2025",
-      excerpt: "Simply dummy text of the printing and typesetting industry...",
-    },
-    {
-      image: "/b3.png",
-      title: "What is Lorem Ipsum?",
-      date: "Posted on April 20, 2025",
-      excerpt: "Simply dummy text of the printing and typesetting industry...",
-    },
-  ];
+  const { data, isLoading, isError } = useGetAllBlogsQuery(undefined);
+  const posts = data?.data || [];
 
   return (
     <main className=" bg-[#1b224a]">
@@ -49,7 +29,7 @@ export default function Blog() {
               <span className="text-white text-sm font-medium">Articles</span>
             </div>
             <Link
-              href="#"
+              href="/blog"
               className="text-white font-semibold flex items-center gap-2"
             >
               See all Articles <ArrowRight className="w-4 h-4" />
@@ -57,24 +37,51 @@ export default function Blog() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
-            {posts.map((post, index) => (
-              <article key={index} className="overflow-hidden">
+            {/* Loading State */}
+            {isLoading && (
+              <div className="col-span-full flex justify-center items-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+              </div>
+            )}
+
+            {/* Error State */}
+            {isError && (
+              <div className="col-span-full bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+                <p className="text-red-800 font-semibold">Failed to load blogs</p>
+                <p className="text-red-600 text-sm mt-2">Please try again later.</p>
+              </div>
+            )}
+
+            {/* Blog Posts */}
+            {!isLoading && !isError && posts?.map((post, index) => (
+              <article key={post._id || index} className="overflow-hidden">
                 <div className="bg-gradient-to-br from-purple-600 to-pink-500 h-48 rounded-lg flex items-center justify-center text-6xl mb-4 overflow-hidden">
-                  <Image
-                    src={post.image}
-                    alt={post.title}
-                    width={600}
-                    height={500}
-                    className="object-cover w-full h-full"
-                  />
+                  {post.coverImage ? (
+                    <Image
+                      src={getImageUrl(post.coverImage)}
+                      alt={post.title}
+                      width={600}
+                      height={500}
+                      className="object-cover w-full h-full"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-white text-2xl">
+                      No Image
+                    </div>
+                  )}
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">
                   {post.title}
                 </h3>
-                <p className="text-white text-sm mb-4">{post.date}</p>
-                <p className="text-white text-sm mb-4">{post.excerpt}</p>
+                <p className="text-white text-sm mb-4">
+                  {post.publishedDate
+                    ? `Posted on ${new Date(post.publishedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`
+                    : 'Recently posted'
+                  }
+                </p>
+                <p className="text-white text-sm mb-4">{post.excerpt || 'Read more to discover...'}</p>
                 <Link
-                  href="#"
+                  href={`/blog/${post._id}`}
                   className="text-white text-sm font-semibold flex items-center gap-2"
                 >
                   <Button className="bg-white text-black">
