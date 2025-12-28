@@ -31,10 +31,17 @@ export default function ScanForm() {
       }).unwrap()
 
       if (result.success) {
-        router.push("/pricing")
+        router.push("/result")
       }
     } catch (err: any) {
       console.error("Scan failed:", err)
+      
+      // Check for 403 status code in various possible locations in the error object
+      if (err?.status === 403 || err?.data?.statusCode === 403) {
+        router.push("/pricing")
+        return
+      }
+
       setError(err?.data?.message || "Scan failed. Please verify the link and try again.")
     }
   }
