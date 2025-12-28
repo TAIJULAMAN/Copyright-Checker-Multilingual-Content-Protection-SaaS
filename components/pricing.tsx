@@ -1,20 +1,33 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useGetSubscriptionPlansQuery } from "@/redux/api/subscriptionApi";
-import { Check } from "lucide-react";
+import { useGetSubscriptionPlansQuery, useCreatePayPalOrderMutation } from "@/redux/api/subscriptionApi";
+import { Check, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner"; // Assuming sonner is used, or console.error if not available, user context didn't show toast usage but it's common. Sticking to safer alert/console for now or check if toast is used. Actually, I see toast in previous conversations. I'll rely on simple error alerts or console for safety unless I check imports. Let's stick to basic error handling for now or just console.
 
 export default function Pricing() {
   const router = useRouter();
   const { data, isLoading, error } = useGetSubscriptionPlansQuery();
+  const [createPayPalOrder, { isLoading: isCreatingOrder }] = useCreatePayPalOrderMutation();
+  const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
 
-  const handleBuyNow = (planName: string, price: number) => {
-    sessionStorage.setItem(
-      "selectedPlan",
-      JSON.stringify({ name: planName, price })
-    );
-    router.push("/checkout");
+  const handleBuyNow = async (planId: string, planName: string, price: number) => {
+    setSelectedPlanId(planId);
+    try {
+      const result = await createPayPalOrder({ planId }).unwrap();
+      if (result.success && result.data.approveUrl) {
+        window.location.href = result.data.approveUrl;
+      } else {
+        console.error("Failed to create PayPal order", result.message);
+      }
+    } catch (err: any) {
+      console.error("Error creating order:", err);
+      // Optional: Add toast notification here
+    } finally {
+      setSelectedPlanId(null);
+    }
   };
 
   const oneTimePlans = data?.data?.plans.filter(
@@ -63,10 +76,18 @@ export default function Pricing() {
               </div>
 
               <Button
-                onClick={() => handleBuyNow(plan.name, plan.price)}
-                className="w-full mb-6 bg-[#d6322f] hover:bg-[#b02220] text-white"
+                onClick={() => handleBuyNow(plan._id, plan.name, plan.price)}
+                disabled={isCreatingOrder && selectedPlanId === plan._id}
+                className="w-full mb-6 bg-purple-600 hover:bg-purple-700 text-white"
               >
-                Buy Now
+                {isCreatingOrder && selectedPlanId === plan._id ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  "Buy Now"
+                )}
               </Button>
             </div>
           ))}

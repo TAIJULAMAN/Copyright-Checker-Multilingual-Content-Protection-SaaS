@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Hero() {
   return (
@@ -49,10 +50,13 @@ export default function Hero() {
 
             <div className="flex flex-col sm:flex-row gap-4 mb-6">
               <Button 
+                asChild
                 className="bg-red-500 hover:bg-red-600 text-white px-6 py-4 text-base sm:text-lg w-full sm:w-auto flex-shrink-0"
                 size="lg"
               >
-                <span className="mr-2">▶</span> Check My Reels Now
+                <Link href="/scan">
+                  <span className="mr-2">▶</span> Check My Reels Now
+                </Link>
               </Button>
               <div className="flex items-center justify-center sm:justify-start text-sm text-gray-600">
                 <p className="text-center sm:text-left">

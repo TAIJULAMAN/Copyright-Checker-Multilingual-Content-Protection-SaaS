@@ -26,15 +26,21 @@ export default function ScanForm() {
       sessionStorage.setItem("instagramProfileLink", profileLink)
       
       const result = await checkProfile({
-        profileUrl: profileLink,
-        maxVideos: 1 // Default to 1 as per requirement
+        profileUrl: profileLink
       }).unwrap()
 
       if (result.success) {
-        router.push("/pricing")
+        router.push("/results")
       }
     } catch (err: any) {
       console.error("Scan failed:", err)
+      
+      // Check for 403 status code in various possible locations in the error object
+      if (err?.status === 403 || err?.data?.statusCode === 403) {
+        router.push("/pricing")
+        return
+      }
+
       setError(err?.data?.message || "Scan failed. Please verify the link and try again.")
     }
   }

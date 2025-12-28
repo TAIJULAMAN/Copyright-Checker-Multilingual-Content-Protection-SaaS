@@ -2,8 +2,8 @@
 
 import type React from "react"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, Suspense } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -11,12 +11,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useLoginMutation } from "@/redux/api/authApi"
 import { setCredentials } from "@/redux/slices/authSlice"
 import { useDispatch } from "react-redux"
+import { Eye, EyeOff } from "lucide-react"
 import Cookies from 'js-cookie'
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const callbackUrl = searchParams.get("callbackUrl") || "/scan"
+  
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
   const [login, { isLoading }] = useLoginMutation()
   const dispatch = useDispatch()
@@ -48,16 +53,15 @@ export default function LoginPage() {
         Cookies.set('accessToken', result.data.accessToken)
         Cookies.set('refreshToken', result.data.refreshToken)
         
-        router.push("/scan")
+        router.push(callbackUrl)
       }
     } catch (err: any) {
       console.error("Login failed:", err)
       setError(err?.data?.message || "Login failed. Please check your credentials.")
     }
   }
-
+  
   return (
-    <main className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-2">
           <CardTitle className="text-2xl">Login to Your Account</CardTitle>
@@ -85,13 +89,31 @@ export default function LoginPage() {
                   Forgot password?
                 </Link>
               </div>
-              <Input
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={isLoading}
-              />
+              <div className="relative">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={isLoading}
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  tabIndex={-1}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                  <span className="sr-only">
+                    {showPassword ? "Hide password" : "Show password"}
+                  </span>
+                </button>
+              </div>
             </div>
 
             <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700" disabled={isLoading}>
@@ -107,6 +129,15 @@ export default function LoginPage() {
           </form>
         </CardContent>
       </Card>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <main className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <Suspense fallback={<div>Loading...</div>}>
+         <LoginForm />
+      </Suspense>
     </main>
   )
 }

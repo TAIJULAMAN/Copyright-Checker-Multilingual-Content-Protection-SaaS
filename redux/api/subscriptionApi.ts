@@ -23,12 +23,64 @@ export interface SubscriptionResponse {
   success: boolean;
 }
 
+export interface CreatePayPalOrderRequest {
+  planId: string;
+}
+
+export interface CreatePayPalOrderResponse {
+  statusCode: number;
+  data: {
+    paypalOrderId: string;
+    approveUrl: string;
+    plan: Plan;
+  };
+  message: string;
+  success: boolean;
+}
+
+export interface Subscription {
+  _id: string;
+  userId: string;
+  planId: string;
+  planType: string;
+  subscriptionType: string;
+  accountLimit: number;
+  status: string;
+  startDate: string;
+  endDate: string;
+  checksUsed: number;
+  remainingChecks: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface MySubscriptionResponse {
+  statusCode: number;
+  data: {
+    subscription: Subscription;
+    plan: Plan;
+    remainingChecks: number;
+  };
+  message: string;
+  success: boolean;
+}
+
 export const subscriptionApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getSubscriptionPlans: builder.query<SubscriptionResponse, void>({
       query: () => '/subscription/plans',
     }),
+    createPayPalOrder: builder.mutation<CreatePayPalOrderResponse, CreatePayPalOrderRequest>({
+      query: (data) => ({
+        url: '/paypal', 
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    getMySubscription: builder.query<MySubscriptionResponse, void>({
+      query: () => '/subscription/my-subscription',
+    }),
   }),
 });
 
-export const { useGetSubscriptionPlansQuery } = subscriptionApi;
+export const { useGetSubscriptionPlansQuery, useCreatePayPalOrderMutation, useGetMySubscriptionQuery } = subscriptionApi;

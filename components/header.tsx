@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Menu } from "lucide-react";
+import { Menu, LogOut, User, Crown, History } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -22,35 +22,41 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { useSelector, useDispatch } from "react-redux";
+import { selectCurrentUser, logout } from "@/redux/slices/authSlice";
+import Cookies from "js-cookie";
 
 export default function Header() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [lang, setLang] = useState<"EN" | "DE">("EN");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState<{ name: string; email: string } | null>(
-    null
-  );
-
-  useEffect(() => {
-    const userData = sessionStorage.getItem("user");
-    if (userData) {
-      setIsLoggedIn(true);
-      setUser(JSON.parse(userData));
-    }
-  }, []);
+  
+  const user = useSelector(selectCurrentUser);
+  const isLoggedIn = !!user;
+  const displayName = user?.fullname || user?.name || user?.email?.split('@')[0] || "User";
 
   const handleLogout = () => {
+    // 1. Clear Redux State
+    dispatch(logout());
+    
+    // 2. Clear Cookies
+    Cookies.remove("accessToken");
+    Cookies.remove("refreshToken");
+    
+    // 3. Clear Session Storage
     sessionStorage.removeItem("user");
-    setIsLoggedIn(false);
-    setUser(null);
+    
+    // 4. Clear Local Storage (Redux Persist)
+    localStorage.removeItem("persist:root");
+    
     setMobileMenuOpen(false);
     router.push("/");
   };
 
   const NavLinks = ({ variant = 'light' }: { variant?: 'light' | 'dark' }) => {
     const textColor = variant === 'dark' ? 'text-gray-900' : 'text-white';
-    const hoverColor = variant === 'dark' ? 'hover:text-red-600' : 'hover:text-red-500';
+    const hoverColor = variant === 'dark' ? 'hover:text-purple-600' : 'hover:text-purple-400';
     
     return (
       <div className="flex flex-col space-y-3">
@@ -106,16 +112,16 @@ export default function Header() {
               {/* <Link href="/" className="text-white hover:text-red-500 transition-colors">
                 Home
               </Link> */}
-              <Link href="#how-it-works" className="text-white hover:text-red-500 transition-colors">
+              <Link href="#how-it-works" className="text-white hover:text-purple-400 transition-colors">
                 How it Works
               </Link>
-              <Link href="/pricing" className="text-white hover:text-red-500 transition-colors">
+              <Link href="/pricing" className="text-white hover:text-purple-400 transition-colors">
                 Pricing
               </Link>
-              <Link href="/faq" className="text-white hover:text-red-500 transition-colors">
+              <Link href="/faq" className="text-white hover:text-purple-400 transition-colors">
                 FAQ
               </Link>
-              <Link href="/contact" className="text-white hover:text-red-500 transition-colors">
+              <Link href="/contact" className="text-white hover:text-purple-400 transition-colors">
                 Contact
               </Link>
             </div>
@@ -123,12 +129,12 @@ export default function Header() {
 
           {/* Desktop Actions - Hidden on tablet */}
           <div className="hidden lg:flex items-center gap-5">
-            <div className="inline-flex items-center rounded-full overflow-hidden bg-white">
+            <div className="inline-flex items-center rounded-full overflow-hidden bg-white cursor-pointer">
               <button
                 onClick={() => setLang("EN")}
                 className={`px-4 py-2 text-sm font-semibold transition-colors ${
                   lang === "EN"
-                    ? "bg-red-600 text-white"
+                    ? "bg-purple-600 text-white"
                     : "bg-transparent text-[#1b2149]"
                 }`}
               >
@@ -138,7 +144,7 @@ export default function Header() {
                 onClick={() => setLang("DE")}
                 className={`px-4 py-2 text-sm font-semibold transition-colors ${
                   lang === "DE"
-                    ? "bg-red-600 text-white"
+                    ? "bg-purple-600 text-white"
                     : "bg-transparent text-[#1b2149]"
                 }`}
               >
@@ -147,73 +153,79 @@ export default function Header() {
             </div>
 
             <Link href="/scan">
-              <Button className="bg-red-600 hover:bg-red-700 text-white">
+              <Button className="bg-purple-600 hover:bg-purple-700 text-white cursor-pointer">
                 Check My Reels Now
               </Button>
             </Link>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger className="outline-none">
-                <Avatar className="size-8">
-                  <AvatarImage
-                    src={"https://avatar.iran.liara.run/public/31"}
-                    alt={user?.name || "User"}
-                  />
-                  <AvatarFallback className="text-xs font-semibold text-[#1b2149] bg-white">
-                    {user?.name
-                      ?.split(" ")
-                      .map((n) => n[0])
-                      .join("")
-                      ?.slice(0, 2)
-                      .toUpperCase() || "GU"}
-                  </AvatarFallback>
-                </Avatar>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="min-w-52">
-                {isLoggedIn && user ? (
-                  <>
-                    <DropdownMenuLabel>
-                      <div className="flex flex-col">
-                        <span className="text-sm font-medium text-gray-900">
-                          {user.name}
-                        </span>
-                        <span className="text-xs text-gray-500">
-                          {user.email}
-                        </span>
-                      </div>
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <a href="#">Profile</a>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <a href="/checkout">Billing</a>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onSelect={(e) => {
-                        e.preventDefault();
-                        handleLogout();
-                      }}
-                      variant="destructive"
-                    >
-                      Logout
-                    </DropdownMenuItem>
-                  </>
-                ) : (
-                  <>
-                    <DropdownMenuItem asChild>
-                      <a href="/invoices">Invoices</a>
-                    </DropdownMenuItem>
-                    <DropdownMenuLabel>Profile</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <a href="/">Logout</a>
-                    </DropdownMenuItem>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {isLoggedIn ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger className="outline-none">
+                  <Avatar className="size-8 cursor-pointer ring-2 ring-purple-600 ring-offset-2">
+                    <AvatarImage
+                      src={`https://avatar.iran.liara.run/public/boy?username=${displayName}`}
+                      alt={displayName}
+                    />
+                    <AvatarFallback className="text-xs font-semibold text-[#1b2149] bg-white">
+                      {displayName
+                        ?.split(" ")
+                        .map((n: string) => n[0])
+                        .join("")
+                        ?.slice(0, 2)
+                        .toUpperCase() || "CN"}
+                    </AvatarFallback>
+                  </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 mt-2">
+                  <DropdownMenuLabel>
+                    <div className="flex flex-col space-y-1">
+                      <span className="text-sm font-medium text-gray-900 leading-none">
+                        {displayName}
+                      </span>
+                      <span className="text-xs text-gray-500 leading-none">
+                        {user?.email}
+                      </span>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/mysubscription" className="cursor-pointer">
+                      <Crown className="mr-2 h-4 w-4" />
+                      <span>My Subscription</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/results" className="cursor-pointer">
+                      <History className="mr-2 h-4 w-4" />
+                      <span>Scan History</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  {/* <DropdownMenuItem asChild>
+                    <Link href="/profile" className="cursor-pointer">
+                      <User className="mr-2 h-4 w-4" />
+                      <span>Profile Settings</span>
+                    </Link>
+                  </DropdownMenuItem> */}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onSelect={(e) => {
+                      e.preventDefault();
+                      handleLogout();
+                    }}
+                    className="text-red-600 focus:text-red-600 cursor-pointer"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+               <Link href="/login">
+                <Button variant="outline" className="border-purple-600 text-purple-600 hover:bg-purple-50">
+                  Log in
+                </Button>
+              </Link>
+            )}
           </div>
 
           {/* Tablet and Mobile Menu - Show language toggle and hamburger */}
@@ -223,7 +235,7 @@ export default function Header() {
                 onClick={() => setLang("EN")}
                 className={`px-3 py-2 text-xs font-medium transition-colors ${
                   lang === "EN"
-                    ? "bg-red-600 text-white"
+                    ? "bg-purple-600 text-white"
                     : "bg-transparent text-[#1b2149]"
                 }`}
               >
@@ -233,7 +245,7 @@ export default function Header() {
                 onClick={() => setLang("DE")}
                 className={`px-3 py-2 text-xs font-medium transition-colors ${
                   lang === "DE"
-                    ? "bg-red-600 text-white"
+                    ? "bg-purple-600 text-white"
                     : "bg-transparent text-[#1b2149]"
                 }`}
               >
@@ -257,7 +269,7 @@ export default function Header() {
                         onClick={() => setLang("EN")}
                         className={`px-4 py-2 text-xs font-medium transition-colors ${
                           lang === "EN"
-                            ? "bg-red-600 text-white"
+                            ? "bg-purple-600 text-white"
                             : "bg-transparent text-gray-700"
                         }`}
                       >
@@ -267,7 +279,7 @@ export default function Header() {
                         onClick={() => setLang("DE")}
                         className={`px-4 py-2 text-xs font-medium transition-colors ${
                           lang === "DE"
-                            ? "bg-red-600 text-white"
+                            ? "bg-purple-600 text-white"
                             : "bg-transparent text-gray-700"
                         }`}
                       >
@@ -284,19 +296,38 @@ export default function Header() {
 
                   {/* Auth Buttons */}
                   <div className="border-t border-gray-200 p-4 space-y-3">
-                    <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="block">
-                      <Button variant="outline" className="w-full">
-                        Login
-                      </Button>
-                    </Link>
-                    <Link href="/signup" onClick={() => setMobileMenuOpen(false)} className="block">
-                      <Button className="w-full bg-red-600 hover:bg-red-700">
-                        Sign Up
-                      </Button>
-                    </Link>
+                    {isLoggedIn ? (
+                      <>
+                        <Link href="/mysubscription" onClick={() => setMobileMenuOpen(false)} className="block">
+                          <Button variant="ghost" className="w-full justify-start">
+                             <Crown className="mr-2 h-4 w-4" /> My Subscription
+                          </Button>
+                        </Link>
+                         <Link href="/results" onClick={() => setMobileMenuOpen(false)} className="block">
+                          <Button variant="ghost" className="w-full justify-start">
+                             <History className="mr-2 h-4 w-4" /> Scan History
+                          </Button>
+                        </Link>
+                        <Button 
+                          variant="ghost" 
+                          className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+                          onClick={handleLogout}
+                        >
+                           <LogOut className="mr-2 h-4 w-4" /> Log out
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="block">
+                          <Button variant="outline" className="w-full border-purple-600 text-purple-600 hover:bg-purple-50">
+                            Log in
+                          </Button>
+                        </Link>
+                      </>
+                    )}
                    
                     <Link href="/scan" onClick={() => setMobileMenuOpen(false)} className="block">
-                      <Button className="w-full bg-red-600 hover:bg-red-700">
+                      <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white">
                         Check My Reels Now
                       </Button>
                     </Link>
