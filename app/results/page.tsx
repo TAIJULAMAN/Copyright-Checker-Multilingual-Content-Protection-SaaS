@@ -7,6 +7,7 @@ import { useGetMyJobsQuery, Job } from "@/redux/api/copyrightApi";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { BASE_URL } from "@/redux/api/config";
+import Link from "next/link";
 
 export default function ResultsPage() {
   const router = useRouter();
@@ -188,13 +189,24 @@ export default function ResultsPage() {
                 </tr>
               </thead>
               <tbody>
-                {jobs.length === 0 ? (
-                   <tr>
-                    <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
-                      No scan history found.
-                    </td>
-                  </tr>
-                ) : (
+                  {jobs.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
+                        <div className="flex flex-col items-center gap-3">
+                           <Shield className="w-12 h-12 text-gray-300" />
+                           <p className="text-lg font-medium text-gray-900">No scan history found</p>
+                           <p className="text-sm text-gray-500 max-w-sm">
+                             You haven't scanned any profiles yet. Start your first scan to see results here.
+                           </p>
+                           <Link href="/scan" className="mt-2">
+                             <Button variant="outline" className="text-purple-600 border-purple-600 hover:bg-purple-50">
+                               Scan Now
+                             </Button>
+                           </Link>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
                   jobs.map((job: Job) => (
                     <tr
                       key={job.jobId}

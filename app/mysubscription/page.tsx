@@ -1,14 +1,36 @@
 "use client";
 
-import { useGetMySubscriptionQuery } from "@/redux/api/subscriptionApi";
+import { useGetMySubscriptionQuery, useGetSubscriptionPlansQuery, useCreatePayPalOrderMutation } from "@/redux/api/subscriptionApi";
 import { format } from "date-fns";
 import { Loader2, CreditCard, Calendar, Activity, ShieldCheck, User, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function MySubscriptionPage() {
   const { data, isLoading, error } = useGetMySubscriptionQuery();
+
+  // Fetch plans for empty state
+  const { data: plansData, isLoading: isPlansLoading } = useGetSubscriptionPlansQuery(undefined, {
+    skip: !!data?.data?.subscription
+  });
+  const [createPayPalOrder, { isLoading: isCreatingOrder }] = useCreatePayPalOrderMutation();
+  const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
+
+  const handleBuyNow = async (planId: string) => {
+    setSelectedPlanId(planId);
+    try {
+      const result = await createPayPalOrder({ planId }).unwrap();
+      if (result.success && result.data.approveUrl) {
+        window.location.href = result.data.approveUrl;
+      }
+    } catch (err) {
+      console.error("Error creating order:", err);
+    } finally {
+      setSelectedPlanId(null);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -18,6 +40,7 @@ export default function MySubscriptionPage() {
     );
   }
 
+  // Check for error or failed request
   if (error || !data?.success) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4">
@@ -25,6 +48,80 @@ export default function MySubscriptionPage() {
         <Link href="/pricing">
           <Button variant="outline">View Plans</Button>
         </Link>
+      </div>
+    );
+  }
+
+  // Check for successful request but no subscription data
+  if (!data?.data?.subscription) {
+    const recurringPlans = plansData?.data?.plans.filter(
+      (plan) => plan.subscriptionType !== "one-time"
+    ) || [];
+
+    return (
+      <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 flex flex-col items-center">
+        <div className="text-center mb-10">
+          <div className="inline-flex p-3 bg-purple-100 rounded-full mb-4">
+             <CreditCard className="w-8 h-8 text-purple-600" />
+          </div>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">No Active Subscription</h2>
+          <p className="text-gray-600 max-w-lg mx-auto">
+            You don't have an active subscription. tailored for your needs.
+          </p>
+        </div>
+
+        {isPlansLoading ? (
+           <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl w-full">
+            {recurringPlans.map((plan) => (
+              <div
+                key={plan._id}
+                className="relative rounded-xl p-8 border border-gray-200 bg-white hover:shadow-lg transition-shadow flex flex-col"
+              >
+                <div className="text-center">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                  <div className="flex items-baseline justify-center my-4">
+                    <span className="text-4xl font-bold text-[#1b2149]">${plan.price}</span>
+                  </div>
+                   <p className="text-sm text-gray-500 capitalize mb-6">{plan.billingCycle} Payment</p>
+                </div>
+                
+                <div className="space-y-3 flex-grow mb-8">
+                  {plan.features.map((feature, i) => (
+                    <div key={i} className="flex items-start gap-3">
+                      <div className="mt-0.5 rounded-full bg-green-100 p-1">
+                        <ShieldCheck className="w-3 h-3 text-green-600" />
+                      </div>
+                      <span className="text-gray-700 text-sm">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <Button
+                  onClick={() => handleBuyNow(plan._id)}
+                  disabled={isCreatingOrder && selectedPlanId === plan._id}
+                  className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                >
+                  {isCreatingOrder && selectedPlanId === plan._id ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    "Subscribe Now"
+                  )}
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
+        
+        <div className="mt-12 text-center">
+             <Link href="/pricing" className="text-purple-600 hover:text-purple-700 font-medium hover:underline">
+                View all available plans
+             </Link>
+        </div>
       </div>
     );
   }
