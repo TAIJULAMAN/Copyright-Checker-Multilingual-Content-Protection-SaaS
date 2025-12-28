@@ -50,7 +50,7 @@ export default function Header() {
 
   const NavLinks = ({ variant = 'light' }: { variant?: 'light' | 'dark' }) => {
     const textColor = variant === 'dark' ? 'text-gray-900' : 'text-white';
-    const hoverColor = variant === 'dark' ? 'hover:text-red-600' : 'hover:text-red-500';
+    const hoverColor = variant === 'dark' ? 'hover:text-purple-600' : 'hover:text-purple-400';
     
     return (
       <div className="flex flex-col space-y-3">
@@ -106,16 +106,16 @@ export default function Header() {
               {/* <Link href="/" className="text-white hover:text-red-500 transition-colors">
                 Home
               </Link> */}
-              <Link href="#how-it-works" className="text-white hover:text-red-500 transition-colors">
+              <Link href="#how-it-works" className="text-white hover:text-purple-400 transition-colors">
                 How it Works
               </Link>
-              <Link href="/pricing" className="text-white hover:text-red-500 transition-colors">
+              <Link href="/pricing" className="text-white hover:text-purple-400 transition-colors">
                 Pricing
               </Link>
-              <Link href="/faq" className="text-white hover:text-red-500 transition-colors">
+              <Link href="/faq" className="text-white hover:text-purple-400 transition-colors">
                 FAQ
               </Link>
-              <Link href="/contact" className="text-white hover:text-red-500 transition-colors">
+              <Link href="/contact" className="text-white hover:text-purple-400 transition-colors">
                 Contact
               </Link>
             </div>
@@ -123,12 +123,12 @@ export default function Header() {
 
           {/* Desktop Actions - Hidden on tablet */}
           <div className="hidden lg:flex items-center gap-5">
-            <div className="inline-flex items-center rounded-full overflow-hidden bg-white">
+            <div className="inline-flex items-center rounded-full overflow-hidden bg-white cursor-pointer">
               <button
                 onClick={() => setLang("EN")}
                 className={`px-4 py-2 text-sm font-semibold transition-colors ${
                   lang === "EN"
-                    ? "bg-red-600 text-white"
+                    ? "bg-purple-600 text-white"
                     : "bg-transparent text-[#1b2149]"
                 }`}
               >
@@ -138,7 +138,7 @@ export default function Header() {
                 onClick={() => setLang("DE")}
                 className={`px-4 py-2 text-sm font-semibold transition-colors ${
                   lang === "DE"
-                    ? "bg-red-600 text-white"
+                    ? "bg-purple-600 text-white"
                     : "bg-transparent text-[#1b2149]"
                 }`}
               >
@@ -147,7 +147,7 @@ export default function Header() {
             </div>
 
             <Link href="/scan">
-              <Button className="bg-red-600 hover:bg-red-700 text-white">
+              <Button className="bg-purple-600 hover:bg-purple-700 text-white cursor-pointer">
                 Check My Reels Now
               </Button>
             </Link>
@@ -223,7 +223,7 @@ export default function Header() {
                 onClick={() => setLang("EN")}
                 className={`px-3 py-2 text-xs font-medium transition-colors ${
                   lang === "EN"
-                    ? "bg-red-600 text-white"
+                    ? "bg-purple-600 text-white"
                     : "bg-transparent text-[#1b2149]"
                 }`}
               >
@@ -233,7 +233,7 @@ export default function Header() {
                 onClick={() => setLang("DE")}
                 className={`px-3 py-2 text-xs font-medium transition-colors ${
                   lang === "DE"
-                    ? "bg-red-600 text-white"
+                    ? "bg-purple-600 text-white"
                     : "bg-transparent text-[#1b2149]"
                 }`}
               >
@@ -257,7 +257,7 @@ export default function Header() {
                         onClick={() => setLang("EN")}
                         className={`px-4 py-2 text-xs font-medium transition-colors ${
                           lang === "EN"
-                            ? "bg-red-600 text-white"
+                            ? "bg-purple-600 text-white"
                             : "bg-transparent text-gray-700"
                         }`}
                       >
@@ -267,7 +267,7 @@ export default function Header() {
                         onClick={() => setLang("DE")}
                         className={`px-4 py-2 text-xs font-medium transition-colors ${
                           lang === "DE"
-                            ? "bg-red-600 text-white"
+                            ? "bg-purple-600 text-white"
                             : "bg-transparent text-gray-700"
                         }`}
                       >
@@ -290,13 +290,13 @@ export default function Header() {
                       </Button>
                     </Link>
                     <Link href="/signup" onClick={() => setMobileMenuOpen(false)} className="block">
-                      <Button className="w-full bg-red-600 hover:bg-red-700">
+                      <Button className="w-full bg-purple-600 hover:bg-purple-700">
                         Sign Up
                       </Button>
                     </Link>
                    
                     <Link href="/scan" onClick={() => setMobileMenuOpen(false)} className="block">
-                      <Button className="w-full bg-red-600 hover:bg-red-700">
+                      <Button className="w-full bg-purple-600 hover:bg-purple-700">
                         Check My Reels Now
                       </Button>
                     </Link>
