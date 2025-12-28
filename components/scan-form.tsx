@@ -26,12 +26,11 @@ export default function ScanForm() {
       sessionStorage.setItem("instagramProfileLink", profileLink)
       
       const result = await checkProfile({
-        profileUrl: profileLink,
-        maxVideos: 1 // Default to 1 as per requirement
+        profileUrl: profileLink
       }).unwrap()
 
       if (result.success) {
-        router.push("/result")
+        router.push("/results")
       }
     } catch (err: any) {
       console.error("Scan failed:", err)

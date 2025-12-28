@@ -3,7 +3,9 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 export interface User {
   _id: string;
   email: string;
-  fullname: string;
+  id?: string;
+  fullname?: string;
+  name?: string;
   mobile: string;
   avatar: string;
   isPremiumMember: boolean;
