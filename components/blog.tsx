@@ -84,7 +84,7 @@ export default function Blog() {
                   href={`/blog/${post._id}`}
                   className="text-white text-sm font-semibold flex items-center gap-2"
                 >
-                  <Button className="bg-white text-black">
+                  <Button className="bg-purple-600 text-white">
                     Read the article
                   </Button>
                 </Link>

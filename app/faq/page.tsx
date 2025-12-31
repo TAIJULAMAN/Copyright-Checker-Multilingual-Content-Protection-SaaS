@@ -30,7 +30,7 @@ export default function FAQ() {
         {/* Loading State */}
         {isLoading && (
           <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
           </div>
         )}
 
@@ -72,7 +72,7 @@ export default function FAQ() {
           <h2 className="text-2xl font-bold text-gray-900 mb-3">Still have questions?</h2>
           <p className="text-gray-600 mb-6">Can't find the answer you're looking for? We're here to help.</p>
           <Link href="/contact">
-            <Button className="bg-red-600 hover:bg-red-700 text-white px-8 py-6 rounded-lg">
+            <Button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-6 rounded-lg">
               Contact Support
             </Button>
           </Link>

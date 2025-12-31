@@ -84,7 +84,7 @@ export default function ScanForm() {
           <Button
             type="submit"
             disabled={isLoading || !profileLink.trim()}
-            className="w-[200px] bg-[#d6322f] text-white py-3 text-lg font-semibold rounded-lg flex items-center justify-center gap-2 transition-all"
+            className="w-[200px] bg-purple-600 hover:bg-purple-700 cursor-pointer text-white py-3 text-lg font-semibold rounded-lg flex items-center justify-center gap-2 transition-all"
           >
             <Search className="w-5 h-5" />
             {isLoading ? "Scanning..." : "Start Scan"}

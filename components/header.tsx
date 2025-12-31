@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Menu, LogOut, User, Crown, History } from "lucide-react";
+import { Menu, LogOut, User,Crown , History } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -24,11 +24,13 @@ import {
 } from "@/components/ui/sheet";
 import { useSelector, useDispatch } from "react-redux";
 import { selectCurrentUser, logout } from "@/redux/slices/authSlice";
+import { useLogoutMutation } from "@/redux/api/authApi";
 import Cookies from "js-cookie";
 
 export default function Header() {
   const router = useRouter();
   const dispatch = useDispatch();
+  const [logoutApi] = useLogoutMutation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [lang, setLang] = useState<"EN" | "DE">("EN");
   
@@ -36,7 +38,13 @@ export default function Header() {
   const isLoggedIn = !!user;
   const displayName = user?.fullname || user?.name || user?.email?.split('@')[0] || "User";
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await logoutApi().unwrap();
+    } catch (error) {
+      console.error("Logout API failed", error);
+    }
+    
     // 1. Clear Redux State
     dispatch(logout());
     
@@ -188,6 +196,12 @@ export default function Header() {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile" className="cursor-pointer">
+                      <User className="mr-2 h-4 w-4" />
+                      <span>My Profile</span>
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/mysubscription" className="cursor-pointer">
                       <Crown className="mr-2 h-4 w-4" />

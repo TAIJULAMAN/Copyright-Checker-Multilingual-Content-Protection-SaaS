@@ -49,7 +49,7 @@ export default function Testimonials() {
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-12 h-12 rounded-full overflow-hidden ring-1 ring-gray-200">
                   <Image
-                    src={`https://avatar.iran.liara.run/public/${index + 1}`}
+                    src={`/boy.png`}
                     alt={testimonial.name}
                     className="w-full h-full object-cover"
                     loading="lazy"

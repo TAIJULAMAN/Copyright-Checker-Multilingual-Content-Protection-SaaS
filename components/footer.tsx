@@ -8,8 +8,8 @@ export default function Footer() {
       <div className="container mx-auto px-5 lg:px-0">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <Image src="/logo.png" alt="Logo" width={50} height={50} />
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <Image src="/hero.png" alt="Logo" width={100} height={100} />
             </div>
             <p className="text-sm">
               Disclaimer: CopyrightChecker.de automatically analyzes public
@@ -66,6 +66,16 @@ export default function Footer() {
               <li>
                 <Link href="/privacy" className="hover:text-white">
                   Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms" className="hover:text-white">
+                  Terms & Conditions
+                </Link>
+              </li>
+              <li>
+                <Link href="/about" className="hover:text-white">
+                  About Us
                 </Link>
               </li>
             </ul>

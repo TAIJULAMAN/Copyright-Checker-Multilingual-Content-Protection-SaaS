@@ -13,13 +13,12 @@ export default function ResultsPage() {
   const router = useRouter();
   const [isDownloading, setIsDownloading] = useState(false);
 
-  const handleDownloadReport = async () => {
-    if (!latestJob) return;
-
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  const handleDownloadReport = async (jobId: string) => {
     try {
       setIsDownloading(true);
       const token = Cookies.get("accessToken");
-      const response = await fetch(`${BASE_URL}/copyright/my-jobs/export/${latestJob.jobId}`, {
+      const response = await fetch(`${BASE_URL}/copyright/my-jobs/export/${jobId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -29,31 +28,23 @@ export default function ResultsPage() {
         throw new Error('Failed to download report');
       }
       
-      // Get the filename from the Content-Disposition header or use a default one
       const contentDisposition = response.headers.get('content-disposition');
       const filename = contentDisposition 
         ? contentDisposition.split('filename=')[1].replace(/"/g, '') 
         : `copyright-report-${new Date().toISOString().split('T')[0]}.xlsx`;
       
-      // Create a blob from the response
       const blob = await response.blob();
-      
-      // Create a temporary URL for the blob
       const url = window.URL.createObjectURL(blob);
-      
-      // Create a temporary anchor element to trigger the download
       const a = document.createElement('a');
       a.href = url;
       a.download = filename;
       document.body.appendChild(a);
       a.click();
       
-      // Clean up
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
     } catch (error) {
       console.error('Error downloading report:', error);
-      // You might want to show an error toast/message here
     } finally {
       setIsDownloading(false);
     }
@@ -61,10 +52,9 @@ export default function ResultsPage() {
   const { data, isLoading } = useGetMyJobsQuery();
   const jobs = data?.data?.jobs || [];
   
-  // Use the latest job for summary stats, or default to 0
-  const latestJob = jobs[0];
-  const safeReels = latestJob ? (latestJob.totalVideos - latestJob.copyrightMatches) : 0;
-  const flaggedReels = latestJob ? latestJob.copyrightMatches : 0;
+  // Calculate total statistics across all jobs
+  const totalSafeReels = jobs.reduce((acc, job) => acc + (job.totalVideos - job.copyrightMatches), 0);
+  const totalFlaggedReels = jobs.reduce((acc, job) => acc + job.copyrightMatches, 0);
 
   if (isLoading) {
     return (
@@ -94,70 +84,44 @@ export default function ResultsPage() {
         </div>
       </div>
 
-      {/* Info Banner */}
-      <div className="bg-yellow-100 border-l-4 border-yellow-500 p-5 my-5">
-        <div className="container mx-auto px-5 lg:px-0 flex items-start gap-3">
-          <div className="text-yellow-600 mt-0.5">⏰</div>
-          <p className="text-yellow-800 text-sm">
-            All data is deleted 24 hours after report delivery.
-          </p>
-        </div>
-      </div>
-
       {/* Main Content */}
       <div className="container mx-auto px-5 lg:px-0 py-8 space-y-8">
-        {/* Summary Cards (Based on Latest Job) */}
-        {latestJob && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Info Banner */}
+        <div className="bg-yellow-100 border-l-4 border-yellow-500 p-5">
+            <div className="flex items-start gap-3">
+            <div className="text-yellow-600 mt-0.5">⏰</div>
+            <p className="text-yellow-800 text-sm">
+                All data is deleted 24 hours after report delivery.
+            </p>
+            </div>
+        </div>
+
+        {/* Summary Cards (Total Stats) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Safe Reels Card */}
-            <div className="bg-white border-2 border-green-100 rounded-xl p-6 shadow-sm">
-              <div className="flex items-start gap-4">
-                <div className="bg-green-100 rounded-full p-3 flex-shrink-0">
-                  <svg
-                    className="w-6 h-6 text-green-600"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                  </svg>
+            <div className="bg-white border border-green-200 rounded-xl p-6 shadow-sm flex items-center gap-4">
+                <div className="bg-green-100 p-3 rounded-full">
+                    <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                 </div>
                 <div>
-                  <div className="text-4xl font-bold text-gray-900">
-                    {safeReels}
-                  </div>
-                  <p className="text-gray-600 font-medium">Safe Reels (Latest Scan)</p>
-                  <p className="text-sm text-gray-500">
-                    No copyright issues detected
-                  </p>
+                    <div className="text-3xl font-bold text-green-600">{totalSafeReels}</div>
+                    <div className="font-semibold text-gray-900">Safe Reels</div>
+                    <div className="text-sm text-gray-500">No copyright issues detected</div>
                 </div>
-              </div>
             </div>
 
             {/* Flagged Reels Card */}
-            <div className="bg-white border-2 border-red-100 rounded-xl p-6 shadow-sm">
-              <div className="flex items-start gap-4">
-                <div className="bg-red-100 rounded-full p-3 flex-shrink-0">
-                  <svg
-                    className="w-6 h-6 text-red-600"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
-                  </svg>
+            <div className="bg-white border border-red-200 rounded-xl p-6 shadow-sm flex items-center gap-4">
+                 <div className="bg-red-100 p-3 rounded-full">
+                    <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                 </div>
                 <div>
-                  <div className="text-4xl font-bold text-gray-900">
-                    {flaggedReels}
-                  </div>
-                  <p className="text-gray-600 font-medium">Flagged Reels (Latest Scan)</p>
-                  <p className="text-sm text-gray-500">
-                    Requires immediate attention
-                  </p>
+                    <div className="text-3xl font-bold text-red-600">{totalFlaggedReels}</div>
+                    <div className="font-semibold text-gray-900">Flagged Reels</div>
+                    <div className="text-sm text-gray-500">Requires immediate attention</div>
                 </div>
-              </div>
             </div>
-          </div>
-        )}
+        </div>
 
         {/* Recent Jobs Table */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -186,6 +150,9 @@ export default function ResultsPage() {
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
                     Matches Found
                   </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -211,7 +178,9 @@ export default function ResultsPage() {
                     <tr
                       key={job.jobId}
                       onClick={() => router.push(`/results/${job.jobId}`)}
-                      className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors"
+                      className={`border-b border-gray-100 cursor-pointer transition-colors ${
+                        job.copyrightMatches > 0 ? "bg-red-50 hover:bg-red-100" : "hover:bg-gray-50 bg-green-50/30"
+                      }`}
                     >
                       <td className="px-6 py-4 text-sm text-gray-700">
                          {new Date(job.createdAt).toLocaleDateString()}
@@ -241,6 +210,34 @@ export default function ResultsPage() {
                            {job.copyrightMatches > 0 && <Shield className="w-4 h-4 text-red-500" />}
                         </div>
                       </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                           <Button 
+                             size="sm" 
+                             variant="outline"
+                             className={`${
+                               job.copyrightMatches > 0 
+                                 ? "text-purple-600 border-purple-600 hover:bg-purple-50" 
+                                 : "text-green-600 border-green-600 hover:bg-green-50"
+                             }`}
+                             onClick={() => router.push(`/results/${job.jobId}`)}
+                           >
+                             View Details
+                           </Button>
+                           <Button 
+                             size="sm"
+                             className={`${
+                               job.copyrightMatches > 0 
+                                 ? "bg-purple-600 hover:bg-purple-700 text-white" 
+                                 : "bg-green-600 hover:bg-green-700 text-white"
+                             }`}
+                             onClick={() => handleDownloadReport(job.jobId)}
+                             disabled={isDownloading}
+                           >
+                              <Download className="w-4 h-4" />
+                           </Button>
+                        </div>
+                      </td>
                     </tr>
                   ))
                 )}
@@ -250,34 +247,8 @@ export default function ResultsPage() {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button 
-            onClick={handleDownloadReport}
-            disabled={isDownloading}
-            className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors"
-          >
-            {isDownloading ? (
-              <>
-                <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Generating...
-              </>
-            ) : (
-              <>
-                <Download className="w-5 h-5" />
-                Download Report (xlsx)
-              </>
-            )}
-          </Button>
-
-
-   
-
-
         </div>
-      </div>
+
 
       {/* Disclaimer Section */}
       <div className="bg-blue-50 border-l-4 border-blue-400 p-5 sm:p-15 rounded-lg my-10 container mx-auto px-5 lg:px-0">
@@ -315,8 +286,9 @@ export default function ResultsPage() {
               to your particular situation.
             </p>
           </div>
-        </div>
+      </div>
       </div>
     </div>
   );
 }
+

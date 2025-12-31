@@ -26,7 +26,7 @@ export default function HowItWorks() {
           {steps.map((step, index) => (
             <div key={index} className="bg-white rounded-xl shadow p-5 md:p-6 relative pt-10 md:pt-12">
               <div className="absolute top-0 left-0">
-                <div className="w-10 h-10 md:w-11 md:h-11 bg-red-600 text-white text-base md:text-lg font-extrabold rounded-br-lg flex items-center justify-center shadow">
+                <div className="w-10 h-10 md:w-11 md:h-11 bg-purple-600 text-white text-base md:text-lg font-extrabold rounded-br-lg flex items-center justify-center shadow">
                   {index + 1}.
                 </div>
               </div>

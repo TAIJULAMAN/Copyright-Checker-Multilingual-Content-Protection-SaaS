@@ -5,15 +5,23 @@ import { useGetSubscriptionPlansQuery, useCreatePayPalOrderMutation } from "@/re
 import { Check, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "sonner"; // Assuming sonner is used, or console.error if not available, user context didn't show toast usage but it's common. Sticking to safer alert/console for now or check if toast is used. Actually, I see toast in previous conversations. I'll rely on simple error alerts or console for safety unless I check imports. Let's stick to basic error handling for now or just console.
+import { toast } from "sonner";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "@/redux/slices/authSlice";
 
 export default function Pricing() {
   const router = useRouter();
   const { data, isLoading, error } = useGetSubscriptionPlansQuery();
   const [createPayPalOrder, { isLoading: isCreatingOrder }] = useCreatePayPalOrderMutation();
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
+  const user = useSelector(selectCurrentUser);
 
   const handleBuyNow = async (planId: string, planName: string, price: number) => {
+    if (!user) {
+      router.push("/login?callbackUrl=/pricing");
+      return;
+    }
+    
     setSelectedPlanId(planId);
     try {
       const result = await createPayPalOrder({ planId }).unwrap();

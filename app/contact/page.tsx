@@ -107,7 +107,7 @@ export default function ContactUs() {
                   disabled={isLoading}
                 ></textarea>
               </div>
-              <Button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-semibold" disabled={isLoading}>
+              <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-semibold" disabled={isLoading}>
                 {isLoading ? "Sending..." : "Send Message"}
               </Button>
             </form>
@@ -119,8 +119,8 @@ export default function ContactUs() {
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Get in touch</h2>
               <div className="space-y-6">
                 <div className="flex gap-4">
-                  <div className="bg-red-100 rounded-lg p-3 h-fit">
-                    <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="bg-purple-100 rounded-lg p-3 h-fit">
+                    <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -136,8 +136,8 @@ export default function ContactUs() {
                 </div>
 
                 <div className="flex gap-4">
-                  <div className="bg-red-100 rounded-lg p-3 h-fit">
-                    <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="bg-purple-100 rounded-lg p-3 h-fit">
+                    <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -153,8 +153,8 @@ export default function ContactUs() {
                 </div>
 
                 <div className="flex gap-4">
-                  <div className="bg-red-100 rounded-lg p-3 h-fit">
-                    <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="bg-purple-100 rounded-lg p-3 h-fit">
+                    <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -193,6 +193,8 @@ export default function ContactUs() {
               </div>
             </div>
           </div>
+
+          
         </div>
       </div>
     </div>
