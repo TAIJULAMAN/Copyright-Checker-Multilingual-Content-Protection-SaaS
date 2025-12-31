@@ -1,13 +1,15 @@
 "use client"
 
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { Button } from "./ui/button";
 import { useGetAllBlogsQuery } from "@/redux/api/blogApi";
 import { getImageUrl } from "@/redux/api/config";
+import { useTranslations } from "next-intl";
 
 export default function Blog() {
+  const t = useTranslations('Blog');
   const { data, isLoading, isError } = useGetAllBlogsQuery(undefined);
   const posts = data?.data || [];
 
@@ -15,24 +17,24 @@ export default function Blog() {
     <main className=" bg-[#1b224a]">
       <section className="container mx-auto py-20 w-full ">
         <div className="w-full flex flex-col gap-2 justify-center items-center px-5 lg:px-0">
-          <h2 className="text-4xl font-bold text-white">Blog</h2>
+          <h2 className="text-4xl font-bold text-white">{t('title')}</h2>
           <p className="text-gray-300 mt-2">
-            Expert insights, tips, and updates to help you
+            {t('subtitle')}
           </p>
         </div>
         <div className="w-full px-5 lg:px-0 mt-5">
           <div className="flex justify-between items-center mb-10">
             <div className="flex  items-center gap-2">
               <div className="bg-purple-600 text-white px-3 py-1 rounded text-sm font-semibold">
-                Recent
+                {t('recent')}
               </div>
-              <span className="text-white text-sm font-medium">Articles</span>
+              <span className="text-white text-sm font-medium">{t('articles')}</span>
             </div>
             <Link
               href="/blog"
               className="text-white font-semibold flex items-center gap-2"
             >
-              See all Articles <ArrowRight className="w-4 h-4" />
+              {t('seeAll')} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
@@ -47,13 +49,13 @@ export default function Blog() {
             {/* Error State */}
             {isError && (
               <div className="col-span-full bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-                <p className="text-red-800 font-semibold">Failed to load blogs</p>
-                <p className="text-red-600 text-sm mt-2">Please try again later.</p>
+                <p className="text-red-800 font-semibold">{t('errorTitle')}</p>
+                <p className="text-red-600 text-sm mt-2">{t('errorDesc')}</p>
               </div>
             )}
 
             {/* Blog Posts */}
-            {!isLoading && !isError && posts?.map((post, index) => (
+            {!isLoading && !isError && posts?.map((post: any, index: number) => (
               <article key={post._id || index} className="overflow-hidden">
                 <div className="bg-gradient-to-br from-purple-600 to-pink-500 h-48 rounded-lg flex items-center justify-center text-6xl mb-4 overflow-hidden">
                   {post.coverImage ? (
@@ -66,7 +68,7 @@ export default function Blog() {
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-white text-2xl">
-                      No Image
+                      {t('noImage')}
                     </div>
                   )}
                 </div>
@@ -75,17 +77,17 @@ export default function Blog() {
                 </h3>
                 <p className="text-white text-sm mb-4">
                   {post.publishedDate
-                    ? `Posted on ${new Date(post.publishedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`
+                    ? `${t('postedOn')} ${new Date(post.publishedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`
                     : 'Recently posted'
                   }
                 </p>
-                <p className="text-white text-sm mb-4">{post.excerpt || 'Read more to discover...'}</p>
+                <p className="text-white text-sm mb-4">{post.excerpt || t('readMore')}</p>
                 <Link
                   href={`/blog/${post._id}`}
                   className="text-white text-sm font-semibold flex items-center gap-2"
                 >
                   <Button className="bg-purple-600 text-white">
-                    Read the article
+                    {t('readArticle')}
                   </Button>
                 </Link>
               </article>

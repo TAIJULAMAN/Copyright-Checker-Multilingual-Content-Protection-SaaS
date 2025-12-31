@@ -3,8 +3,9 @@
 import type React from "react"
 
 import { useState, Suspense } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
-import Link from "next/link"
+import { useRouter } from "@/i18n/routing"
+import { useSearchParams } from "next/navigation"
+import { Link } from "@/i18n/routing"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -13,8 +14,10 @@ import { setCredentials } from "@/redux/slices/authSlice"
 import { useDispatch } from "react-redux"
 import { Eye, EyeOff } from "lucide-react"
 import Cookies from 'js-cookie'
+import { useTranslations } from "next-intl"
 
 function LoginForm() {
+  const t = useTranslations('Auth.login');
   const router = useRouter()
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get("callbackUrl") || "/scan"
@@ -32,7 +35,7 @@ function LoginForm() {
 
     // Validate inputs
     if (!email || !password) {
-      setError("Please fill in all fields")
+      setError(t('validationError'))
       return
     }
 
@@ -57,25 +60,25 @@ function LoginForm() {
       }
     } catch (err: any) {
       console.error("Login failed:", err)
-      setError(err?.data?.message || "Login failed. Please check your credentials.")
+      setError(err?.data?.message || t('error'))
     }
   }
   
   return (
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-2">
-          <CardTitle className="text-2xl">Login to Your Account</CardTitle>
-          <CardDescription>Enter your email and password to access your account</CardDescription>
+          <CardTitle className="text-2xl">{t('title')}</CardTitle>
+          <CardDescription>{t('description')}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             {error && <div className="bg-red-50 text-red-600 p-3 rounded text-sm">{error}</div>}
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Email</label>
+              <label className="text-sm font-medium text-gray-700">{t('email')}</label>
               <Input
                 type="email"
-                placeholder="you@example.com"
+                placeholder={t('emailPlaceholder')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isLoading}
@@ -84,15 +87,15 @@ function LoginForm() {
 
             <div className="space-y-2">
               <div className="flex justify-between">
-                <label className="text-sm font-medium text-gray-700">Password</label>
+                <label className="text-sm font-medium text-gray-700">{t('password')}</label>
                 <Link href="/forgot-password" className="text-sm text-purple-600 hover:text-purple-700">
-                  Forgot password?
+                  {t('forgotPassword')}
                 </Link>
               </div>
               <div className="relative">
                 <Input
                   type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
+                  placeholder={t('passwordPlaceholder')}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isLoading}
@@ -110,20 +113,20 @@ function LoginForm() {
                     <Eye className="h-4 w-4" />
                   )}
                   <span className="sr-only">
-                    {showPassword ? "Hide password" : "Show password"}
+                    {showPassword ? t('hidePassword') : t('showPassword')}
                   </span>
                 </button>
               </div>
             </div>
 
             <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700" disabled={isLoading}>
-              {isLoading ? "Logging in..." : "Login"}
+              {isLoading ? t('submitting') : t('submit')}
             </Button>
 
             <p className="text-center text-sm text-gray-600">
-              Don't have an account?{" "}
+              {t('noAccount')}{" "}
               <Link href="/signup" className="text-purple-600 hover:text-purple-700 font-medium">
-                Sign up
+                {t('signUp')}
               </Link>
             </p>
           </form>
@@ -133,9 +136,10 @@ function LoginForm() {
 }
 
 export default function LoginPage() {
+  const t = useTranslations('Auth.login');
   return (
     <main className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<div>{t('loading')}</div>}>
          <LoginForm />
       </Suspense>
     </main>

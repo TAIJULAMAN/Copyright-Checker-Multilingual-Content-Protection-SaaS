@@ -1,13 +1,15 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import Link from "next/link"
+import { Link } from "@/i18n/routing"
 import PageHeader from "@/components/page-header"
 import { useCreateContactMutation } from "@/redux/api/contactApi"
 import { useState } from "react"
 import type React from "react"
+import { useTranslations } from "next-intl"
 
 export default function ContactUs() {
+  const t = useTranslations('Contact');
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -27,32 +29,32 @@ export default function ContactUs() {
     setStatus({ type: "", message: "" })
 
     if (!formData.name || !formData.email || !formData.subject || !formData.message) {
-      setStatus({ type: "error", message: "Please fill in all fields" })
+      setStatus({ type: "error", message: t('validationError') })
       return
     }
 
     try {
       const result = await createContact(formData).unwrap()
       if (result.success) {
-        setStatus({ type: "success", message: "Message sent successfully!" })
+        setStatus({ type: "success", message: t('success') })
         setFormData({ name: "", email: "", subject: "", message: "" })
       }
     } catch (err: any) {
       console.error("Failed to send message:", err)
-      setStatus({ type: "error", message: err?.data?.message || "Failed to send message. Please try again." })
+      setStatus({ type: "error", message: err?.data?.message || t('error') })
     }
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <PageHeader title="Contact Us" description="We'd love to hear from you" backLink={{ href: "/", text: "Back to Home" }} />
+      <PageHeader title={t('title')} description={t('description')} backLink={{ href: "/", text: t('backToHome') }} />
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Contact Form */}
           <div className="bg-white rounded-lg border border-gray-200 p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Send us a message</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('sendMessage')}</h2>
             <form className="space-y-6" onSubmit={handleSubmit}>
               {status.message && (
                 <div className={`p-3 rounded text-sm ${status.type === "success" ? "bg-green-50 text-green-600" : "bg-red-50 text-red-600"}`}>
@@ -60,55 +62,55 @@ export default function ContactUs() {
                 </div>
               )}
               <div>
-                <label className="block text-sm font-medium text-gray-900 mb-2">Name</label>
+                <label className="block text-sm font-medium text-gray-900 mb-2">{t('name')}</label>
                 <input
                   type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-red-600"
-                  placeholder="Your name"
+                  placeholder={t('namePlaceholder')}
                   disabled={isLoading}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-900 mb-2">Email</label>
+                <label className="block text-sm font-medium text-gray-900 mb-2">{t('email')}</label>
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-red-600"
-                  placeholder="your@email.com"
+                  placeholder={t('emailPlaceholder')}
                   disabled={isLoading}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-900 mb-2">Subject</label>
+                <label className="block text-sm font-medium text-gray-900 mb-2">{t('subject')}</label>
                 <input
                   type="text"
                   name="subject"
                   value={formData.subject}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-red-600"
-                  placeholder="How can we help?"
+                  placeholder={t('subjectPlaceholder')}
                   disabled={isLoading}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-900 mb-2">Message</label>
+                <label className="block text-sm font-medium text-gray-900 mb-2">{t('message')}</label>
                 <textarea
                   rows={5}
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-red-600"
-                  placeholder="Your message..."
+                  placeholder={t('messagePlaceholder')}
                   disabled={isLoading}
                 ></textarea>
               </div>
               <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-semibold" disabled={isLoading}>
-                {isLoading ? "Sending..." : "Send Message"}
+                {isLoading ? t('sendingButton') : t('sendButton')}
               </Button>
             </form>
           </div>
@@ -116,7 +118,7 @@ export default function ContactUs() {
           {/* Contact Information */}
           <div className="space-y-8">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Get in touch</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('getInTouch')}</h2>
               <div className="space-y-6">
                 <div className="flex gap-4">
                   <div className="bg-purple-100 rounded-lg p-3 h-fit">
@@ -130,7 +132,7 @@ export default function ContactUs() {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">Email</h3>
+                    <h3 className="font-semibold text-gray-900">{t('emailLabel')}</h3>
                     <p className="text-gray-600">support@reelcheck.com</p>
                   </div>
                 </div>
@@ -147,7 +149,7 @@ export default function ContactUs() {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">Phone</h3>
+                    <h3 className="font-semibold text-gray-900">{t('phoneLabel')}</h3>
                     <p className="text-gray-600">+1 (555) 123-4567</p>
                   </div>
                 </div>
@@ -170,7 +172,7 @@ export default function ContactUs() {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">Address</h3>
+                    <h3 className="font-semibold text-gray-900">{t('addressLabel')}</h3>
                     <p className="text-gray-600">123 Tech Street, San Francisco, CA 94105</p>
                   </div>
                 </div>
@@ -179,16 +181,16 @@ export default function ContactUs() {
 
             {/* Business Hours */}
             <div className="bg-gray-50 rounded-lg p-6">
-              <h3 className="font-semibold text-gray-900 mb-4">Business Hours</h3>
+              <h3 className="font-semibold text-gray-900 mb-4">{t('businessHours')}</h3>
               <div className="space-y-2 text-sm text-gray-600">
                 <p>
-                  <span className="font-medium">Monday - Friday:</span> 9:00 AM - 6:00 PM PST
+                  <span className="font-medium">{t('daysWeek')}</span> 9:00 AM - 6:00 PM PST
                 </p>
                 <p>
-                  <span className="font-medium">Saturday:</span> 10:00 AM - 4:00 PM PST
+                  <span className="font-medium">{t('daysSat')}</span> 10:00 AM - 4:00 PM PST
                 </p>
                 <p>
-                  <span className="font-medium">Sunday:</span> Closed
+                  <span className="font-medium">{t('daysSun')}</span> {t('closed')}
                 </p>
               </div>
             </div>

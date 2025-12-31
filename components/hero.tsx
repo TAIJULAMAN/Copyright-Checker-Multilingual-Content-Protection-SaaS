@@ -1,9 +1,14 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 
 export default function Hero() {
+  const t = useTranslations('Hero');
+
   return (
     <section
       className="min-h-[80vh] md:min-h-[70vh] bg-white w-full overflow-hidden"
@@ -25,17 +30,16 @@ export default function Hero() {
             {/* Left Column: Text and Actions */}
             <div className="flex flex-col gap-6">
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight">
-                Check Your
+                {t('titlePrefix')}
                 <br className="hidden sm:block" />
-                <span>Instagram Reels for </span>
+                <span>{t('titleMiddle')}</span>
                 <br className="hidden sm:block" />
-                <span className="text-purple-600 whitespace-nowrap">Copyrighted Music</span>
+                <span className="text-purple-600 whitespace-nowrap">{t('titleSuffix')}</span>
               </h1>
 
               <div className="max-w-2xl">
                 <p className="text-gray-700 text-base sm:text-lg mb-6">
-                  Protect your content and avoid copyright strikes. Our AI‑powered
-                  tool scans your Instagram Reels for copyrighted music in minutes.
+                  {t('description')}
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 mb-6">
@@ -45,7 +49,7 @@ export default function Hero() {
                     size="lg"
                   >
                     <Link href="/scan">
-                      <span className="mr-2">▶</span> Check My Reels Now
+                      <span className="mr-2">▶</span> {t('cta')}
                     </Link>
                   </Button>
                   <div className="flex items-center justify-center sm:justify-start text-sm text-gray-600">
@@ -54,8 +58,8 @@ export default function Hero() {
                   
                 </div>
                 <p className="text-center sm:text-left">
-                      No account required • Instant results • Secure payment
-                    </p>
+                  {t('trust')}
+                </p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3">
@@ -63,36 +67,31 @@ export default function Hero() {
                   <div className="w-5 h-5 rounded-full bg-green-400 flex items-center justify-center">
                     <Check className="w-3 h-3 text-white" />
                   </div>
-                  <span className="text-gray-700 text-sm">PayPal Secure</span>
+                  <span className="text-gray-700 text-sm">{t('secure')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-5 h-5 rounded-full bg-green-400 flex items-center justify-center">
                     <Check className="w-3 h-3 text-white" />
                   </div>
                   <span className="text-gray-700 text-sm">
-                    No Instagram Login required
+                    {t('noLogin')}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-5 h-5 rounded-full bg-green-400 flex items-center justify-center">
                     <Check className="w-3 h-3 text-white" />
                   </div>
-                  <span className="text-gray-700 text-sm">AI‑Detection</span>
+                  <span className="text-gray-700 text-sm">{t('aiDetection')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-5 h-5 rounded-full bg-green-400 flex items-center justify-center">
                     <Check className="w-3 h-3 text-white" />
                   </div>
-                  <span className="text-gray-700 text-sm">Instant Results</span>
+                  <span className="text-gray-700 text-sm">{t('instantResults')}</span>
                 </div>
               </div>
 
-              <p className="text-xs text-gray-500 leading-relaxed max-w-2xl">
-                <span className="underline">CopyrightChecker.de</span> automatically analyzes public content. The
-                results are for informational purposes only and do not constitute
-                legal advice. Direct links to affected Reels are provided solely for
-                the user's own processing.
-              </p>
+              <p className="text-xs text-gray-500 leading-relaxed max-w-2xl" dangerouslySetInnerHTML={{__html: t.raw('disclaimer')}} />
             </div>
 
             {/* Right Column: Image */}

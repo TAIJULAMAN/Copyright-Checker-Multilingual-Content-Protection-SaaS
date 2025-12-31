@@ -3,8 +3,8 @@
 import type React from "react";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { useRouter } from "@/i18n/routing";
+import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -14,10 +14,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
+import { useTranslations } from "next-intl";
 
 export default function ForgotPasswordPage() {
+  const t = useTranslations('Auth.forgotPassword');
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -62,13 +62,13 @@ export default function ForgotPasswordPage() {
                 </svg>
               </div>
               <h2 className="text-xl font-bold text-gray-900 mb-2">
-                Check Your Email
+                {t('successTitle')}
               </h2>
               <p className="text-gray-600 text-sm mb-4">
-                We've sent a verification code to {email}
+                {t('successDesc')} {email}
               </p>
               <p className="text-gray-500 text-xs">
-                Redirecting to verification page...
+                {t('redirecting')}
               </p>
             </CardContent>
           </Card>
@@ -82,21 +82,20 @@ export default function ForgotPasswordPage() {
       <main className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-2">
-            <CardTitle className="text-2xl">Forgot Your Password?</CardTitle>
+            <CardTitle className="text-2xl">{t('title')}</CardTitle>
             <CardDescription>
-              Enter your email address and we'll send you a code to reset your
-              password
+              {t('description')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Email Address
+                  {t('email')}
                 </label>
                 <Input
                   type="email"
-                  placeholder="you@example.com"
+                  placeholder={t('emailPlaceholder')}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={loading}
@@ -109,16 +108,16 @@ export default function ForgotPasswordPage() {
                 className="w-full bg-purple-600 hover:bg-purple-700"
                 disabled={loading}
               >
-                {loading ? "Sending..." : "Send Reset Code"}
+                {loading ? t('submitting') : t('submit')}
               </Button>
 
               <p className="text-center text-sm text-gray-600">
-                Remember your password?{" "}
+                {t('rememberPassword')}{" "}
                 <Link
                   href="/login"
                   className="text-purple-600 hover:text-purple-700 font-medium"
                 >
-                  Login
+                  {t('login')}
                 </Link>
               </p>
             </form>

@@ -1,11 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Menu, LogOut, User,Crown , History } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { Menu, LogOut, User, Crown, History } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -26,13 +24,18 @@ import { useSelector, useDispatch } from "react-redux";
 import { selectCurrentUser, logout } from "@/redux/slices/authSlice";
 import { useLogoutMutation } from "@/redux/api/authApi";
 import Cookies from "js-cookie";
+import { Link, useRouter, usePathname } from "@/i18n/routing";
+import { useTranslations, useLocale } from "next-intl";
 
 export default function Header() {
   const router = useRouter();
+  const pathname = usePathname();
+  const locale = useLocale();
+  const t = useTranslations('Header');
   const dispatch = useDispatch();
   const [logoutApi] = useLogoutMutation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [lang, setLang] = useState<"EN" | "DE">("EN");
+  // const [lang, setLang] = useState<"EN" | "DE">("EN"); // Replaced by useLocale
   
   const user = useSelector(selectCurrentUser);
   const isLoggedIn = !!user;
@@ -62,6 +65,10 @@ export default function Header() {
     router.push("/");
   };
 
+  const handleLangChange = (newLocale: string) => {
+      router.replace(pathname, {locale: newLocale});
+  };
+
   const NavLinks = ({ variant = 'light' }: { variant?: 'light' | 'dark' }) => {
     const textColor = variant === 'dark' ? 'text-gray-900' : 'text-white';
     const hoverColor = variant === 'dark' ? 'hover:text-purple-600' : 'hover:text-purple-400';
@@ -69,32 +76,32 @@ export default function Header() {
     return (
       <div className="flex flex-col space-y-3">
         <Link
-          href="#how-it-works"
+          href="/#how-it-works"
           className={`${textColor} ${hoverColor} text-sm transition-colors py-1.5`}
           onClick={() => setMobileMenuOpen(false)}
         >
-          How it Works
+          {t('howItWorks')}
         </Link>
         <Link
           href="/pricing"
           className={`${textColor} ${hoverColor} text-sm transition-colors py-1.5`}
           onClick={() => setMobileMenuOpen(false)}
         >
-          Pricing
+          {t('pricing')}
         </Link>
         <Link
           href="/faq"
           className={`${textColor} ${hoverColor} text-sm transition-colors py-1.5`}
           onClick={() => setMobileMenuOpen(false)}
         >
-          FAQ
+           {t('faq')}
         </Link>
         <Link
           href="/contact"
           className={`${textColor} ${hoverColor} text-sm transition-colors py-1.5`}
           onClick={() => setMobileMenuOpen(false)}
         >
-          Contact
+           {t('contact')}
         </Link>
       </div>
     );
@@ -120,17 +127,17 @@ export default function Header() {
               {/* <Link href="/" className="text-white hover:text-red-500 transition-colors">
                 Home
               </Link> */}
-              <Link href="#how-it-works" className="text-white hover:text-purple-400 transition-colors">
-                How it Works
+              <Link href="/#how-it-works" className="text-white hover:text-purple-400 transition-colors">
+                 {t('howItWorks')}
               </Link>
               <Link href="/pricing" className="text-white hover:text-purple-400 transition-colors">
-                Pricing
+                 {t('pricing')}
               </Link>
               <Link href="/faq" className="text-white hover:text-purple-400 transition-colors">
-                FAQ
+                 {t('faq')}
               </Link>
               <Link href="/contact" className="text-white hover:text-purple-400 transition-colors">
-                Contact
+                 {t('contact')}
               </Link>
             </div>
           </nav>
@@ -139,9 +146,9 @@ export default function Header() {
           <div className="hidden lg:flex items-center gap-5">
             <div className="inline-flex items-center rounded-full overflow-hidden bg-white cursor-pointer">
               <button
-                onClick={() => setLang("EN")}
+                onClick={() => handleLangChange("en")}
                 className={`px-4 py-2 text-sm font-semibold transition-colors ${
-                  lang === "EN"
+                  locale === "en"
                     ? "bg-purple-600 text-white"
                     : "bg-transparent text-[#1b2149]"
                 }`}
@@ -149,9 +156,9 @@ export default function Header() {
                 EN
               </button>
               <button
-                onClick={() => setLang("DE")}
+                onClick={() => handleLangChange("de")}
                 className={`px-4 py-2 text-sm font-semibold transition-colors ${
-                  lang === "DE"
+                  locale === "de"
                     ? "bg-purple-600 text-white"
                     : "bg-transparent text-[#1b2149]"
                 }`}
@@ -162,7 +169,7 @@ export default function Header() {
 
             <Link href="/scan">
               <Button className="bg-purple-600 hover:bg-purple-700 text-white cursor-pointer">
-                Check My Reels Now
+                 {t('checkReels')}
               </Button>
             </Link>
 
@@ -199,27 +206,21 @@ export default function Header() {
                   <DropdownMenuItem asChild>
                     <Link href="/profile" className="cursor-pointer">
                       <User className="mr-2 h-4 w-4" />
-                      <span>My Profile</span>
+                      <span>{t('myProfile')}</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/mysubscription" className="cursor-pointer">
                       <Crown className="mr-2 h-4 w-4" />
-                      <span>My Subscription</span>
+                      <span>{t('mySubscription')}</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/results" className="cursor-pointer">
                       <History className="mr-2 h-4 w-4" />
-                      <span>Scan History</span>
+                      <span>{t('scanHistory')}</span>
                     </Link>
                   </DropdownMenuItem>
-                  {/* <DropdownMenuItem asChild>
-                    <Link href="/profile" className="cursor-pointer">
-                      <User className="mr-2 h-4 w-4" />
-                      <span>Profile Settings</span>
-                    </Link>
-                  </DropdownMenuItem> */}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     onSelect={(e) => {
@@ -229,14 +230,14 @@ export default function Header() {
                     className="text-red-600 focus:text-red-600 cursor-pointer"
                   >
                     <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
+                    <span>{t('logout')}</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
                <Link href="/login">
                 <Button variant="outline" className="border-purple-600 text-purple-600 hover:bg-purple-50">
-                  Log in
+                  {t('login')}
                 </Button>
               </Link>
             )}
@@ -246,9 +247,9 @@ export default function Header() {
           <div className="lg:hidden flex items-center gap-2">
             <div className="inline-flex items-center rounded-full overflow-hidden bg-white">
               <button
-                onClick={() => setLang("EN")}
+                onClick={() => handleLangChange("en")}
                 className={`px-3 py-2 text-xs font-medium transition-colors ${
-                  lang === "EN"
+                  locale === "en"
                     ? "bg-purple-600 text-white"
                     : "bg-transparent text-[#1b2149]"
                 }`}
@@ -256,9 +257,9 @@ export default function Header() {
                 EN
               </button>
               <button
-                onClick={() => setLang("DE")}
+                onClick={() => handleLangChange("de")}
                 className={`px-3 py-2 text-xs font-medium transition-colors ${
-                  lang === "DE"
+                  locale === "de"
                     ? "bg-purple-600 text-white"
                     : "bg-transparent text-[#1b2149]"
                 }`}
@@ -277,12 +278,12 @@ export default function Header() {
               <SheetContent side="right" className="w-[300px] sm:w-[400px] sm:h-[44vh] bg-white overflow-y-auto pb-0">
                 <SheetHeader className="border-b pb-4">
                   <div className="flex items-center justify-between">
-                    <SheetTitle className="text-xl font-bold text-gray-900">Menu</SheetTitle>
+                    <SheetTitle className="text-xl font-bold text-gray-900">{t('menu')}</SheetTitle>
                     <div className="inline-flex items-center rounded-full overflow-hidden bg-white border border-gray-200">
                       <button
-                        onClick={() => setLang("EN")}
+                        onClick={() => handleLangChange("en")}
                         className={`px-4 py-2 text-xs font-medium transition-colors ${
-                          lang === "EN"
+                          locale === "en"
                             ? "bg-purple-600 text-white"
                             : "bg-transparent text-gray-700"
                         }`}
@@ -290,9 +291,9 @@ export default function Header() {
                         EN
                       </button>
                       <button
-                        onClick={() => setLang("DE")}
+                        onClick={() => handleLangChange("de")}
                         className={`px-4 py-2 text-xs font-medium transition-colors ${
-                          lang === "DE"
+                          locale === "de"
                             ? "bg-purple-600 text-white"
                             : "bg-transparent text-gray-700"
                         }`}
@@ -314,12 +315,12 @@ export default function Header() {
                       <>
                         <Link href="/mysubscription" onClick={() => setMobileMenuOpen(false)} className="block">
                           <Button variant="ghost" className="w-full justify-start">
-                             <Crown className="mr-2 h-4 w-4" /> My Subscription
+                             <Crown className="mr-2 h-4 w-4" /> {t('mySubscription')}
                           </Button>
                         </Link>
                          <Link href="/results" onClick={() => setMobileMenuOpen(false)} className="block">
                           <Button variant="ghost" className="w-full justify-start">
-                             <History className="mr-2 h-4 w-4" /> Scan History
+                             <History className="mr-2 h-4 w-4" /> {t('scanHistory')}
                           </Button>
                         </Link>
                         <Button 
@@ -327,14 +328,14 @@ export default function Header() {
                           className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
                           onClick={handleLogout}
                         >
-                           <LogOut className="mr-2 h-4 w-4" /> Log out
+                           <LogOut className="mr-2 h-4 w-4" /> {t('logout')}
                         </Button>
                       </>
                     ) : (
                       <>
                         <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="block">
                           <Button variant="outline" className="w-full border-purple-600 text-purple-600 hover:bg-purple-50">
-                            Log in
+                            {t('login')}
                           </Button>
                         </Link>
                       </>
@@ -342,7 +343,7 @@ export default function Header() {
                    
                     <Link href="/scan" onClick={() => setMobileMenuOpen(false)} className="block">
                       <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white">
-                        Check My Reels Now
+                        {t('checkReels')}
                       </Button>
                     </Link>
                   </div>

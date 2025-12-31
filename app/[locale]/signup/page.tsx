@@ -3,8 +3,8 @@
 import type React from "react";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { useRouter } from "@/i18n/routing";
+import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -14,12 +14,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
 
 import { useRegisterMutation } from "@/redux/api/authApi";
+import { useTranslations } from "next-intl";
 
 export default function SignupPage() {
+  const t = useTranslations('Auth.signup');
   const router = useRouter();
   const [formData, setFormData] = useState({
     firstName: "",
@@ -54,22 +54,22 @@ export default function SignupPage() {
       !formData.password ||
       !formData.confirmPassword
     ) {
-      setError("Please fill in all fields");
+      setError(t('validationError'));
       return;
     }
 
     if (formData.password.length < 8) {
-      setError("Password must be at least 8 characters");
+      setError(t('passwordLength'));
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
+      setError(t('passwordMismatch'));
       return;
     }
 
     if (!formData.agreeTerms) {
-      setError("Please agree to the terms and conditions");
+      setError(t('termsError'));
       return;
     }
 
@@ -88,7 +88,7 @@ export default function SignupPage() {
       }
     } catch (err: any) {
       console.error("Registration failed:", err);
-      setError(err?.data?.message || "Registration failed. Please try again.");
+      setError(err?.data?.message || t('error'));
     }
   };
 
@@ -97,9 +97,9 @@ export default function SignupPage() {
       <main className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-2">
-            <CardTitle className="text-2xl">Create Your Account</CardTitle>
+            <CardTitle className="text-2xl">{t('title')}</CardTitle>
             <CardDescription>
-              Sign up to start checking your Instagram Reels
+              {t('description')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -113,12 +113,12 @@ export default function SignupPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">
-                    First Name
+                    {t('firstName')}
                   </label>
                   <Input
                     type="text"
                     name="firstName"
-                    placeholder="John"
+                    placeholder={t('firstNamePlaceholder')}
                     value={formData.firstName}
                     onChange={handleChange}
                     disabled={isLoading}
@@ -126,12 +126,12 @@ export default function SignupPage() {
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">
-                    Last Name
+                    {t('lastName')}
                   </label>
                   <Input
                     type="text"
                     name="lastName"
-                    placeholder="Doe"
+                    placeholder={t('lastNamePlaceholder')}
                     value={formData.lastName}
                     onChange={handleChange}
                     disabled={isLoading}
@@ -141,12 +141,12 @@ export default function SignupPage() {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Email
+                  {t('email')}
                 </label>
                 <Input
                   type="email"
                   name="email"
-                  placeholder="you@example.com"
+                  placeholder={t('emailPlaceholder')}
                   value={formData.email}
                   onChange={handleChange}
                   disabled={isLoading}
@@ -155,12 +155,12 @@ export default function SignupPage() {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Mobile
+                  {t('mobile')}
                 </label>
                 <Input
                   type="tel"
                   name="mobile"
-                  placeholder="+1234567890"
+                  placeholder={t('mobilePlaceholder')}
                   value={formData.mobile}
                   onChange={handleChange}
                   disabled={isLoading}
@@ -169,12 +169,12 @@ export default function SignupPage() {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Password
+                  {t('password')}
                 </label>
                 <Input
                   type="password"
                   name="password"
-                  placeholder="••••••••"
+                  placeholder={t('passwordPlaceholder')}
                   value={formData.password}
                   onChange={handleChange}
                   disabled={isLoading}
@@ -183,12 +183,12 @@ export default function SignupPage() {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Confirm Password
+                  {t('confirmPassword')}
                 </label>
                 <Input
                   type="password"
                   name="confirmPassword"
-                  placeholder="••••••••"
+                  placeholder={t('confirmPasswordPlaceholder')}
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   disabled={isLoading}
@@ -205,12 +205,12 @@ export default function SignupPage() {
                   disabled={isLoading}
                 />
                 <label className="ml-2 text-sm text-gray-600">
-                  I agree to the{" "}
+                  {t('agreeTerms')}{" "}
                   <Link
                     href="/privacy"
                     className="text-purple-600 hover:text-purple-700"
                   >
-                    Terms and Privacy Policy
+                    {t('termsLink')}
                   </Link>
                 </label>
               </div>
@@ -220,16 +220,16 @@ export default function SignupPage() {
                 className="w-full bg-purple-600 hover:bg-purple-700"
                 disabled={isLoading}
               >
-                {isLoading ? "Creating account..." : "Sign Up"}
+                {isLoading ? t('submitting') : t('submit')}
               </Button>
 
               <p className="text-center text-sm text-gray-600">
-                Already have an account?{" "}
+                {t('hasAccount')}{" "}
                 <Link
                   href="/login"
                   className="text-purple-600 hover:text-purple-700 font-medium"
                 >
-                  Login
+                  {t('login')}
                 </Link>
               </p>
             </form>

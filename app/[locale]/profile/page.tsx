@@ -13,8 +13,10 @@ import { useGetMeQuery, useChangePasswordMutation } from "@/redux/api/authApi";
 import { useUpdateUserMutation, useUpdateAvatarMutation } from "@/redux/api/userApi";
 import { toast } from "sonner";
 import { Camera, Loader2, Save, Lock, User as UserIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function ProfilePage() {
+  const t = useTranslations('Profile');
   const { data: userData, isLoading: isUserLoading } = useGetMeQuery();
   const [updateUser, { isLoading: isUpdatingUser }] = useUpdateUserMutation();
   const [updateAvatar, { isLoading: isUpdatingAvatar }] = useUpdateAvatarMutation();
@@ -37,10 +39,6 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (user) {
-      // Split fullname if firstName/lastName not distinct in user object, 
-      // but API usually returns them or expects them. 
-      // Based on prompt, GET me returns 'fullname'. UPDATE expects 'firstName', 'lastName'.
-      // usage: "fullname": "parves mosarof"
       const names = user.fullname ? user.fullname.split(' ') : ["", ""];
       const firstName = names[0] || "";
       const lastName = names.slice(1).join(' ') || "";
@@ -53,12 +51,7 @@ export default function ProfilePage() {
     }
   }, [user]);
   
-  // Correction: user object in prompt has 'fullname', but likely doesn't have firstName/lastName fields directly if it's just 'fullname'.
-  // However, the update payload requires firstName/lastName. 
-  // I'll assume splitting 'fullname' is the way to go for initial state.
-  // Wait, I should better handle the initial state. 
-  
-  const userIdFirstName = ""; // Placeholder if schema differs
+  const userIdFirstName = ""; 
   const userIdLastName = "";
 
   const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,9 +66,9 @@ export default function ProfilePage() {
     e.preventDefault();
     try {
       await updateUser(profileForm).unwrap();
-      toast.success("Profile updated successfully");
+      toast.success(t('messages.profileSuccess'));
     } catch (error: any) {
-      toast.error(error?.data?.message || "Failed to update profile");
+      toast.error(error?.data?.message || t('messages.profileError'));
     }
   };
 
@@ -86,9 +79,9 @@ export default function ProfilePage() {
       formData.append("avatar", file);
       try {
         await updateAvatar(formData).unwrap();
-        toast.success("Profile picture updated successfully");
+        toast.success(t('messages.avatarSuccess'));
       } catch (error: any) {
-        toast.error(error?.data?.message || "Failed to update profile picture");
+        toast.error(error?.data?.message || t('messages.avatarError'));
       }
     }
   };
@@ -96,7 +89,7 @@ export default function ProfilePage() {
   const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      toast.error("New passwords do not match");
+      toast.error(t('messages.passwordMismatch'));
       return;
     }
     
@@ -105,10 +98,10 @@ export default function ProfilePage() {
         oldPassword: passwordForm.oldPassword,
         newPassword: passwordForm.newPassword,
       }).unwrap();
-      toast.success("Password changed successfully");
+      toast.success(t('messages.passwordSuccess'));
       setPasswordForm({ oldPassword: "", newPassword: "", confirmPassword: "" });
     } catch (error: any) {
-      toast.error(error?.data?.message || "Failed to change password");
+      toast.error(error?.data?.message || t('messages.passwordError'));
     }
   };
 
@@ -123,9 +116,9 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-gray-50/50">
       <PageHeader 
-        title="My Profile" 
-        description="Manage your account settings and preferences" 
-        backLink={{ href: "/", text: "Back to Home" }} 
+        title={t('title')} 
+        description={t('description')} 
+        backLink={{ href: "/", text: t('backToHome') }} 
       />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -161,13 +154,13 @@ export default function ProfilePage() {
               
               <div className="w-full pt-4 border-t border-gray-100 flex flex-col gap-2 text-sm">
                  <div className="flex justify-between items-center text-gray-600">
-                    <span>Role</span>
+                    <span>{t('role')}</span>
                     <span className="font-medium px-2 py-0.5 bg-gray-100 rounded text-gray-900 capitalize">{user?.role}</span>
                  </div>
                  <div className="flex justify-between items-center text-gray-600">
-                    <span>Member Type</span>
+                    <span>{t('memberType')}</span>
                     <span className={`font-medium px-2 py-0.5 rounded capitalize ${user?.isPremiumMember ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-900'}`}>
-                      {user?.isPremiumMember ? 'Premium' : 'Free'}
+                      {user?.isPremiumMember ? t('premium') : t('free')}
                     </span>
                  </div>
               </div>
@@ -179,10 +172,10 @@ export default function ProfilePage() {
             <Tabs defaultValue="profile" className="w-full">
               <TabsList className="grid w-full grid-cols-2 mb-8">
                 <TabsTrigger value="profile" className="flex items-center gap-2">
-                  <UserIcon className="h-4 w-4" /> Profile Details
+                  <UserIcon className="h-4 w-4" /> {t('tabs.profile')}
                 </TabsTrigger>
                 <TabsTrigger value="password" className="flex items-center gap-2">
-                  <Lock className="h-4 w-4" /> Security
+                  <Lock className="h-4 w-4" /> {t('tabs.security')}
                 </TabsTrigger>
               </TabsList>
 
@@ -190,14 +183,14 @@ export default function ProfilePage() {
               <TabsContent value="profile">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Personal Information</CardTitle>
-                    <CardDescription>Update your personal details here.</CardDescription>
+                    <CardTitle>{t('personalInfo.title')}</CardTitle>
+                    <CardDescription>{t('personalInfo.description')}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <form onSubmit={handleProfileSubmit} className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="firstName">First Name</Label>
+                          <Label htmlFor="firstName">{t('personalInfo.firstName')}</Label>
                           <Input 
                             id="firstName" 
                             name="firstName" 
@@ -207,7 +200,7 @@ export default function ProfilePage() {
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="lastName">Last Name</Label>
+                          <Label htmlFor="lastName">{t('personalInfo.lastName')}</Label>
                           <Input 
                             id="lastName" 
                             name="lastName" 
@@ -219,7 +212,7 @@ export default function ProfilePage() {
                       </div>
                       
                       <div className="space-y-2">
-                        <Label htmlFor="mobile">Phone Number</Label>
+                        <Label htmlFor="mobile">{t('personalInfo.phone')}</Label>
                         <Input 
                           id="mobile" 
                           name="mobile" 
@@ -230,25 +223,25 @@ export default function ProfilePage() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="email">Email Address</Label>
+                        <Label htmlFor="email">{t('personalInfo.email')}</Label>
                         <Input 
                           id="email" 
                           value={user?.email || ""} 
                           disabled 
                           className="bg-gray-50 text-gray-500 cursor-not-allowed" 
                         />
-                         <p className="text-[10px] text-gray-500">Email address cannot be changed</p>
+                         <p className="text-[10px] text-gray-500">{t('personalInfo.emailWarning')}</p>
                       </div>
 
                       <div className="pt-4 flex justify-end">
                         <Button type="submit" disabled={isUpdatingUser} className="min-w-[120px]">
                           {isUpdatingUser ? (
                             <>
-                              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t('personalInfo.saving')}
                             </>
                           ) : (
                             <>
-                              <Save className="mr-2 h-4 w-4" /> Save Changes
+                              <Save className="mr-2 h-4 w-4" /> {t('personalInfo.save')}
                             </>
                           )}
                         </Button>
@@ -262,13 +255,13 @@ export default function ProfilePage() {
               <TabsContent value="password">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Change Password</CardTitle>
-                    <CardDescription>Ensure your account is using a long, random password to stay secure.</CardDescription>
+                    <CardTitle>{t('password.title')}</CardTitle>
+                    <CardDescription>{t('password.description')}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <form onSubmit={handlePasswordSubmit} className="space-y-4">
                       <div className="space-y-2">
-                        <Label htmlFor="oldPassword">Current Password</Label>
+                        <Label htmlFor="oldPassword">{t('password.current')}</Label>
                         <Input 
                           id="oldPassword" 
                           name="oldPassword" 
@@ -281,7 +274,7 @@ export default function ProfilePage() {
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="newPassword">New Password</Label>
+                          <Label htmlFor="newPassword">{t('password.new')}</Label>
                           <Input 
                             id="newPassword" 
                             name="newPassword" 
@@ -292,7 +285,7 @@ export default function ProfilePage() {
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                          <Label htmlFor="confirmPassword">{t('password.confirm')}</Label>
                           <Input 
                             id="confirmPassword" 
                             name="confirmPassword" 
@@ -308,11 +301,11 @@ export default function ProfilePage() {
                         <Button type="submit" disabled={isChangingPassword} variant="destructive" className="min-w-[120px]">
                           {isChangingPassword ? (
                             <>
-                              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Changing...
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t('password.updating')}
                             </>
                           ) : (
                             <>
-                              <Lock className="mr-2 h-4 w-4" /> Update Password
+                              <Lock className="mr-2 h-4 w-4" /> {t('password.update')}
                             </>
                           )}
                         </Button>

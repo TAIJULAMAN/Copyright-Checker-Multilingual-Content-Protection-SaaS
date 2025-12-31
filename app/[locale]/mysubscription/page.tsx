@@ -2,13 +2,15 @@
 
 import { useGetMySubscriptionQuery, useGetSubscriptionPlansQuery, useCreatePayPalOrderMutation } from "@/redux/api/subscriptionApi";
 import { format } from "date-fns";
-import { Loader2, CreditCard, Calendar, Activity, ShieldCheck, User, ArrowRight } from "lucide-react";
+import { Loader2, CreditCard, Calendar, Activity, ShieldCheck, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 export default function MySubscriptionPage() {
+  const t = useTranslations('MySubscription');
   const { data, isLoading, error } = useGetMySubscriptionQuery();
 
   // Fetch plans for empty state (always fetch to be ready)
@@ -32,7 +34,7 @@ export default function MySubscriptionPage() {
   };
 
   const recurringPlans = plansData?.data?.plans.filter(
-    (plan) => plan.subscriptionType === "recurring" && plan.billingCycle === "monthly"
+    (plan: any) => plan.subscriptionType === "recurring" && plan.billingCycle === "monthly"
   ) || [];
 
   if (isLoading) {
@@ -63,8 +65,8 @@ export default function MySubscriptionPage() {
             {subscription && plan ? (
                 <div className="space-y-8">
                     <div>
-                    <h1 className="text-3xl font-bold text-gray-900">My Subscription</h1>
-                    <p className="text-gray-600 mt-2">Manage your current plan and usage</p>
+                    <h1 className="text-3xl font-bold text-gray-900">{t('title')}</h1>
+                    <p className="text-gray-600 mt-2">{t('description')}</p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -75,7 +77,7 @@ export default function MySubscriptionPage() {
                             <div>
                             <CardTitle className="text-2xl text-purple-700">{plan.name}</CardTitle>
                             <CardDescription className="capitalize mt-1">
-                                {subscription.subscriptionType} Payment
+                                {subscription.subscriptionType} {t('payment')}
                             </CardDescription>
                             </div>
                             <div className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide ${
@@ -92,7 +94,7 @@ export default function MySubscriptionPage() {
                                 <Calendar className="w-6 h-6 text-purple-600" />
                             </div>
                             <div>
-                                <h3 className="font-medium text-gray-900">Start Date</h3>
+                                <h3 className="font-medium text-gray-900">{t('startDate')}</h3>
                                 <p className="text-sm text-gray-500">
                                 {format(new Date(subscription.startDate), "MMMM d, yyyy")}
                                 </p>
@@ -103,9 +105,9 @@ export default function MySubscriptionPage() {
                                 <Calendar className="w-6 h-6 text-purple-600" />
                             </div>
                             <div>
-                                <h3 className="font-medium text-gray-900">End Date</h3>
+                                <h3 className="font-medium text-gray-900">{t('endDate')}</h3>
                                 <p className="text-sm text-gray-500">
-                                {new Date(subscription.endDate).getFullYear() > 2100 ? "Lifetime Access" : format(new Date(subscription.endDate), "MMMM d, yyyy")}
+                                {new Date(subscription.endDate).getFullYear() > 2100 ? t('lifetime') : format(new Date(subscription.endDate), "MMMM d, yyyy")}
                                 </p>
                             </div>
                             </div>
@@ -114,7 +116,7 @@ export default function MySubscriptionPage() {
                                 <CreditCard className="w-6 h-6 text-purple-600" />
                             </div>
                             <div>
-                                <h3 className="font-medium text-gray-900">Amount Paid</h3>
+                                <h3 className="font-medium text-gray-900">{t('amountPaid')}</h3>
                                 <p className="text-sm text-gray-500">${plan.price}</p>
                             </div>
                             </div>
@@ -123,7 +125,7 @@ export default function MySubscriptionPage() {
                                 <ShieldCheck className="w-6 h-6 text-purple-600" />
                             </div>
                             <div>
-                                <h3 className="font-medium text-gray-900">Plan Type</h3>
+                                <h3 className="font-medium text-gray-900">{t('planType')}</h3>
                                 <p className="text-sm text-gray-500 capitalize">{subscription.planType}</p>
                             </div>
                             </div>
@@ -135,22 +137,22 @@ export default function MySubscriptionPage() {
                     <Card className="shadow-md bg-purple-600 text-white border-none">
                         <CardHeader className="pb-2">
                         <CardTitle className="text-lg flex items-center gap-2">
-                            <Activity className="w-5 h-5" /> Usage Statistics
+                            <Activity className="w-5 h-5" /> {t('usageStats')}
                         </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-6 pt-4">
                         <div>
-                            <p className="text-purple-100 text-sm mb-1">Total Limit</p>
-                            <div className="text-3xl font-bold">{subscription.accountLimit} Accounts</div>
+                            <p className="text-purple-100 text-sm mb-1">{t('totalLimit')}</p>
+                            <div className="text-3xl font-bold">{subscription.accountLimit} {t('accounts')}</div>
                         </div>
                         <div>
-                            <p className="text-purple-100 text-sm mb-1">Checks Used</p>
+                            <p className="text-purple-100 text-sm mb-1">{t('checksUsed')}</p>
                             <div className="text-3xl font-bold">{subscription.checksUsed}</div>
                         </div>
                         <div className="pt-4 border-t border-purple-500/30">
-                            <p className="text-purple-100 text-sm mb-1">Remaining</p>
+                            <p className="text-purple-100 text-sm mb-1">{t('remaining')}</p>
                             <div className="text-4xl font-extrabold">{remainingChecks}</div>
-                            <p className="text-xs text-purple-200 mt-1">Available Checks</p>
+                            <p className="text-xs text-purple-200 mt-1">{t('availableChecks')}</p>
                         </div>
                         </CardContent>
                     </Card>
@@ -159,7 +161,7 @@ export default function MySubscriptionPage() {
                     <div className="flex justify-end pt-4">
                     <Link href="/scan">
                         <Button className="bg-purple-600 hover:bg-purple-700 text-lg px-8 py-6 h-auto shadow-lg">
-                        Start New Scan <ArrowRight className="ml-2 w-5 h-5" />
+                        {t('startNewScan')} <ArrowRight className="ml-2 w-5 h-5" />
                         </Button>
                     </Link>
                     </div>
@@ -169,16 +171,16 @@ export default function MySubscriptionPage() {
                     <div className="inline-flex p-3 bg-purple-100 rounded-full mb-4">
                         <CreditCard className="w-8 h-8 text-purple-600" />
                     </div>
-                    <h2 className="text-3xl font-bold text-gray-900 mb-2">No Active Subscription</h2>
+                    <h2 className="text-3xl font-bold text-gray-900 mb-2">{t('noActive')}</h2>
                     <p className="text-gray-600 max-w-lg mx-auto">
-                        You don't have an active subscription tailored for your needs.
+                        {t('noActiveDesc')}
                     </p>
                 </div>
             )}
         </div>
 
         <div className="border-t border-gray-200 pt-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Available Monthly Plans</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">{t('availablePlans')}</h2>
             
             {isPlansLoading ? (
             <div className="flex justify-center">
@@ -186,7 +188,7 @@ export default function MySubscriptionPage() {
             </div>
             ) : recurringPlans.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
-                {recurringPlans.map((plan) => (
+                {recurringPlans.map((plan: any) => (
                 <div
                     key={plan._id}
                     className="relative rounded-xl p-8 border border-gray-200 bg-white hover:shadow-lg transition-shadow flex flex-col"
@@ -196,11 +198,11 @@ export default function MySubscriptionPage() {
                     <div className="flex items-baseline justify-center my-4">
                         <span className="text-4xl font-bold text-[#1b2149]">${plan.price}</span>
                     </div>
-                    <p className="text-sm text-gray-500 capitalize mb-6">{plan.billingCycle} Payment</p>
+                    <p className="text-sm text-gray-500 capitalize mb-6">{plan.billingCycle} {t('payment')}</p>
                     </div>
                     
                     <div className="space-y-3 flex-grow mb-8">
-                    {plan.features.map((feature, i) => (
+                    {plan.features.map((feature: string, i: number) => (
                         <div key={i} className="flex items-start gap-3">
                         <div className="mt-0.5 rounded-full bg-green-100 p-1">
                             <ShieldCheck className="w-3 h-3 text-green-600" />
@@ -218,10 +220,10 @@ export default function MySubscriptionPage() {
                     {isCreatingOrder && selectedPlanId === plan._id ? (
                         <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Processing...
+                        {t('processing')}
                         </>
                     ) : (
-                        "Subscribe Now"
+                        t('subscribe')
                     )}
                     </Button>
                 </div>
@@ -229,9 +231,9 @@ export default function MySubscriptionPage() {
             </div>
             ) : (
                 <div className="text-center p-8 bg-white rounded-lg border border-gray-200">
-                    <h3 className="text-lg font-medium text-gray-900">No Monthly Plans Available</h3>
+                    <h3 className="text-lg font-medium text-gray-900">{t('noPlans')}</h3>
                     <p className="text-gray-500 mt-2">
-                        We couldn't find any monthly recurring plans at the moment.
+                        {t('noPlansDesc')}
                     </p>
                 </div>
             )}
@@ -240,5 +242,3 @@ export default function MySubscriptionPage() {
     </div>
   );
 }
-
-

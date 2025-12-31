@@ -1,25 +1,29 @@
+import {useTranslations} from 'next-intl';
+
 export default function HowItWorks() {
+  const t = useTranslations('HowItWorks');
+
   const steps = [
     {
-      title: "Paste Your Profile Link",
-      description: "Simply copy and paste your Instagram Reel URL",
+      title: t('step1Title'),
+      description: t('step1Desc'),
     },
     {
-      title: "Create Account - Pay Securely",
-      description: "Secure payment processing with PayPal protection",
+      title: t('step2Title'),
+      description: t('step2Desc'),
     },
     {
-      title: "Get Instant Report",
-      description: "Receive detailed copyright analysis immediately",
+      title: t('step3Title'),
+      description: t('step3Desc'),
     },
   ]
 
   return (
-    <section className="py-16 md:py-20 bg-[#1b2149]">
+    <section className="py-16 md:py-20 bg-[#1b2149]" id="how-it-works">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10 md:mb-14">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">How It Works</h2>
-          <p className="text-gray-300 text-sm md:text-base">Three simple steps to protect your content</p>
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">{t('title')}</h2>
+          <p className="text-gray-300 text-sm md:text-base">{t('subtitle')}</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-8">

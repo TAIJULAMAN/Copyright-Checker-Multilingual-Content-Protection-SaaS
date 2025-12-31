@@ -1,7 +1,8 @@
 "use client";
 
 import { useGetJobDetailsQuery } from "@/redux/api/copyrightApi";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { ArrowLeft, ExternalLink, Shield, AlertTriangle, CheckCircle, Music, Play, Eye, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,8 +12,10 @@ import { useState } from "react";
 import Cookies from "js-cookie";
 import { BASE_URL } from "@/redux/api/config";
 import { Download, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function JobDetailsPage() {
+  const t = useTranslations('JobDetails');
   const params = useParams();
   const router = useRouter();
   const jobId = params.jobId as string;
@@ -67,9 +70,9 @@ export default function JobDetailsPage() {
   if (error || !data?.success) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4">
-        <p className="text-red-500">Failed to load job details.</p>
+        <p className="text-red-500">{t('error')}</p>
         <Button variant="outline" onClick={() => router.back()}>
-          <ArrowLeft className="mr-2 w-4 h-4" /> Go Back
+          <ArrowLeft className="mr-2 w-4 h-4" /> {t('goBack')}
         </Button>
       </div>
     );
@@ -85,11 +88,11 @@ export default function JobDetailsPage() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
              <Button variant="ghost" className="mb-2 pl-0 hover:bg-transparent hover:text-purple-600" onClick={() => router.back()}>
-              <ArrowLeft className="mr-2 w-4 h-4" /> Back to History
+              <ArrowLeft className="mr-2 w-4 h-4" /> {t('backToHistory')}
             </Button>
-            <h1 className="text-3xl font-bold text-gray-900">Scan Results</h1>
+            <h1 className="text-3xl font-bold text-gray-900">{t('title')}</h1>
             <p className="text-gray-600 mt-1">
-              Analysis for <span className="font-semibold text-purple-600">@{jobDetails.username}</span> • {new Date(jobDetails.createdAt).toLocaleDateString()}
+              {t('analysisFor')} <span className="font-semibold text-purple-600">@{jobDetails.username}</span> • {new Date(jobDetails.createdAt).toLocaleDateString()}
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -101,12 +104,12 @@ export default function JobDetailsPage() {
                {isDownloading ? (
                  <>
                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                   Downloading...
+                   {t('downloading')}
                  </>
                ) : (
                  <>
                    <Download className="mr-2 h-4 w-4" />
-                   Download Report
+                   {t('downloadReport')}
                  </>
                )}
              </Button>
@@ -120,30 +123,30 @@ export default function JobDetailsPage() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card>
             <CardContent className="pt-6">
-              <div className="text-sm text-gray-500 mb-1">Total Analyzed</div>
+              <div className="text-sm text-gray-500 mb-1">{t('totalAnalyzed')}</div>
               <div className="text-2xl font-bold">{summary.totalAnalyzed}</div>
             </CardContent>
           </Card>
           <Card>
              <CardContent className="pt-6">
-              <div className="text-sm text-gray-500 mb-1">Copyright Detected</div>
+              <div className="text-sm text-gray-500 mb-1">{t('copyrightDetected')}</div>
               <div className="text-2xl font-bold text-red-600">{summary.copyrightedCount}</div>
             </CardContent>
           </Card>
           <Card>
              <CardContent className="pt-6">
-              <div className="text-sm text-gray-500 mb-1">Unique Songs</div>
+              <div className="text-sm text-gray-500 mb-1">{t('uniqueSongs')}</div>
               <div className="text-2xl font-bold">{summary.uniqueSongs}</div>
             </CardContent>
           </Card>
            <Card>
              <CardContent className="pt-6">
-              <div className="text-sm text-gray-500 mb-1">Risk Level</div>
+              <div className="text-sm text-gray-500 mb-1">{t('riskLevel')}</div>
               <div className="text-2xl font-bold capitalize">
                 {summary.riskBreakdown.high > 0 ? (
-                  <span className="text-red-600 flex items-center gap-2">High <AlertTriangle className="w-5 h-5" /></span>
+                  <span className="text-red-600 flex items-center gap-2">{t('high')} <AlertTriangle className="w-5 h-5" /></span>
                 ) : (
-                  <span className="text-green-600 flex items-center gap-2">Low <CheckCircle className="w-5 h-5" /></span>
+                  <span className="text-green-600 flex items-center gap-2">{t('low')} <CheckCircle className="w-5 h-5" /></span>
                 )}
               </div>
             </CardContent>
@@ -153,15 +156,15 @@ export default function JobDetailsPage() {
         {/* Results Table */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="p-6 border-b border-gray-200">
-            <h2 className="text-xl font-bold text-gray-900">Analyzed Videos</h2>
+            <h2 className="text-xl font-bold text-gray-900">{t('analyzedVideos')}</h2>
           </div>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[100px]">Thumbnail</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Details</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="w-[100px]">{t('thumbnail')}</TableHead>
+                <TableHead>{t('status')}</TableHead>
+                <TableHead>{t('details')}</TableHead>
+                <TableHead className="text-right">{t('actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -195,7 +198,7 @@ export default function JobDetailsPage() {
                             }`}
                         >
                             {result.copyright.copyrighted ? <AlertTriangle className="w-3 h-3" /> : <CheckCircle className="w-3 h-3" />}
-                            {result.copyright.copyrighted ? "Flagged" : "Safe"}
+                            {result.copyright.copyrighted ? t('flagged') : t('safe')}
                         </span>
                       </div>
                   </TableCell>
@@ -206,7 +209,7 @@ export default function JobDetailsPage() {
                             <p className="text-gray-500">{result.detection.artist}</p>
                         </div>
                     ) : (
-                        <span className="text-sm text-gray-500">No copyright detected</span>
+                        <span className="text-sm text-gray-500">{t('noCopyright')}</span>
                     )}
                   </TableCell>
                   <TableCell className="text-right">
@@ -231,8 +234,8 @@ export default function JobDetailsPage() {
           <div className="bg-white rounded-lg shadow-xl w-full max-w-7xl max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
             <div className="p-6 border-b border-gray-100 flex items-start justify-between">
               <div>
-                <h2 className="text-xl font-bold text-gray-900">Detailed Result</h2>
-                <p className="text-gray-500 text-sm mt-1">Analysis details for this Instagram Reel.</p>
+                <h2 className="text-xl font-bold text-gray-900">{t('modalTitle')}</h2>
+                <p className="text-gray-500 text-sm mt-1">{t('modalDesc')}</p>
               </div>
               <Button 
                 variant="ghost" 
@@ -278,12 +281,12 @@ export default function JobDetailsPage() {
                           }`}
                         >
                           {selectedResult.copyright.copyrighted ? <AlertTriangle className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
-                          {selectedResult.copyright.copyrighted ? "Copyright Detected" : "Safe Content"}
+                          {selectedResult.copyright.copyrighted ? t('copyrightDetected') : t('safeContent')}
                         </span>
                     </div>
                     
                     <a href={selectedResult.url} target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:text-purple-700 font-medium flex items-center gap-2 text-lg">
-                      View Reel on Instagram <ExternalLink className="w-4 h-4" />
+                      {t('viewReel')} <ExternalLink className="w-4 h-4" />
                     </a>
                   </div>
 
@@ -294,7 +297,7 @@ export default function JobDetailsPage() {
                             <Music className="w-6 h-6 text-red-600" />
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-red-600 mb-1">Detected Details</p>
+                            <p className="text-sm font-medium text-red-600 mb-1">{t('detectedDetails')}</p>
                             <p className="text-xl font-bold text-gray-900">{selectedResult.detection.title}</p>
                             <p className="text-lg text-gray-700">{selectedResult.detection.artist}</p>
                           </div>
@@ -302,18 +305,18 @@ export default function JobDetailsPage() {
                         
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
                           <div className="bg-white p-4 rounded-lg border border-red-100 shadow-sm">
-                            <span className="block text-sm text-gray-500 mb-1">Label</span>
+                            <span className="block text-sm text-gray-500 mb-1">{t('label')}</span>
                             <span className="block text-gray-900 font-semibold">{selectedResult.detection.label}</span>
                           </div>
                           <div className="bg-white p-4 rounded-lg border border-red-100 shadow-sm">
-                            <span className="block text-sm text-gray-500 mb-1">Confidence Score</span>
+                            <span className="block text-sm text-gray-500 mb-1">{t('confidence')}</span>
                             <span className="block text-gray-900 font-semibold text-lg">{selectedResult.detection.confidence}%</span>
                           </div>
                         </div>
 
                         {selectedResult.copyright.notes && (
                           <div className="bg-red-100/50 p-4 rounded-lg border border-red-100">
-                             <p className="text-sm font-semibold text-red-900 mb-1">Additional Notes</p>
+                             <p className="text-sm font-semibold text-red-900 mb-1">{t('notes')}</p>
                              <p className="text-sm text-red-800">{selectedResult.copyright.notes}</p>
                           </div>
                         )}
@@ -323,8 +326,8 @@ export default function JobDetailsPage() {
                        <div className="p-4 bg-green-100 rounded-full">
                          <CheckCircle className="w-8 h-8 text-green-600" />
                        </div>
-                       <h3 className="text-lg font-bold text-green-900">No Issues Found</h3>
-                       <p className="text-green-800 max-w-md">Our AI analyzed this content and did not detect any copyrighted music matches. Your content appears safe to post.</p>
+                       <h3 className="text-lg font-bold text-green-900">{t('noIssues')}</h3>
+                       <p className="text-green-800 max-w-md">{t('noIssuesDesc')}</p>
                     </div>
                   )}
                 </div>

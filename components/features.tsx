@@ -1,26 +1,29 @@
 import { Users, Shield, Zap, Download } from "lucide-react"
+import { useTranslations } from "next-intl";
 
 export default function Features() {
+  const t = useTranslations('Features');
+
   const features = [
     {
       icon: Users,
-      title: "Prevent Copyright Violations",
-      description: "Start checking immediately without creating an account",
+      title: t('f1Title'),
+      description: t('f1Desc'),
     },
     {
       icon: Shield,
-      title: "Save Time, reduce risk",
-      description: "Check content in minutes and delete risky posts fast.",
+      title: t('f2Title'),
+      description: t('f2Desc'),
     },
     {
       icon: Zap,
-      title: "AI‑Powered Detection",
-      description: "Technology that outperforms manual checks.",
+      title: t('f3Title'),
+      description: t('f3Desc'),
     },
     {
       icon: Download,
-      title: "PDF/CSV Report",
-      description: "Download detailed reports in multiple formats",
+      title: t('f4Title'),
+      description: t('f4Desc'),
     },
   ]
 
@@ -29,10 +32,10 @@ export default function Features() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-8 sm:mb-10 md:mb-14 px-2">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2 sm:mb-3">
-            Why Choose Our Service
+            {t('title')}
           </h2>
           <p className="text-gray-300 text-sm sm:text-base max-w-2xl mx-auto">
-            Advanced features for complete copyright protection
+            {t('subtitle')}
           </p>
         </div>
 

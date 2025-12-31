@@ -1,15 +1,17 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Download, RotateCcw, Shield } from "lucide-react";
+import { Download, Shield } from "lucide-react";
 import { useState } from "react";
 import { useGetMyJobsQuery, Job } from "@/redux/api/copyrightApi";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import Cookies from "js-cookie";
 import { BASE_URL } from "@/redux/api/config";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 
 export default function ResultsPage() {
+  const t = useTranslations('Results');
   const router = useRouter();
   const [isDownloading, setIsDownloading] = useState(false);
 
@@ -49,12 +51,12 @@ export default function ResultsPage() {
       setIsDownloading(false);
     }
   };
-  const { data, isLoading } = useGetMyJobsQuery();
+  const { data, isLoading } = useGetMyJobsQuery(undefined);
   const jobs = data?.data?.jobs || [];
   
   // Calculate total statistics across all jobs
-  const totalSafeReels = jobs.reduce((acc, job) => acc + (job.totalVideos - job.copyrightMatches), 0);
-  const totalFlaggedReels = jobs.reduce((acc, job) => acc + job.copyrightMatches, 0);
+  const totalSafeReels = jobs.reduce((acc: number, job: Job) => acc + (job.totalVideos - job.copyrightMatches), 0);
+  const totalFlaggedReels = jobs.reduce((acc: number, job: Job) => acc + job.copyrightMatches, 0);
 
   if (isLoading) {
     return (
@@ -71,15 +73,15 @@ export default function ResultsPage() {
         <div className="container mx-auto px-5 lg:px-0 py-4 flex flex-col lg:flex-row gap-5 lg:gap-0 items-start lg:items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">
-              Your Copyright Check Results
+              {t('title')}
             </h1>
             <p className="text-gray-600 mt-1">
-              Social Media King – Instagram Reels Copyright Checker
+              {t('subtitle')}
             </p>
           </div>
           <div className="flex items-center gap-2 text-green-600">
             <Shield className="w-5 h-5" />
-            <span className="text-sm font-medium">Secure & Trusted</span>
+            <span className="text-sm font-medium">{t('secure')}</span>
           </div>
         </div>
       </div>
@@ -91,7 +93,7 @@ export default function ResultsPage() {
             <div className="flex items-start gap-3">
             <div className="text-yellow-600 mt-0.5">⏰</div>
             <p className="text-yellow-800 text-sm">
-                All data is deleted 24 hours after report delivery.
+                {t('dataDelete')}
             </p>
             </div>
         </div>
@@ -105,8 +107,8 @@ export default function ResultsPage() {
                 </div>
                 <div>
                     <div className="text-3xl font-bold text-green-600">{totalSafeReels}</div>
-                    <div className="font-semibold text-gray-900">Safe Reels</div>
-                    <div className="text-sm text-gray-500">No copyright issues detected</div>
+                    <div className="font-semibold text-gray-900">{t('safeReels')}</div>
+                    <div className="text-sm text-gray-500">{t('safeDesc')}</div>
                 </div>
             </div>
 
@@ -117,8 +119,8 @@ export default function ResultsPage() {
                 </div>
                 <div>
                     <div className="text-3xl font-bold text-red-600">{totalFlaggedReels}</div>
-                    <div className="font-semibold text-gray-900">Flagged Reels</div>
-                    <div className="text-sm text-gray-500">Requires immediate attention</div>
+                    <div className="font-semibold text-gray-900">{t('flaggedReels')}</div>
+                    <div className="text-sm text-gray-500">{t('flaggedDesc')}</div>
                 </div>
             </div>
         </div>
@@ -127,7 +129,7 @@ export default function ResultsPage() {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="p-6 border-b border-gray-200">
             <h2 className="text-xl font-bold text-gray-900">
-             Scan History
+             {t('history')}
             </h2>
           </div>
 
@@ -136,22 +138,22 @@ export default function ResultsPage() {
               <thead>
                 <tr className="bg-gray-50 border-b border-gray-200">
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
-                    Date
+                    {t('date')}
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
-                    Username
+                    {t('username')}
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
-                    Status
+                    {t('status')}
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
-                    Videos Scanned
+                    {t('videosScanned')}
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
-                    Matches Found
+                    {t('matchesFound')}
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
-                    Actions
+                    {t('actions')}
                   </th>
                 </tr>
               </thead>
@@ -161,13 +163,13 @@ export default function ResultsPage() {
                       <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
                         <div className="flex flex-col items-center gap-3">
                            <Shield className="w-12 h-12 text-gray-300" />
-                           <p className="text-lg font-medium text-gray-900">No scan history found</p>
+                           <p className="text-lg font-medium text-gray-900">{t('noHistory')}</p>
                            <p className="text-sm text-gray-500 max-w-sm">
-                             You haven't scanned any profiles yet. Start your first scan to see results here.
+                             {t('noHistoryDesc')}
                            </p>
                            <Link href="/scan" className="mt-2">
                              <Button variant="outline" className="text-purple-600 border-purple-600 hover:bg-purple-50">
-                               Scan Now
+                               {t('scanNow')}
                              </Button>
                            </Link>
                         </div>
@@ -222,7 +224,7 @@ export default function ResultsPage() {
                              }`}
                              onClick={() => router.push(`/results/${job.jobId}`)}
                            >
-                             View Details
+                             {t('viewDetails')}
                            </Button>
                            <Button 
                              size="sm"
@@ -268,22 +270,10 @@ export default function ResultsPage() {
           </div>
           <div>
             <h3 className="text-sm font-semibold text-blue-800 mb-2">
-              Disclaimer
+              {t('disclaimerTitle')}
             </h3>
             <p className="text-xs text-blue-700">
-              This report is provided solely for informational and educational
-              purposes. It should not be interpreted as legal advice or a
-              substitute for consultation with a qualified attorney. Although we
-              make every effort to ensure the accuracy and completeness of the
-              information presented, we cannot guarantee that all copyrighted
-              materials, potential infringements, or intellectual property
-              issues have been fully identified or assessed. Copyright laws can
-              be complex and may vary by jurisdiction, and interpretations can
-              differ based on specific facts and circumstances. If you require
-              guidance on copyright ownership, infringement risks, licensing, or
-              any other legal considerations, we strongly recommend consulting
-              with a licensed legal professional who can provide advice tailored
-              to your particular situation.
+              {t('disclaimerText')}
             </p>
           </div>
       </div>
@@ -291,4 +281,3 @@ export default function ResultsPage() {
     </div>
   );
 }
-

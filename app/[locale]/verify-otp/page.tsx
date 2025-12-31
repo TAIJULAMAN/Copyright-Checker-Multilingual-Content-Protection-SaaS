@@ -3,15 +3,15 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
+import { useRouter } from "@/i18n/routing"
+import { Link } from "@/i18n/routing"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import Header from "@/components/header"
-import Footer from "@/components/footer"
+import { useTranslations } from "next-intl"
 
 export default function VerifyOTPPage() {
+  const t = useTranslations('Auth.verifyOtp');
   const router = useRouter()
   const [otp, setOtp] = useState(["", "", "", "", "", ""])
   const [loading, setLoading] = useState(false)
@@ -44,7 +44,7 @@ export default function VerifyOTPPage() {
 
     const otpCode = otp.join("")
     if (otpCode.length !== 6) {
-      setError("Please enter a valid 6-digit code")
+      setError(t('error'))
       setLoading(false)
       return
     }
@@ -62,8 +62,8 @@ export default function VerifyOTPPage() {
       <main className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-2">
-            <CardTitle className="text-2xl">Verify Your Code</CardTitle>
-            <CardDescription>Enter the 6-digit code sent to your email</CardDescription>
+            <CardTitle className="text-2xl">{t('title')}</CardTitle>
+            <CardDescription>{t('description')}</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleVerify} className="space-y-4">
@@ -88,22 +88,22 @@ export default function VerifyOTPPage() {
               <div className="text-center text-sm text-gray-600">
                 {timer > 0 ? (
                   <p>
-                    Resend code in <span className="font-semibold text-purple-600">{timer}s</span>
+                    {t('resendIn')} <span className="font-semibold text-purple-600">{timer}s</span>
                   </p>
                 ) : (
                   <button type="button" className="text-purple-600 hover:text-purple-700 font-medium">
-                    Resend code
+                    {t('resend')}
                   </button>
                 )}
               </div>
 
               <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700" disabled={loading}>
-                {loading ? "Verifying..." : "Verify Code"}
+                {loading ? t('submitting') : t('submit')}
               </Button>
 
               <p className="text-center text-sm text-gray-600">
                 <Link href="/login" className="text-purple-600 hover:text-purple-700 font-medium">
-                  Back to login
+                  {t('backToLogin')}
                 </Link>
               </p>
             </form>

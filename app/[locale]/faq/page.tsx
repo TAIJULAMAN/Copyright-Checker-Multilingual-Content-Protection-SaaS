@@ -1,13 +1,15 @@
 "use client"
 
-import Link from "next/link"
+import { Link } from "@/i18n/routing"
 import { ChevronDown } from "lucide-react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import PageHeader from "@/components/page-header"
 import { useGetAllFaqQuery } from "@/redux/api/faqApi"
+import { useTranslations } from "next-intl"
 
 export default function FAQ() {
+  const t = useTranslations('FAQ');
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
   // Fetch FAQs from API
@@ -20,9 +22,9 @@ export default function FAQ() {
   return (
     <div className="min-h-screen bg-white">
       <PageHeader
-        title="Frequently Asked Questions"
-        description="Find answers to common questions about our Instagram Reel copyright checking tool."
-        backLink={{ href: "/", text: "Back to Home" }}
+        title={t('title')}
+        description={t('description')}
+        backLink={{ href: "/", text: t('backToHome') }}
       />
 
       {/* FAQ Accordion */}
@@ -37,15 +39,15 @@ export default function FAQ() {
         {/* Error State */}
         {isError && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-            <p className="text-red-800 font-semibold">Failed to load FAQs</p>
-            <p className="text-red-600 text-sm mt-2">Please try again later.</p>
+            <p className="text-red-800 font-semibold">{t('errorTitle')}</p>
+            <p className="text-red-600 text-sm mt-2">{t('errorDesc')}</p>
           </div>
         )}
 
         {/* FAQ Items */}
         {!isLoading && !isError && (
           <div className="space-y-4">
-            {faqItems?.map((item, index) => (
+            {faqItems?.map((item: any, index: number) => (
               <div
                 key={item?._id || index}
                 className="border border-gray-200 rounded-lg overflow-hidden bg-white hover:shadow-sm transition-shadow"
@@ -69,11 +71,11 @@ export default function FAQ() {
 
         {/* Contact Support Section */}
         <div className="mt-16 text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-3">Still have questions?</h2>
-          <p className="text-gray-600 mb-6">Can't find the answer you're looking for? We're here to help.</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-3">{t('stillQuestions')}</h2>
+          <p className="text-gray-600 mb-6">{t('cantFind')}</p>
           <Link href="/contact">
             <Button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-6 rounded-lg">
-              Contact Support
+              {t('contactSupport')}
             </Button>
           </Link>
         </div>
