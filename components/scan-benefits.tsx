@@ -1,25 +1,28 @@
 import { Shield, Zap, FileText } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 export default function ScanBenefits() {
+  const t = useTranslations('ScanBenefits');
+  
   const benefits = [
     {
       icon: Shield,
-      title: "Secure Analysis",
-      description: "Your content is analyzed securely without storing personal data",
+      title: t('secureAnalysis.title'),
+      description: t('secureAnalysis.description'),
       bgColor: "bg-emerald-50",
       iconBg: "bg-emerald-500",
     },
     {
       icon: Zap,
-      title: "Fast Results",
-      description: "Get comprehensive copyright analysis in seconds",
+      title: t('fastResults.title'),
+      description: t('fastResults.description'),
       bgColor: "bg-purple-50",
       iconBg: "bg-purple-500",
     },
     {
       icon: FileText,
-      title: "Detailed Reports",
-      description: "Receive detailed insights about music usage and risks",
+      title: t('detailedReports.title'),
+      description: t('detailedReports.description'),
       bgColor: "bg-yellow-50",
       iconBg: "bg-yellow-400",
     },

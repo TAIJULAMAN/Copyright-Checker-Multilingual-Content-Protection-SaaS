@@ -1,26 +1,26 @@
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 export default function Testimonials() {
+  const t = useTranslations('Testimonials');
+
   const testimonials = [
     {
-      name: "Sarah M.",
-      role: "Content Creator",
-      text:
-        "Saved me from potential copyright issues. Quick and reliable service.",
+      name: t('t1Name'),
+      role: t('t1Role'),
+      text: t('t1Text'),
       rating: 5,
     },
     {
-      name: "Mike R.",
-      role: "Social Media Manager",
-      text:
-        "Essential tool, the reports are clear, fast, and make it easy to remove. Highly recommend!",
+      name: t('t2Name'),
+      role: t('t2Role'),
+      text: t('t2Text'),
       rating: 5,
     },
     {
-      name: "Lisa K.",
-      role: "CEO",
-      text:
-        "Copyright Checker helps us review our company account. We found many Reels with issues—now we are safe. Worth every cent!",
+      name: t('t3Name'),
+      role: t('t3Role'),
+      text: t('t3Text'),
       rating: 5,
     },
   ]
@@ -33,10 +33,10 @@ export default function Testimonials() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10 md:mb-14">
           <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-2">
-            What Our Users Say
+            {t('title')}
           </h2>
           <p className="text-gray-500 text-sm md:text-base">
-            Trusted by Business Accounts & Content Creators
+            {t('subtitle')}
           </p>
         </div>
 
@@ -49,7 +49,7 @@ export default function Testimonials() {
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-12 h-12 rounded-full overflow-hidden ring-1 ring-gray-200">
                   <Image
-                    src={`https://avatar.iran.liara.run/public/${index + 1}`}
+                    src={`/boy.png`}
                     alt={testimonial.name}
                     className="w-full h-full object-cover"
                     loading="lazy"

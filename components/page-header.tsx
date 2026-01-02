@@ -36,7 +36,7 @@ export default function PageHeader({
         {backLink && (
           <div className={cn("mb-6", !title && !description && "mb-0")}>
             <Link href={backLink.href}>
-              <span className="text-red-600 hover:text-red-600 flex items-center gap-1 text-sm font-medium transition-colors">
+              <span className="text-purple-600 hover:text-purple-600 flex items-center gap-1 text-sm font-medium transition-colors">
                 <ArrowLeft className="w-4 h-4" /> {backLink.text}
               </span>
             </Link>

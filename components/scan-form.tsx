@@ -3,14 +3,16 @@
 import type React from "react"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter } from "@/i18n/routing"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search, InfoIcon } from "lucide-react"
 
 import { useCheckProfileMutation } from "@/redux/api/copyrightApi"
+import { useTranslations } from "next-intl"
 
 export default function ScanForm() {
+  const t = useTranslations('ScanForm');
   const [profileLink, setProfileLink] = useState("")
   const [error, setError] = useState("")
   const router = useRouter()
@@ -41,15 +43,15 @@ export default function ScanForm() {
         return
       }
 
-      setError(err?.data?.message || "Scan failed. Please verify the link and try again.")
+      setError(err?.data?.message || t('error'))
     }
   }
 
   return (
     <div className="bg-white rounded-2xl shadow-lg ring-1 ring-black/5 p-8 md:p-12 mb-12">
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Paste Your Profile Link</h2>
-        <p className="text-gray-600">Enter your Instagram profile URL to begin the scan</p>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('title')}</h2>
+        <p className="text-gray-600">{t('description')}</p>
       </div>
 
       <form onSubmit={handleScan} className="space-y-6">
@@ -64,7 +66,7 @@ export default function ScanForm() {
         <div className="relative">
           <Input
             type="url"
-            placeholder="Paste your profile link"
+            placeholder={t('placeholder')}
             value={profileLink}
             onChange={(e) => setProfileLink(e.target.value)}
             className="w-full px-4 py-3 text-lg rounded-lg border border-gray-300 bg-gray-50 transition-all"
@@ -76,7 +78,7 @@ export default function ScanForm() {
         {/* Info Box */}
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex gap-3">
           <InfoIcon className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-blue-900">We only analyze public Reels. Private Reels cannot be scanned.</p>
+          <p className="text-sm text-blue-900">{t('info')}</p>
         </div>
 
         {/* Scan Button */}
@@ -84,10 +86,10 @@ export default function ScanForm() {
           <Button
             type="submit"
             disabled={isLoading || !profileLink.trim()}
-            className="w-[200px] bg-[#d6322f] text-white py-3 text-lg font-semibold rounded-lg flex items-center justify-center gap-2 transition-all"
+            className="w-[200px] bg-purple-600 hover:bg-purple-700 cursor-pointer text-white py-3 text-lg font-semibold rounded-lg flex items-center justify-center gap-2 transition-all"
           >
             <Search className="w-5 h-5" />
-            {isLoading ? "Scanning..." : "Start Scan"}
+            {isLoading ? t('submitting') : t('submit')}
           </Button>
         </div>
       </form>
