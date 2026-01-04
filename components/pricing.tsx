@@ -1,33 +1,34 @@
-"use client";
-
-import { Button } from "@/components/ui/button";
-import { useGetSubscriptionPlansQuery } from "@/redux/api/subscriptionApi";
 import { Check } from "lucide-react";
-import { useRouter } from "@/i18n/routing";
-import { useState } from "react";
-import { toast } from "sonner";
-import { useSelector } from "react-redux";
-import { selectCurrentUser } from "@/redux/slices/authSlice";
-import { useTranslations } from "next-intl";
+import PricingClient from "./pricing-client";
+import { BASE_URL, REVALIDATE_TIME } from "@/redux/api/config";
+import { getTranslations } from "next-intl/server";
+import { Plan } from "@/redux/api/subscriptionApi";
 
-export default function Pricing() {
-  const router = useRouter();
-  const t = useTranslations('Pricing');
-  const user = useSelector(selectCurrentUser);
-  const { data, isLoading, error } = useGetSubscriptionPlansQuery();
-  const handleBuyNow = (planId: string) => {
-    if (!user) {
-      router.push(`/login?callbackUrl=/checkout/${planId}`);
-      return;
-    }
-    router.push(`/checkout/${planId}`);
-  };
+async function getSubscriptionPlans() {
+  try {
+    const res = await fetch(`${BASE_URL}/subscription/plans`, {
+      next: { revalidate: REVALIDATE_TIME },
+    });
+    
+    if (!res.ok) return null;
+    
+    return res.json();
+  } catch (error) {
+    return null;
+  }
+}
 
-  const oneTimePlans = data?.data?.plans.filter(
-    (plan) => plan.subscriptionType === "one-time"
+export default async function Pricing() {
+  const t = await getTranslations('Pricing');
+  const response = await getSubscriptionPlans();
+  const plans = response?.data?.plans || [];
+  const isLoading = !response && !plans.length; // Not exactly loading, but initial state logic if needed, though mostly null check handles it.
+  const error = !response;
+
+  const oneTimePlans = plans.filter(
+    (plan: Plan) => plan.subscriptionType === "one-time"
   ) || [];
 
-  if (isLoading) return <div className="py-20 text-center">{t('loading')}</div>;
   if (error) return <div className="py-20 text-center text-red-500">{t('error')}</div>;
 
   return (
@@ -41,7 +42,7 @@ export default function Pricing() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {oneTimePlans.map((plan) => (
+          {oneTimePlans.map((plan: Plan) => (
             <div
               key={plan._id}
               className="relative rounded-xl p-8 border border-gray-200 bg-white hover:shadow-lg transition-shadow"
@@ -68,12 +69,7 @@ export default function Pricing() {
                 <p className="text-gray-600 text-sm mb-6 capitalize">{plan.billingCycle} {t('payment')}</p>
               </div>
 
-              <Button
-                onClick={() => handleBuyNow(plan._id)}
-                className="w-full mb-6 bg-purple-600 hover:bg-purple-700 text-white"
-              >
-                {t('buyNow')}
-              </Button>
+              <PricingClient planId={plan._id} />
             </div>
           ))}
         </div>
