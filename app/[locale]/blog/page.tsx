@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { Link } from "@/i18n/routing"
 import { ArrowRight } from "lucide-react"
 import PageHeader from "@/components/page-header"
 import Image from "next/image"

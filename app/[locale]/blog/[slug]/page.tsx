@@ -19,7 +19,9 @@ async function getBlog(slug: string) {
 
 export default async function BlogDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  console.log('BlogDetail slug:', slug);
   const response = await getBlog(slug);
+  console.log('BlogDetail response:', response);
   const post = response?.data;
   const isError = !response;
 

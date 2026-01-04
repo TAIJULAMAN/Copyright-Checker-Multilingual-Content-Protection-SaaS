@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { Link } from "@/i18n/routing"
 import { BASE_URL, REVALIDATE_TIME } from "@/redux/api/config"
 
 async function getPrivacy() {
