@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { BASE_URL } from "@/redux/api/config";
 import { Download, Loader2 } from "lucide-react";
@@ -57,6 +57,39 @@ export default function JobDetailsPage() {
     } finally {
       setIsDownloading(false);
     }
+  };
+
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  const [visitedResults, setVisitedResults] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    const saved = localStorage.getItem("visited_results");
+    if (saved) {
+      try {
+        setVisitedResults(new Set(JSON.parse(saved)));
+      } catch (e) {
+        console.error("Failed to parse visited results", e);
+      }
+    }
+  }, []);
+
+  const addToVisited = (id: string) => {
+    setVisitedResults(prev => {
+      const newSet = new Set(prev);
+      newSet.add(id);
+      localStorage.setItem("visited_results", JSON.stringify(Array.from(newSet)));
+      return newSet;
+    });
+  };
+
+  const handleResultClick = (result: any) => {
+    setSelectedResult(result);
+    addToVisited(result._id);
+  };
+
+  const handleLinkClick = (e: React.MouseEvent, resultId: string) => {
+    e.stopPropagation();
+    addToVisited(resultId);
   };
 
   if (isLoading) {
@@ -162,67 +195,102 @@ export default function JobDetailsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[100px]">{t('thumbnail')}</TableHead>
-                <TableHead>{t('status')}</TableHead>
+                <TableHead className="w-[120px]">{t('status')}</TableHead>
+                <TableHead className="w-[80px]">Link</TableHead>
+                <TableHead className="w-[80px]">{t('actions')}</TableHead>
                 <TableHead>{t('details')}</TableHead>
-                <TableHead className="text-right">{t('actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {results.map((result: any) => (
-                <TableRow 
-                  key={result._id} 
-                  className={`
-                    ${result.copyright.copyrighted 
-                      ? "bg-red-50/30 hover:bg-red-50 border-l-2 border-l-red-500" 
-                      : "bg-white hover:bg-gray-50 border-l-2 border-l-green-500"
-                    }
-                  `}
-                >
-                  <TableCell>
-                    <div className="w-16 h-16 relative rounded-md overflow-hidden bg-gray-100 border border-gray-200 group">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                       <img 
-                        src={result.thumbnail} 
-                        alt="Thumbnail" 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                      <div className="flex items-center gap-2">
-                        <span 
-                            className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            result.copyright.copyrighted 
-                                ? "bg-red-100 text-red-700" 
-                                : "bg-green-100 text-green-700"
-                            }`}
-                        >
-                            {result.copyright.copyrighted ? <AlertTriangle className="w-3 h-3" /> : <CheckCircle className="w-3 h-3" />}
-                            {result.copyright.copyrighted ? t('flagged') : t('safe')}
-                        </span>
+              {results.map((result: any) => {
+                const isVisited = visitedResults.has(result._id);
+                return (
+                  <TableRow 
+                    key={result._id} 
+                    onClick={() => handleResultClick(result)}
+                    className={`
+                      cursor-pointer transition-colors
+                      ${isVisited 
+                        ? "bg-gray-100 hover:bg-gray-200 border-l-4 border-l-gray-400" 
+                        : result.copyright.copyrighted 
+                          ? "bg-red-50/30 hover:bg-red-50 border-l-4 border-l-red-500" 
+                          : "bg-white hover:bg-gray-50 border-l-4 border-l-green-500"
+                      }
+                    `}
+                  >
+                    {/* 1. Thumbnail */}
+                    <TableCell>
+                      <div className={`w-16 h-16 relative rounded-md overflow-hidden border group ${isVisited ? 'border-gray-300 opacity-75' : 'border-gray-200'}`}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                         <img 
+                          src={result.thumbnail} 
+                          alt="Thumbnail" 
+                          className="w-full h-full object-cover"
+                        />
                       </div>
-                  </TableCell>
-                  <TableCell>
-                    {result.copyright.copyrighted ? (
-                        <div className="text-sm">
-                            <p className="font-medium text-gray-900">{result.detection.title}</p>
-                            <p className="text-gray-500">{result.detection.artist}</p>
+                    </TableCell>
+
+                     {/* 2. Status */}
+                    <TableCell>
+                        <div className="flex items-center gap-2">
+                          <span 
+                              className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              isVisited
+                                ? "bg-gray-200 text-gray-600"
+                                : result.copyright.copyrighted 
+                                  ? "bg-red-100 text-red-700" 
+                                  : "bg-green-100 text-green-700"
+                              }`}
+                          >
+                              {result.copyright.copyrighted ? <AlertTriangle className="w-3 h-3" /> : <CheckCircle className="w-3 h-3" />}
+                              {result.copyright.copyrighted ? t('flagged') : t('safe')}
+                          </span>
                         </div>
-                    ) : (
-                        <span className="text-sm text-gray-500">{t('noCopyright')}</span>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Button 
-                      variant="ghost" 
-                      size="icon"
-                      onClick={() => setSelectedResult(result)}
-                    >
-                        <Eye className="w-5 h-5 text-gray-500 hover:text-purple-600" />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
+                    </TableCell>
+
+                    {/* 3. Link */}
+                    <TableCell>
+                      <a 
+                        href={result.url} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        onClick={(e) => handleLinkClick(e, result._id)}
+                        className={`inline-flex items-center justify-center w-8 h-8 rounded-full transition-colors ${
+                          isVisited ? "text-gray-400 hover:text-gray-600 hover:bg-gray-200" : "text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+                        }`}
+                      >
+                         <ExternalLink className="w-4 h-4" />
+                      </a>
+                    </TableCell>
+
+                    {/* 4. Actions (Eye) */}
+                    <TableCell>
+                      <Button 
+                        variant="ghost" 
+                        size="icon"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleResultClick(result);
+                        }}
+                      >
+                          <Eye className={`w-5 h-5 ${isVisited ? "text-gray-400" : "text-gray-500 hover:text-purple-600"}`} />
+                      </Button>
+                    </TableCell>
+
+                    {/* 5. Details */}
+                    <TableCell>
+                      {result.copyright.copyrighted ? (
+                          <div className={`text-sm ${isVisited ? "opacity-60" : ""}`}>
+                              <p className={`font-medium ${isVisited ? "text-gray-700" : "text-gray-900"}`}>{result.detection.title}</p>
+                              <p className="text-gray-500">{result.detection.artist}</p>
+                          </div>
+                      ) : (
+                          <span className="text-sm text-gray-500">{t('noCopyright')}</span>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </div>

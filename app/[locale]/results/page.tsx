@@ -24,6 +24,7 @@ export default function ResultsPage() {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        cache: 'no-store',
       });
       
       if (!response.ok) {

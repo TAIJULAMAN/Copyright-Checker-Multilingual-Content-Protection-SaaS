@@ -37,7 +37,7 @@ export default function middleware(request: NextRequest) {
     const locale = hasLocale ? pathname.split('/')[1] : 'en';
 
     const loginUrl = new URL(`/${locale}/login`, request.url);
-    loginUrl.searchParams.set('callbackUrl', pathname); // Keep full path as callback
+    loginUrl.searchParams.set('callbackUrl', pathToCheck); // Keep path without locale as callback
     return NextResponse.redirect(loginUrl);
   }
   

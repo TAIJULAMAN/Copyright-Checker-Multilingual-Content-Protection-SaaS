@@ -15,7 +15,7 @@ export default function Hero() {
     >
       <div className="h-full flex items-center">
         <div className="container mx-auto px-5 lg:px-0 py-10 md:py-20 lg:py-24 relative">
-          <div className="relative mx-auto mb-6 md:mb-0 w-40 h-40 sm:w-48 sm:h-48 md:absolute md:top-1/5 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-56 md:h-56 lg:w-48 lg:h-48 z-10">
+          {/* <div className="relative mx-auto mb-6 md:mb-0 w-40 h-40 sm:w-48 sm:h-48 md:absolute md:top-1/5 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-56 md:h-56 lg:w-48 lg:h-48 z-10">
                 <Image
                   src="/hero.png"
                   alt="Copyright Check Badge"
@@ -24,7 +24,7 @@ export default function Hero() {
                   className="object-contain"
                   sizes="(max-width: 768px) 160px, (max-width: 1024px) 192px, 256px"
                 />
-              </div>
+              </div> */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
               
             {/* Left Column: Text and Actions */}
@@ -34,7 +34,7 @@ export default function Hero() {
                 <br className="hidden sm:block" />
                 <span>{t('titleMiddle')}</span>
                 <br className="hidden sm:block" />
-                <span className="text-purple-600 whitespace-nowrap">{t('titleSuffix')}</span>
+                <span className="text-purple-600 inline-block max-w-[800px]">{t('titleSuffix')}</span>
               </h1>
 
               <div className="max-w-2xl">
@@ -57,9 +57,9 @@ export default function Hero() {
                   </div>
                   
                 </div>
-                <p className="text-center sm:text-left">
+                {/* <p className="text-center sm:text-left">
                   {t('trust')}
-                </p>
+                </p> */}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3">
@@ -95,9 +95,9 @@ export default function Hero() {
             </div>
 
             {/* Right Column: Image */}
-            <div className="relative w-full h-[400px] md:h-[600px] md:ml-28">
+            <div className="relative w-full h-[400px] md:h-[600px]">
               <Image
-                src="/heroimg.jpeg"
+                src="/heroupdateimg.png"
                 alt="Copyright Check Badge"
                 fill
                 priority
