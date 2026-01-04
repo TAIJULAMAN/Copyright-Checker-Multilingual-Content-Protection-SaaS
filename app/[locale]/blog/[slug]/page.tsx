@@ -1,4 +1,3 @@
-import Link from "next/link"
 import { Calendar, User, Clock } from "lucide-react"
 import PageHeader from "@/components/page-header"
 import Image from "next/image"
@@ -18,8 +17,8 @@ async function getBlog(slug: string) {
   }
 }
 
-export default async function BlogDetail({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+export default async function BlogDetail({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const response = await getBlog(slug);
   const post = response?.data;
   const isError = !response;
