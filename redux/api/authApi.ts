@@ -23,6 +23,8 @@ export interface RegisterRequest {
   email: string;
   mobile: string;
   password?: string;
+  address?: string;
+  company?: string;
 }
 
 export interface RegisterResponse {
