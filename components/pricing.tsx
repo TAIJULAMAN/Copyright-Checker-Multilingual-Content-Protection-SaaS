@@ -1,8 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useGetSubscriptionPlansQuery, useCreatePayPalOrderMutation } from "@/redux/api/subscriptionApi";
-import { Check, Loader2 } from "lucide-react";
+import { useGetSubscriptionPlansQuery } from "@/redux/api/subscriptionApi";
+import { Check } from "lucide-react";
 import { useRouter } from "@/i18n/routing";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -13,31 +13,14 @@ import { useTranslations } from "next-intl";
 export default function Pricing() {
   const router = useRouter();
   const t = useTranslations('Pricing');
-  const { data, isLoading, error } = useGetSubscriptionPlansQuery();
-  const [createPayPalOrder, { isLoading: isCreatingOrder }] = useCreatePayPalOrderMutation();
-  const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
   const user = useSelector(selectCurrentUser);
-
-  const handleBuyNow = async (planId: string, planName: string, price: number) => {
+  const { data, isLoading, error } = useGetSubscriptionPlansQuery();
+  const handleBuyNow = (planId: string) => {
     if (!user) {
-      router.push("/login?callbackUrl=/pricing");
+      router.push(`/login?callbackUrl=/checkout/${planId}`);
       return;
     }
-    
-    setSelectedPlanId(planId);
-    try {
-      const result = await createPayPalOrder({ planId }).unwrap();
-      if (result.success && result.data.approveUrl) {
-        window.location.href = result.data.approveUrl;
-      } else {
-        console.error("Failed to create PayPal order", result.message);
-      }
-    } catch (err: any) {
-      console.error("Error creating order:", err);
-      // Optional: Add toast notification here
-    } finally {
-      setSelectedPlanId(null);
-    }
+    router.push(`/checkout/${planId}`);
   };
 
   const oneTimePlans = data?.data?.plans.filter(
@@ -86,18 +69,10 @@ export default function Pricing() {
               </div>
 
               <Button
-                onClick={() => handleBuyNow(plan._id, plan.name, plan.price)}
-                disabled={isCreatingOrder && selectedPlanId === plan._id}
+                onClick={() => handleBuyNow(plan._id)}
                 className="w-full mb-6 bg-purple-600 hover:bg-purple-700 text-white"
               >
-                {isCreatingOrder && selectedPlanId === plan._id ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {t('processing')}
-                  </>
-                ) : (
-                  t('buyNow')
-                )}
+                {t('buyNow')}
               </Button>
             </div>
           ))}
