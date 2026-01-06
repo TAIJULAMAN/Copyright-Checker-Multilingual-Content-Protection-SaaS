@@ -3,11 +3,12 @@
 import { useGetJobDetailsQuery } from "@/redux/api/copyrightApi";
 import { useParams } from "next/navigation";
 import { useRouter } from "@/i18n/routing";
-import { ArrowLeft, ExternalLink, Shield, AlertTriangle, CheckCircle, Music, Play, Eye, X } from "lucide-react";
+import { ArrowLeft, ExternalLink, Shield, AlertTriangle, CheckCircle, Music, Play, Eye, X, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { BASE_URL } from "@/redux/api/config";
@@ -153,7 +154,7 @@ export default function JobDetailsPage() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 md:gap-4 gap-2">
           <Card>
             <CardContent className="pt-6">
               <div className="text-sm text-gray-500 mb-1">{t('totalAnalyzed')}</div>
@@ -173,126 +174,263 @@ export default function JobDetailsPage() {
             </CardContent>
           </Card>
            <Card>
-             <CardContent className="pt-6">
-              <div className="text-sm text-gray-500 mb-1">{t('riskLevel')}</div>
+             <CardContent className="pt-6 relative">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="text-sm text-gray-500">{t('riskLevel')}</div>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Info className="w-4 h-4 text-gray-400 cursor-pointer hover:text-gray-600" />
+                  </PopoverTrigger>
+                  <PopoverContent className="w-72 p-3">
+                    <div className="space-y-3">
+                      <h4 className="font-medium text-sm text-gray-900 border-b pb-1 mb-2">{t('riskGuide')}</h4>
+                      
+                      <div className="flex items-start gap-3 text-sm">
+                        <div className="w-3 h-3 rounded-full bg-green-600 mt-1 shrink-0" />
+                        <div>
+                          <span className="font-medium block text-gray-900">{t('lowRisk')}</span>
+                          <span className="text-xs text-gray-500 leading-tight">{t('lowRiskDesc')}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3 text-sm">
+                        <div className="w-3 h-3 rounded-full bg-yellow-500 mt-1 shrink-0" />
+                         <div>
+                          <span className="font-medium block text-gray-900">{t('mediumRisk')}</span>
+                          <span className="text-xs text-gray-500 leading-tight">{t('mediumRiskDesc')}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3 text-sm">
+                        <div className="w-3 h-3 rounded-full bg-red-600 mt-1 shrink-0" />
+                        <div>
+                          <span className="font-medium block text-gray-900">{t('highRisk')}</span>
+                          <span className="text-xs text-gray-500 leading-tight">{t('highRiskDesc')}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3 text-sm">
+                        <div className="w-3 h-3 rounded-full bg-white border border-gray-300 mt-1 shrink-0" />
+                         <div>
+                          <span className="font-medium block text-gray-900">{t('noAudio')}</span>
+                          <span className="text-xs text-gray-500 leading-tight">{t('noAudioDesc')}</span>
+                        </div>
+                      </div>
+                      
+                      <p className="text-[10px] text-gray-400 mt-2 pt-2 border-t border-gray-100 italic">
+                        {t('disclaimerTitle')}: Technical risk assessment - no legal advice.
+                      </p>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
               <div className="text-2xl font-bold capitalize">
                 {summary.riskBreakdown.high > 0 ? (
                   <span className="text-red-600 flex items-center gap-2">{t('high')} <AlertTriangle className="w-5 h-5" /></span>
-                ) : (
+                ) : summary.riskBreakdown.medium > 0 ? (
+                  <span className="text-yellow-600 flex items-center gap-2">{t('medium')} <AlertTriangle className="w-5 h-5" /></span>
+                ) : summary.riskBreakdown.low > 0 ? (
                   <span className="text-green-600 flex items-center gap-2">{t('low')} <CheckCircle className="w-5 h-5" /></span>
+                ) : (
+                  <span className="text-gray-500 flex items-center gap-2">{t('noAudio')} <Shield className="w-5 h-5" /></span>
                 )}
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Results Table */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-xl font-bold text-gray-900">{t('analyzedVideos')}</h2>
+        {/* Results Section */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+             <h2 className="text-xl font-bold text-gray-900">{t('analyzedVideos')}</h2>
           </div>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[100px]">{t('thumbnail')}</TableHead>
-                <TableHead className="w-[120px]">{t('status')}</TableHead>
-                <TableHead className="w-[80px]">Link</TableHead>
-                <TableHead className="w-[80px]">{t('actions')}</TableHead>
-                <TableHead>{t('details')}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {results.map((result: any) => {
-                const isVisited = visitedResults.has(result._id);
-                return (
-                  <TableRow 
-                    key={result._id} 
-                    onClick={() => handleResultClick(result)}
-                    className={`
-                      cursor-pointer transition-colors
-                      ${isVisited 
-                        ? "bg-gray-100 hover:bg-gray-200 border-l-4 border-l-gray-400" 
-                        : result.copyright.copyrighted 
-                          ? "bg-red-50/30 hover:bg-red-50 border-l-4 border-l-red-500" 
-                          : "bg-white hover:bg-gray-50 border-l-4 border-l-green-500"
-                      }
-                    `}
-                  >
-                    {/* 1. Thumbnail */}
-                    <TableCell>
-                      <div className={`w-16 h-16 relative rounded-md overflow-hidden border group ${isVisited ? 'border-gray-300 opacity-75' : 'border-gray-200'}`}>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
+
+          {/* Desktop Table View */}
+          <div className="hidden md:block bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[100px]">{t('thumbnail')}</TableHead>
+                  <TableHead className="w-[120px]">{t('status')}</TableHead>
+                  <TableHead className="w-[80px]">Link</TableHead>
+                  <TableHead className="w-[80px]">{t('actions')}</TableHead>
+                  <TableHead>{t('details')}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {results.map((result: any) => {
+                  const isVisited = visitedResults.has(result._id);
+                  return (
+                    <TableRow 
+                      key={result._id} 
+                      onClick={() => handleResultClick(result)}
+                      className={`
+                        cursor-pointer transition-colors
+                        ${isVisited 
+                          ? "bg-gray-100 hover:bg-gray-200 border-l-4 border-l-gray-400" 
+                          : result.copyright.copyrighted 
+                            ? "bg-red-50/30 hover:bg-red-50 border-l-4 border-l-red-500" 
+                            : "bg-white hover:bg-gray-50 border-l-4 border-l-green-500"
+                        }
+                      `}
+                    >
+                      {/* 1. Thumbnail */}
+                      <TableCell>
+                        <div className={`w-16 h-16 relative rounded-md overflow-hidden border group ${isVisited ? 'border-gray-300 opacity-75' : 'border-gray-200'}`}>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                           <img 
+                            src={result.thumbnail} 
+                            alt="Thumbnail" 
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      </TableCell>
+
+                       {/* 2. Status */}
+                      <TableCell>
+                          <div className="flex items-center gap-2">
+                            <span 
+                                className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                isVisited
+                                  ? "bg-gray-200 text-gray-600"
+                                  : result.copyright.copyrighted 
+                                    ? "bg-red-100 text-red-700" 
+                                    : "bg-green-100 text-green-700"
+                                }`}
+                            >
+                                {result.copyright.copyrighted ? <AlertTriangle className="w-3 h-3" /> : <CheckCircle className="w-3 h-3" />}
+                                {result.copyright.copyrighted ? t('flagged') : t('safe')}
+                            </span>
+                          </div>
+                      </TableCell>
+
+                      {/* 3. Link */}
+                      <TableCell>
+                        <a 
+                          href={result.url} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          onClick={(e) => handleLinkClick(e, result._id)}
+                          className={`inline-flex items-center justify-center w-8 h-8 rounded-full transition-colors ${
+                            isVisited ? "text-gray-400 hover:text-gray-600 hover:bg-gray-200" : "text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+                          }`}
+                        >
+                           <ExternalLink className="w-4 h-4" />
+                        </a>
+                      </TableCell>
+
+                      {/* 4. Actions (Eye) */}
+                      <TableCell>
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleResultClick(result);
+                          }}
+                        >
+                            <Eye className={`w-5 h-5 ${isVisited ? "text-gray-400" : "text-gray-500 hover:text-purple-600"}`} />
+                        </Button>
+                      </TableCell>
+
+                      {/* 5. Details */}
+                      <TableCell>
+                        {result.copyright.copyrighted ? (
+                            <div className={`text-sm ${isVisited ? "opacity-60" : ""}`}>
+                                <p className={`font-medium ${isVisited ? "text-gray-700" : "text-gray-900"}`}>{result.detection.title}</p>
+                                <p className="text-gray-500">{result.detection.artist}</p>
+                            </div>
+                        ) : (
+                            <span className="text-sm text-gray-500">{t('noCopyright')}</span>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-2">
+            {results.map((result: any) => {
+              const isVisited = visitedResults.has(result._id);
+              return (
+                <div 
+                  key={result._id} 
+                  onClick={() => handleResultClick(result)}
+                  className={`
+                    bg-white rounded-lg shadow-sm border p-4 cursor-pointer transition-colors
+                    ${isVisited 
+                      ? "border-gray-300 bg-gray-50 border-l-[6px] border-l-gray-400" 
+                      : result.copyright.copyrighted 
+                        ? "border-red-100 bg-red-50/10 border-l-[6px] border-l-red-500" 
+                        : "border-gray-200 hover:bg-gray-50 border-l-[6px] border-l-green-500"
+                    }
+                  `}
+                >
+                  <div className="flex gap-4">
+                    {/* Thumbnail */}
+                    <div className="flex-shrink-0">
+                      <div className={`w-20 h-20 relative rounded-md overflow-hidden border ${isVisited ? 'border-gray-300 opacity-75' : 'border-gray-200'}`}>
                          <img 
                           src={result.thumbnail} 
                           alt="Thumbnail" 
                           className="w-full h-full object-cover"
                         />
                       </div>
-                    </TableCell>
+                    </div>
 
-                     {/* 2. Status */}
-                    <TableCell>
-                        <div className="flex items-center gap-2">
-                          <span 
-                              className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              isVisited
-                                ? "bg-gray-200 text-gray-600"
-                                : result.copyright.copyrighted 
-                                  ? "bg-red-100 text-red-700" 
-                                  : "bg-green-100 text-green-700"
-                              }`}
+                    {/* Content */}
+                    <div className="flex-1 min-w-0 space-y-2">
+                      <div className="flex items-start justify-between gap-2">
+                         {/* Status Badge */}
+                         <span 
+                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
+                            isVisited
+                              ? "bg-gray-200 text-gray-600"
+                              : result.copyright.copyrighted 
+                                ? "bg-red-100 text-red-700" 
+                                : "bg-green-100 text-green-700"
+                            }`}
+                        >
+                            {result.copyright.copyrighted ? <AlertTriangle className="w-3 h-3" /> : <CheckCircle className="w-3 h-3" />}
+                            {result.copyright.copyrighted ? t('flagged') : t('safe')}
+                        </span>
+                        
+                         {/* Link Icon */}
+                         <a 
+                            href={result.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            onClick={(e) => handleLinkClick(e, result._id)}
+                            className={`p-1.5 rounded-full ${
+                              isVisited 
+                                ? "text-gray-400 hover:bg-gray-200" 
+                                : "text-purple-600 hover:bg-purple-50"
+                            }`}
                           >
-                              {result.copyright.copyrighted ? <AlertTriangle className="w-3 h-3" /> : <CheckCircle className="w-3 h-3" />}
-                              {result.copyright.copyrighted ? t('flagged') : t('safe')}
-                          </span>
-                        </div>
-                    </TableCell>
+                           <ExternalLink className="w-4 h-4" />
+                          </a>
+                      </div>
 
-                    {/* 3. Link */}
-                    <TableCell>
-                      <a 
-                        href={result.url} 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        onClick={(e) => handleLinkClick(e, result._id)}
-                        className={`inline-flex items-center justify-center w-8 h-8 rounded-full transition-colors ${
-                          isVisited ? "text-gray-400 hover:text-gray-600 hover:bg-gray-200" : "text-purple-600 hover:text-purple-700 hover:bg-purple-50"
-                        }`}
-                      >
-                         <ExternalLink className="w-4 h-4" />
-                      </a>
-                    </TableCell>
-
-                    {/* 4. Actions (Eye) */}
-                    <TableCell>
-                      <Button 
-                        variant="ghost" 
-                        size="icon"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleResultClick(result);
-                        }}
-                      >
-                          <Eye className={`w-5 h-5 ${isVisited ? "text-gray-400" : "text-gray-500 hover:text-purple-600"}`} />
-                      </Button>
-                    </TableCell>
-
-                    {/* 5. Details */}
-                    <TableCell>
+                      {/* Title/Artist or Safe Text */}
                       {result.copyright.copyrighted ? (
-                          <div className={`text-sm ${isVisited ? "opacity-60" : ""}`}>
-                              <p className={`font-medium ${isVisited ? "text-gray-700" : "text-gray-900"}`}>{result.detection.title}</p>
-                              <p className="text-gray-500">{result.detection.artist}</p>
-                          </div>
+                        <div className={`${isVisited ? "opacity-60" : ""}`}>
+                          <p className={`font-medium text-sm truncate ${isVisited ? "text-gray-700" : "text-gray-900"}`}>
+                            {result.detection.title}
+                          </p>
+                          <p className="text-xs text-gray-500 truncate">{result.detection.artist}</p>
+                        </div>
                       ) : (
-                          <span className="text-sm text-gray-500">{t('noCopyright')}</span>
+                        <p className="text-sm text-gray-500">{t('noCopyright')}</p>
                       )}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
 

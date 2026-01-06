@@ -12,7 +12,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <Image src="/imagefooter.png" alt="Logo" width={200} height={200} />
+              <Image src="/footer.png" alt="Logo" width={200} height={200} />
             </div>
             <p className="text-sm">
               {t('disclaimer')}

@@ -56,6 +56,19 @@ export default function Hero() {
                     
                   </div>
                   
+                  
+                </div>
+
+                {/* Mobile Image */}
+                <div className="relative w-full h-[400px] mb-8 md:hidden">
+                  <Image
+                    src="/heroupdateimg.png"
+                    alt="Copyright Check Badge"
+                    fill
+                    priority
+                    className="object-contain"
+                    sizes="100vw"
+                  />
                 </div>
                 {/* <p className="text-center sm:text-left">
                   {t('trust')}
@@ -95,7 +108,7 @@ export default function Hero() {
             </div>
 
             {/* Right Column: Image */}
-            <div className="relative w-full h-[400px] md:h-[600px]">
+            <div className="relative w-full h-[400px] md:h-[600px] hidden md:block">
               <Image
                 src="/heroupdateimg.png"
                 alt="Copyright Check Badge"

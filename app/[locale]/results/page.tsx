@@ -127,125 +127,218 @@ export default function ResultsPage() {
         </div>
 
         {/* Recent Jobs Table */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-xl font-bold text-gray-900">
-             {t('history')}
-            </h2>
+        <div className="space-y-4">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hidden md:block">
+            <div className="p-6 border-b border-gray-200">
+              <h2 className="text-xl font-bold text-gray-900">
+              {t('history')}
+              </h2>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full table-auto">
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-200">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
+                      {t('date')}
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
+                      {t('username')}
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
+                      {t('status')}
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
+                      {t('videosScanned')}
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
+                      {t('matchesFound')}
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
+                      {t('actions')}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {jobs.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
+                          <div className="flex flex-col items-center gap-3">
+                            <Shield className="w-12 h-12 text-gray-300" />
+                            <p className="text-lg font-medium text-gray-900">{t('noHistory')}</p>
+                            <p className="text-sm text-gray-500 max-w-sm">
+                              {t('noHistoryDesc')}
+                            </p>
+                            <Link href="/scan" className="mt-2">
+                              <Button variant="outline" className="text-purple-600 border-purple-600 hover:bg-purple-50">
+                                {t('scanNow')}
+                              </Button>
+                            </Link>
+                          </div>
+                        </td>
+                      </tr>
+                    ) : (
+                    jobs.map((job: Job) => (
+                      <tr
+                        key={job.jobId}
+                        onClick={() => router.push(`/results/${job.jobId}`)}
+                        className={`border-b border-gray-100 cursor-pointer transition-colors ${
+                          job.copyrightMatches > 0 ? "bg-red-50 hover:bg-red-100" : "hover:bg-gray-50 bg-green-50/30"
+                        }`}
+                      >
+                        <td className="px-6 py-4 text-sm text-gray-700">
+                          {new Date(job.createdAt).toLocaleDateString()}
+                        </td>
+                        <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                          @{job.instagramUsername}
+                        </td>
+                        <td className="px-6 py-4">
+                          <span
+                            className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide ${
+                              job.status === "completed"
+                                ? "bg-green-100 text-green-700"
+                                : "bg-yellow-100 text-yellow-700"
+                            }`}
+                          >
+                            {job.status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-700">
+                          {job.processedVideos} / {job.totalVideos}
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2">
+                            <span className={`font-bold ${job.copyrightMatches > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                              {job.copyrightMatches}
+                            </span>
+                            {job.copyrightMatches > 0 && <Shield className="w-4 h-4 text-red-500" />}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              className={`${
+                                job.copyrightMatches > 0 
+                                  ? "text-purple-600 border-purple-600 hover:bg-purple-50" 
+                                  : "text-green-600 border-green-600 hover:bg-green-50"
+                              }`}
+                              onClick={() => router.push(`/results/${job.jobId}`)}
+                            >
+                              {t('viewDetails')}
+                            </Button>
+                            <Button 
+                              size="sm"
+                              className={`${
+                                job.copyrightMatches > 0 
+                                  ? "bg-purple-600 hover:bg-purple-700 text-white" 
+                                  : "bg-green-600 hover:bg-green-700 text-white"
+                              }`}
+                              onClick={() => handleDownloadReport(job.jobId)}
+                              disabled={isDownloading}
+                            >
+                                <Download className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full table-auto">
-              <thead>
-                <tr className="bg-gray-50 border-b border-gray-200">
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
-                    {t('date')}
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
-                    {t('username')}
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
-                    {t('status')}
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
-                    {t('videosScanned')}
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
-                    {t('matchesFound')}
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
-                    {t('actions')}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                  {jobs.length === 0 ? (
-                    <tr>
-                      <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
-                        <div className="flex flex-col items-center gap-3">
-                           <Shield className="w-12 h-12 text-gray-300" />
-                           <p className="text-lg font-medium text-gray-900">{t('noHistory')}</p>
-                           <p className="text-sm text-gray-500 max-w-sm">
-                             {t('noHistoryDesc')}
-                           </p>
-                           <Link href="/scan" className="mt-2">
-                             <Button variant="outline" className="text-purple-600 border-purple-600 hover:bg-purple-50">
-                               {t('scanNow')}
-                             </Button>
-                           </Link>
-                        </div>
-                      </td>
-                    </tr>
-                  ) : (
-                  jobs.map((job: Job) => (
-                    <tr
-                      key={job.jobId}
-                      onClick={() => router.push(`/results/${job.jobId}`)}
-                      className={`border-b border-gray-100 cursor-pointer transition-colors ${
-                        job.copyrightMatches > 0 ? "bg-red-50 hover:bg-red-100" : "hover:bg-gray-50 bg-green-50/30"
-                      }`}
-                    >
-                      <td className="px-6 py-4 text-sm text-gray-700">
-                         {new Date(job.createdAt).toLocaleDateString()}
-                      </td>
-                      <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                        @{job.instagramUsername}
-                      </td>
-                      <td className="px-6 py-4">
-                        <span
-                          className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide ${
-                            job.status === "completed"
-                              ? "bg-green-100 text-green-700"
-                              : "bg-yellow-100 text-yellow-700"
-                          }`}
-                        >
-                          {job.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-700">
-                        {job.processedVideos} / {job.totalVideos}
-                      </td>
-                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                           <span className={`font-bold ${job.copyrightMatches > 0 ? 'text-red-600' : 'text-green-600'}`}>
+          {/* Mobile Card Layout */}
+          <div className="md:hidden space-y-4">
+             <div className="flex items-center justify-between mb-2">
+                <h2 className="text-xl font-bold text-gray-900">{t('history')}</h2>
+             </div>
+             {jobs.length === 0 ? (
+               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
+                 <div className="flex flex-col items-center gap-3">
+                   <Shield className="w-12 h-12 text-gray-300" />
+                   <p className="text-lg font-medium text-gray-900">{t('noHistory')}</p>
+                   <Link href="/scan" className="mt-2 w-full">
+                     <Button className="w-full bg-purple-600 text-white hover:bg-purple-700">
+                       {t('scanNow')}
+                     </Button>
+                   </Link>
+                 </div>
+               </div>
+             ) : (
+               jobs.map((job: Job) => (
+                 <div 
+                   key={job.jobId}
+                   onClick={() => router.push(`/results/${job.jobId}`)}
+                   className={`bg-white rounded-lg shadow-sm border p-4 cursor-pointer relative overflow-hidden ${
+                      job.copyrightMatches > 0 ? "border-red-100" : "border-green-100"
+                   }`}
+                 >
+                   {/* Status Stripe */}
+                   <div className={`absolute top-0 left-0 w-1 h-full ${job.copyrightMatches > 0 ? 'bg-red-500' : 'bg-green-500'}`} />
+                   
+                   <div className="flex justify-between items-start mb-3 pl-2">
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">{new Date(job.createdAt).toLocaleDateString()}</p>
+                        <p className="text-lg font-bold text-gray-900">@{job.instagramUsername}</p>
+                      </div>
+                      <span
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+                          job.status === "completed"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-yellow-100 text-yellow-700"
+                        }`}
+                      >
+                        {job.status}
+                      </span>
+                   </div>
+
+                   <div className="grid grid-cols-2 gap-4 mb-4 pl-2">
+                      <div className="bg-gray-50 rounded-lg p-2 text-center">
+                        <p className="text-xs text-gray-500 mb-0.5">{t('videosScanned')}</p>
+                        <p className="font-semibold text-gray-900">{job.processedVideos} / {job.totalVideos}</p>
+                      </div>
+                      <div className={`rounded-lg p-2 text-center ${job.copyrightMatches > 0 ? 'bg-red-50' : 'bg-green-50'}`}>
+                        <p className="text-xs text-gray-500 mb-0.5">{t('matchesFound')}</p>
+                        <div className="flex items-center justify-center gap-1">
+                          <p className={`font-bold ${job.copyrightMatches > 0 ? 'text-red-700' : 'text-green-700'}`}>
                              {job.copyrightMatches}
-                           </span>
-                           {job.copyrightMatches > 0 && <Shield className="w-4 h-4 text-red-500" />}
+                          </p>
+                          {job.copyrightMatches > 0 && <Shield className="w-3 h-3 text-red-600" />}
                         </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-                           <Button 
-                             size="sm" 
-                             variant="outline"
-                             className={`${
-                               job.copyrightMatches > 0 
-                                 ? "text-purple-600 border-purple-600 hover:bg-purple-50" 
-                                 : "text-green-600 border-green-600 hover:bg-green-50"
-                             }`}
-                             onClick={() => router.push(`/results/${job.jobId}`)}
-                           >
-                             {t('viewDetails')}
-                           </Button>
-                           <Button 
-                             size="sm"
-                             className={`${
-                               job.copyrightMatches > 0 
-                                 ? "bg-purple-600 hover:bg-purple-700 text-white" 
-                                 : "bg-green-600 hover:bg-green-700 text-white"
-                             }`}
-                             onClick={() => handleDownloadReport(job.jobId)}
-                             disabled={isDownloading}
-                           >
-                              <Download className="w-4 h-4" />
-                           </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                      </div>
+                   </div>
+
+                   <div className="flex gap-2 pl-2">
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        className="flex-1 text-xs border-gray-200"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          router.push(`/results/${job.jobId}`);
+                        }}
+                      >
+                       {t('viewDetails')}
+                      </Button>
+                      <Button 
+                         size="sm"
+                         variant="ghost"
+                         className={`px-3 ${job.copyrightMatches > 0 ? 'text-purple-600 bg-purple-50' : 'text-green-600 bg-green-50'}`}
+                         onClick={(e) => {
+                           e.stopPropagation();
+                           handleDownloadReport(job.jobId);
+                         }}
+                         disabled={isDownloading}
+                       >
+                          <Download className="w-4 h-4" />
+                       </Button>
+                   </div>
+                 </div>
+               ))
+             )}
           </div>
         </div>
 
