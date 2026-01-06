@@ -1,8 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Download, Shield } from "lucide-react";
+import { Download, Shield, AlertTriangle, CheckCircle, Info } from "lucide-react";
 import { useState } from "react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
 import { useGetMyJobsQuery, Job } from "@/redux/api/copyrightApi";
 import { useRouter } from "@/i18n/routing";
 import Cookies from "js-cookie";
@@ -58,6 +60,56 @@ export default function ResultsPage() {
   // Calculate total statistics across all jobs
   const totalSafeReels = jobs.reduce((acc: number, job: Job) => acc + (job.totalVideos - job.copyrightMatches), 0);
   const totalFlaggedReels = jobs.reduce((acc: number, job: Job) => acc + job.copyrightMatches, 0);
+
+  // Helper to determine risk level for a job
+  const getJobRiskLevel = (job: Job) => {
+    if (job.copyrightMatches > 0) return 'high';
+    // Logic for medium risk could go here if available in Job data
+    // For now, if 0 matches, it's low (safe)
+    return 'low';
+  };
+
+  // Helper to get styling based on risk level
+  const getRiskStyles = (riskLevel: string) => {
+    switch (riskLevel) {
+      case 'high':
+        return {
+          rowClass: "bg-red-50 hover:bg-red-100",
+          cardClass: "border-red-100 bg-red-50/10 border-l-[6px] border-l-red-500",
+          dotClass: "bg-red-500",
+          textClass: "text-red-700",
+          badgeClass: "bg-red-100 text-red-700",
+          icon: <AlertTriangle className="w-4 h-4 text-red-500" />
+        };
+      case 'medium': // Placeholder for future use
+        return {
+          rowClass: "bg-yellow-50 hover:bg-yellow-100",
+          cardClass: "border-yellow-200 bg-yellow-50 border-l-[6px] border-l-yellow-500",
+          dotClass: "bg-yellow-500",
+          textClass: "text-yellow-700",
+          badgeClass: "bg-yellow-100 text-yellow-700",
+          icon: <AlertTriangle className="w-4 h-4 text-yellow-500" />
+        };
+      case 'low':
+        return {
+          rowClass: "hover:bg-gray-50 bg-green-50/30",
+          cardClass: "border-green-100 hover:bg-gray-50 border-l-[6px] border-l-green-500",
+          dotClass: "bg-green-500",
+          textClass: "text-green-700",
+          badgeClass: "bg-green-100 text-green-700",
+          icon: <CheckCircle className="w-4 h-4 text-green-500" />
+        };
+      default:
+        return {
+          rowClass: "bg-white hover:bg-gray-50",
+          cardClass: "border-gray-200 bg-white border-l-[6px] border-l-gray-300",
+          dotClass: "bg-gray-300",
+          textClass: "text-gray-600",
+          badgeClass: "bg-gray-100 text-gray-600",
+          icon: <Shield className="w-4 h-4 text-gray-500" />
+        };
+    }
+  };
 
   if (isLoading) {
     return (
@@ -178,13 +230,15 @@ export default function ResultsPage() {
                         </td>
                       </tr>
                     ) : (
-                    jobs.map((job: Job) => (
+                    jobs.map((job: Job) => {
+                      const riskLevel = getJobRiskLevel(job);
+                      const styles = getRiskStyles(riskLevel);
+                      
+                      return (
                       <tr
                         key={job.jobId}
                         onClick={() => router.push(`/results/${job.jobId}`)}
-                        className={`border-b border-gray-100 cursor-pointer transition-colors ${
-                          job.copyrightMatches > 0 ? "bg-red-50 hover:bg-red-100" : "hover:bg-gray-50 bg-green-50/30"
-                        }`}
+                        className={`border-b border-gray-100 cursor-pointer transition-colors ${styles.rowClass}`}
                       >
                         <td className="px-6 py-4 text-sm text-gray-700">
                           {new Date(job.createdAt).toLocaleDateString()}
@@ -193,25 +247,26 @@ export default function ResultsPage() {
                           @{job.instagramUsername}
                         </td>
                         <td className="px-6 py-4">
-                          <span
-                            className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide ${
+                          <Badge 
+                            variant="secondary"
+                            className={`capitalize ${
                               job.status === "completed"
-                                ? "bg-green-100 text-green-700"
-                                : "bg-yellow-100 text-yellow-700"
+                                ? "bg-green-100 text-green-700 hover:bg-green-100"
+                                : "bg-yellow-100 text-yellow-700 hover:bg-yellow-100"
                             }`}
                           >
                             {job.status}
-                          </span>
+                          </Badge>
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-700">
                           {job.processedVideos} / {job.totalVideos}
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-2">
-                            <span className={`font-bold ${job.copyrightMatches > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                            <span className={`font-bold ${styles.textClass}`}>
                               {job.copyrightMatches}
                             </span>
-                            {job.copyrightMatches > 0 && <Shield className="w-4 h-4 text-red-500" />}
+                            {styles.icon}
                           </div>
                         </td>
                         <td className="px-6 py-4">
@@ -220,7 +275,7 @@ export default function ResultsPage() {
                               size="sm" 
                               variant="outline"
                               className={`${
-                                job.copyrightMatches > 0 
+                                riskLevel === 'high'
                                   ? "text-purple-600 border-purple-600 hover:bg-purple-50" 
                                   : "text-green-600 border-green-600 hover:bg-green-50"
                               }`}
@@ -231,7 +286,7 @@ export default function ResultsPage() {
                             <Button 
                               size="sm"
                               className={`${
-                                job.copyrightMatches > 0 
+                                riskLevel === 'high'
                                   ? "bg-purple-600 hover:bg-purple-700 text-white" 
                                   : "bg-green-600 hover:bg-green-700 text-white"
                               }`}
@@ -243,7 +298,7 @@ export default function ResultsPage() {
                           </div>
                         </td>
                       </tr>
-                    ))
+                    )})
                   )}
                 </tbody>
               </table>
@@ -347,7 +402,7 @@ export default function ResultsPage() {
 
 
       {/* Disclaimer Section */}
-      <div className="bg-blue-50 border-l-4 border-blue-400 p-5 sm:p-15 rounded-lg my-10 container mx-auto px-5 lg:px-0">
+      <div className="bg-blue-50 border-l-4 border-blue-400 p-5 sm:p-15 rounded-lg my-10 !px-4 container mx-auto px-5 lg:px-0">
         <div className="flex items-start gap-3">
           <div className="flex-shrink-0">
             <svg
@@ -371,6 +426,56 @@ export default function ResultsPage() {
             </p>
           </div>
       </div>
+      </div>
+
+      {/* color meaning  */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 !px-4 p-6 container mx-auto my-10">
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="risk-guide" className="border-b-0">
+              <AccordionTrigger className="hover:no-underline py-0">
+                <span className="text-lg font-semibold text-gray-900">{t('riskGuide')}</span>
+              </AccordionTrigger>
+              <AccordionContent className="pt-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="flex flex-col gap-2 p-3 rounded-lg bg-green-50 border border-green-100">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-green-500 shadow-sm" />
+                      <span className="font-semibold text-green-900">{t('lowRisk')}</span>
+                    </div>
+                    <span className="text-sm text-green-800 leading-relaxed">{t('lowRiskDesc')}</span>
+                  </div>
+
+                  <div className="flex flex-col gap-2 p-3 rounded-lg bg-yellow-50 border border-yellow-100">
+                    <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-yellow-500 shadow-sm" />
+                      <span className="font-semibold text-yellow-900">{t('mediumRisk')}</span>
+                    </div>
+                    <span className="text-sm text-yellow-800 leading-relaxed">{t('mediumRiskDesc')}</span>
+                  </div>
+
+                  <div className="flex flex-col gap-2 p-3 rounded-lg bg-red-50 border border-red-100">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-red-600 shadow-sm" />
+                      <span className="font-semibold text-red-900">{t('highRisk')}</span>
+                    </div>
+                    <span className="text-sm text-red-800 leading-relaxed">{t('highRiskDesc')}</span>
+                  </div>
+
+                  <div className="flex flex-col gap-2 p-3 rounded-lg bg-gray-50 border border-gray-200">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-white border border-gray-300 shadow-sm" />
+                      <span className="font-semibold text-gray-900">{t('noAudio')}</span>
+                    </div>
+                    <span className="text-sm text-gray-600 leading-relaxed">{t('noAudioDesc')}</span>
+                  </div>
+                </div>
+                
+                <p className="text-xs text-gray-400 mt-4 pt-4 border-t border-gray-100 italic">
+                  {t('disclaimerTitle')}: Technical risk assessment - no legal advice.
+                </p>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
       </div>
     </div>
   );

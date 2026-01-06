@@ -229,7 +229,16 @@
     "scanNow": "Scan Now",
     "viewDetails": "View Details",
     "disclaimerTitle": "Disclaimer",
-    "disclaimerText": "This report is provided solely for informational and educational purposes. It should not be interpreted as legal advice or a substitute for consultation with a qualified attorney. Although we make every effort to ensure the accuracy and completeness of the information presented, we cannot guarantee that all copyrighted materials, potential infringements, or intellectual property issues have been fully identified or assessed. Copyright laws can be complex and may vary by jurisdiction, and interpretations can differ based on specific facts and circumstances. If you require guidance on copyright ownership, infringement risks, licensing, or any other legal considerations, we strongly recommend consulting with a licensed legal professional who can provide advice tailored to your particular situation."
+    "disclaimerText": "This report is provided solely for informational and educational purposes. It should not be interpreted as legal advice or a substitute for consultation with a qualified attorney. Although we make every effort to ensure the accuracy and completeness of the information presented, we cannot guarantee that all copyrighted materials, potential infringements, or intellectual property issues have been fully identified or assessed. Copyright laws can be complex and may vary by jurisdiction, and interpretations can differ based on specific facts and circumstances. If you require guidance on copyright ownership, infringement risks, licensing, or any other legal considerations, we strongly recommend consulting with a licensed legal professional who can provide advice tailored to your particular situation.",
+    "riskGuide": "Risk Guide",
+    "highRisk": "High risk, delete",
+    "highRiskDesc": "Strong indication of copyrighted music.",
+    "mediumRisk": "Unclear, recommended to delete",
+    "mediumRiskDesc": "Music rights could not be confirmed with certainty.",
+    "lowRisk": "Low risk",
+    "lowRiskDesc": "No known copyright risks detected.",
+    "noAudio": "No audio detected",
+    "noAudioDesc": "No music found or no relevant audio to analyze."
   },
   "JobDetails": {
     "error": "Failed to load job details.",
@@ -271,7 +280,8 @@
     "lowRisk": "Low risk",
     "lowRiskDesc": "No known copyright risks detected.",
     "noAudio": "No audio detected",
-    "noAudioDesc": "No music found or no relevant audio to analyze."
+    "noAudioDesc": "No music found or no relevant audio to analyze.",
+    "disclaimerTitle": "Disclaimer"
   },
   "Scan": {
     "title": "Scan Instagram Reels",

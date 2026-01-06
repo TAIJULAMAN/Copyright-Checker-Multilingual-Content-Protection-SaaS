@@ -228,7 +228,16 @@
     "scanNow": "Jetzt scannen",
     "viewDetails": "Details ansehen",
     "disclaimerTitle": "Haftungsausschluss",
-    "disclaimerText": "Dieser Bericht dient ausschließlich zu Informations- und Bildungszwecken. Er sollte nicht als Rechtsberatung oder Ersatz für die Konsultation eines qualifizierten Anwalts ausgelegt werden. Obwohl wir uns bemühen, die Richtigkeit und Vollständigkeit der bereitgestellten Informationen sicherzustellen, können wir nicht garantieren, dass alle urheberrechtlich geschützten Materialien, potenziellen Verstöße oder Probleme mit geistigem Eigentum vollständig identifiziert oder bewertet wurden. Urheberrechtsgesetze können komplex sein und je nach Gerichtsbarkeit variieren, und Interpretationen können je nach spezifischen Fakten und Umständen unterschiedlich sein. Wenn Sie Beratung zu Urheberrechtseigentum, Verletzungsrisiken, Lizenzierung oder anderen rechtlichen Erwägungen benötigen, empfehlen wir dringend, einen lizenzierten Rechtsbeistand zu konsultieren, der eine auf Ihre spezielle Situation zugeschnittene Beratung anbieten kann."
+    "disclaimerText": "Dieser Bericht dient ausschließlich zu Informations- und Bildungszwecken. Er sollte nicht als Rechtsberatung oder Ersatz für die Konsultation eines qualifizierten Anwalts ausgelegt werden. Obwohl wir uns bemühen, die Richtigkeit und Vollständigkeit der bereitgestellten Informationen sicherzustellen, können wir nicht garantieren, dass alle urheberrechtlich geschützten Materialien, potenziellen Verstöße oder Probleme mit geistigem Eigentum vollständig identifiziert oder bewertet wurden. Urheberrechtsgesetze können komplex sein und je nach Gerichtsbarkeit variieren, und Interpretationen können je nach spezifischen Fakten und Umständen unterschiedlich sein. Wenn Sie Beratung zu Urheberrechtseigentum, Verletzungsrisiken, Lizenzierung oder anderen rechtlichen Erwägungen benötigen, empfehlen wir dringend, einen lizenzierten Rechtsbeistand zu konsultieren, der eine auf Ihre spezielle Situation zugeschnittene Beratung anbieten kann.",
+    "riskGuide": "Risiko-Guide",
+    "highRisk": "Hohes Risiko, löschen",
+    "highRiskDesc": "Starker Hinweis auf urheberrechtlich geschützte Musik.",
+    "mediumRisk": "Unklar, besser löschen",
+    "mediumRiskDesc": "Musik-Rechte konnten nicht sicher bestätigt werden.",
+    "lowRisk": "Niedriges Risiko",
+    "lowRiskDesc": "Keine bekannten Urheberrechtsrisiken erkannt.",
+    "noAudio": "Kein Audio erkannt",
+    "noAudioDesc": "Keine Musik gefunden oder kein relevantes Audio zum Analysieren."
   },
   "JobDetails": {
     "error": "Fehler beim Laden der Jobdetails.",
@@ -270,7 +279,8 @@
     "lowRisk": "Niedriges Risiko",
     "lowRiskDesc": "Keine bekannten Urheberrechtsrisiken erkannt.",
     "noAudio": "Kein Audio erkannt",
-    "noAudioDesc": "Keine Musik gefunden oder kein relevantes Audio zum Analysieren."
+    "noAudioDesc": "Keine Musik gefunden oder kein relevantes Audio zum Analysieren.",
+    "disclaimerTitle": "Haftungsausschluss"
   },
   "Scan": {
     "title": "Instagram Reels scannen",
