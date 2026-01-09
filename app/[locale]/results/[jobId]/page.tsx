@@ -186,7 +186,7 @@ export default function JobDetailsPage() {
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8 relative">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ">
           <div>
              <Button variant="ghost" className="mb-2 pl-0 hover:bg-transparent hover:text-purple-600" onClick={() => router.back()}>
               <ArrowLeft className="mr-2 w-4 h-4" /> {t('backToHistory')}
@@ -196,7 +196,7 @@ export default function JobDetailsPage() {
               {t('analysisFor')} <span className="font-semibold text-purple-600">@{jobDetails.username}</span> • {new Date(jobDetails.createdAt).toLocaleDateString()}
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 hidden md:flex">
              <Button 
                onClick={handleDownloadReport}
                disabled={isDownloading}
@@ -221,32 +221,32 @@ export default function JobDetailsPage() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 md:gap-4 gap-2">
+        <div className="grid grid-cols-4 gap-1 md:gap-4">
           <Card>
-            <CardContent className="pt-6">
-              <div className="text-sm text-gray-500 mb-1">{t('totalAnalyzed')}</div>
-              <div className="text-2xl font-bold">{summary.totalAnalyzed}</div>
+            <CardContent className="p-1.5 md:pt-6 flex flex-col items-center justify-center text-center">
+              <div className="text-[10px] md:text-sm text-gray-500 mb-0.5 md:mb-1 leading-tight">{t('totalAnalyzed')}</div>
+              <div className="text-sm md:text-2xl font-bold">{summary.totalAnalyzed}</div>
             </CardContent>
           </Card>
           <Card>
-             <CardContent className="pt-6">
-              <div className="text-sm text-gray-500 mb-1">{t('copyrightDetected')}</div>
-              <div className="text-2xl font-bold text-red-600">{summary.copyrightedCount}</div>
+             <CardContent className="p-1.5 md:pt-6 flex flex-col items-center justify-center text-center">
+              <div className="text-[10px] md:text-sm text-gray-500 mb-0.5 md:mb-1 leading-tight ">{t('copyrightDetected')}</div>
+              <div className="text-sm md:text-2xl font-bold text-red-600">{summary.copyrightedCount}</div>
             </CardContent>
           </Card>
           <Card>
-             <CardContent className="pt-6">
-              <div className="text-sm text-gray-500 mb-1">{t('uniqueSongs')}</div>
-              <div className="text-2xl font-bold">{summary.uniqueSongs}</div>
+             <CardContent className="p-1.5 md:pt-6 flex flex-col items-center justify-center text-center">
+              <div className="text-[10px] md:text-sm text-gray-500 mb-0.5 md:mb-1 leading-tight ">{t('uniqueSongs')}</div>
+              <div className="text-sm md:text-2xl font-bold">{summary.uniqueSongs}</div>
             </CardContent>
           </Card>
            <Card>
-             <CardContent className="pt-6 relative">
-              <div className="flex items-center gap-2 mb-1">
-                <div className="text-sm text-gray-500">{t('riskLevel')}</div>
+             <CardContent className="p-1.5 md:pt-6 relative flex flex-col items-center justify-center text-center">
+              <div className="flex items-center gap-1 mb-0.5 md:mb-1 justify-center">
+                <div className="text-[10px] md:text-sm text-gray-500 leading-tight">{t('riskLevel')}</div>
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Info className="w-4 h-4 text-gray-400 cursor-pointer hover:text-gray-600" />
+                    <Info className="w-3 h-3 md:w-4 md:h-4 text-gray-400 cursor-pointer hover:text-gray-600 hidden md:block" />
                   </PopoverTrigger>
                   <PopoverContent className="w-80 p-4">
                     <div className="space-y-4">
@@ -291,20 +291,70 @@ export default function JobDetailsPage() {
                   </PopoverContent>
                 </Popover>
               </div>
-              <div className="text-2xl font-bold capitalize">
+              <div className="text-sm md:text-2xl font-bold capitalize">
                 {summary.riskBreakdown.high > 0 ? (
-                  <span className="text-red-600 flex items-center gap-2">{t('high')} <AlertTriangle className="w-5 h-5" /></span>
+                  <span className="text-red-600 flex items-center justify-center gap-1 md:gap-2">{t('high')} <AlertTriangle className="w-3 h-3 md:w-5 md:h-5" /></span>
                 ) : summary.riskBreakdown.medium > 0 ? (
-                  <span className="text-yellow-600 flex items-center gap-2">{t('medium')} <AlertTriangle className="w-5 h-5" /></span>
+                  <span className="text-yellow-600 flex items-center justify-center gap-1 md:gap-2">{t('medium')} <AlertTriangle className="w-3 h-3 md:w-5 md:h-5" /></span>
                 ) : summary.riskBreakdown.low > 0 ? (
-                  <span className="text-green-600 flex items-center gap-2">{t('low')} <CheckCircle className="w-5 h-5" /></span>
+                  <span className="text-green-600 flex items-center justify-center gap-1 md:gap-2">{t('low')} <CheckCircle className="w-3 h-3 md:w-5 md:h-5" /></span>
                 ) : (
-                  <span className="text-gray-500 flex items-center gap-2">{t('noAudio')} <Shield className="w-5 h-5" /></span>
+                  <span className="text-gray-500 flex items-center justify-center gap-1 md:gap-2">{t('noAudio')} <Shield className="w-3 h-3 md:w-5 md:h-5" /></span>
                 )}
               </div>
             </CardContent>
           </Card>
         </div>
+
+                  {/* Risk Guide */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="risk-guide" className="border-b-0">
+                <AccordionTrigger className="hover:no-underline py-0">
+                  <span className="text-lg font-semibold text-gray-900">{t('riskGuide')}</span>
+                </AccordionTrigger>
+                <AccordionContent className="pt-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="flex flex-col gap-2 p-3 rounded-lg bg-green-50 border border-green-100">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-green-500 shadow-sm" />
+                        <span className="font-semibold text-green-900">{t('lowRisk')}</span>
+                      </div>
+                      <span className="text-sm text-green-800 leading-relaxed">{t('lowRiskDesc')}</span>
+                    </div>
+
+                    <div className="flex flex-col gap-2 p-3 rounded-lg bg-yellow-50 border border-yellow-100">
+                      <div className="flex items-center gap-2">
+                         <div className="w-3 h-3 rounded-full bg-yellow-500 shadow-sm" />
+                        <span className="font-semibold text-yellow-900">{t('mediumRisk')}</span>
+                      </div>
+                      <span className="text-sm text-yellow-800 leading-relaxed">{t('mediumRiskDesc')}</span>
+                    </div>
+
+                    <div className="flex flex-col gap-2 p-3 rounded-lg bg-red-50 border border-red-100">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-red-600 shadow-sm" />
+                        <span className="font-semibold text-red-900">{t('highRisk')}</span>
+                      </div>
+                      <span className="text-sm text-red-800 leading-relaxed">{t('highRiskDesc')}</span>
+                    </div>
+
+                    <div className="flex flex-col gap-2 p-3 rounded-lg bg-gray-50 border border-gray-200">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-white border border-gray-300 shadow-sm" />
+                        <span className="font-semibold text-gray-900">{t('noAudio')}</span>
+                      </div>
+                      <span className="text-sm text-gray-600 leading-relaxed">{t('noAudioDesc')}</span>
+                    </div>
+                  </div>
+                  
+                  <p className="text-xs text-gray-400 mt-4 pt-4 border-t border-gray-100 italic">
+                    {t('disclaimerTitle')}: Technical risk assessment - no legal advice.
+                  </p>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
 
         {/* Results Section */}
         <div className="space-y-4">
@@ -478,54 +528,31 @@ export default function JobDetailsPage() {
           </div>
 
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="risk-guide" className="border-b-0">
-                <AccordionTrigger className="hover:no-underline py-0">
-                  <span className="text-lg font-semibold text-gray-900">{t('riskGuide')}</span>
-                </AccordionTrigger>
-                <AccordionContent className="pt-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div className="flex flex-col gap-2 p-3 rounded-lg bg-green-50 border border-green-100">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-green-500 shadow-sm" />
-                        <span className="font-semibold text-green-900">{t('lowRisk')}</span>
-                      </div>
-                      <span className="text-sm text-green-800 leading-relaxed">{t('lowRiskDesc')}</span>
-                    </div>
-
-                    <div className="flex flex-col gap-2 p-3 rounded-lg bg-yellow-50 border border-yellow-100">
-                      <div className="flex items-center gap-2">
-                         <div className="w-3 h-3 rounded-full bg-yellow-500 shadow-sm" />
-                        <span className="font-semibold text-yellow-900">{t('mediumRisk')}</span>
-                      </div>
-                      <span className="text-sm text-yellow-800 leading-relaxed">{t('mediumRiskDesc')}</span>
-                    </div>
-
-                    <div className="flex flex-col gap-2 p-3 rounded-lg bg-red-50 border border-red-100">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-red-600 shadow-sm" />
-                        <span className="font-semibold text-red-900">{t('highRisk')}</span>
-                      </div>
-                      <span className="text-sm text-red-800 leading-relaxed">{t('highRiskDesc')}</span>
-                    </div>
-
-                    <div className="flex flex-col gap-2 p-3 rounded-lg bg-gray-50 border border-gray-200">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-white border border-gray-300 shadow-sm" />
-                        <span className="font-semibold text-gray-900">{t('noAudio')}</span>
-                      </div>
-                      <span className="text-sm text-gray-600 leading-relaxed">{t('noAudioDesc')}</span>
-                    </div>
-                  </div>
-                  
-                  <p className="text-xs text-gray-400 mt-4 pt-4 border-t border-gray-100 italic">
-                    {t('disclaimerTitle')}: Technical risk assessment - no legal advice.
-                  </p>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+{/* Mobile View */}
+             <div className="flex items-center gap-3 md:hidden">
+             <Button 
+               onClick={handleDownloadReport}
+               disabled={isDownloading}
+               className="bg-purple-600 hover:bg-purple-700 text-white"
+             >
+               {isDownloading ? (
+                 <>
+                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                   {t('downloading')}
+                 </>
+               ) : (
+                 <>
+                   <Download className="mr-2 h-4 w-4" />
+                   {t('downloadReport')}
+                 </>
+               )}
+             </Button>
+             <Badge variant={jobDetails.status === 'completed' ? 'default' : 'secondary'} className="text-sm px-3 py-1 capitalize">
+              {jobDetails.status}
+             </Badge>
           </div>
+
+
 
 
           

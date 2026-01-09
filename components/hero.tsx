@@ -30,10 +30,10 @@ export default function Hero() {
             {/* Left Column: Text and Actions */}
             <div className="flex flex-col gap-6">
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight">
-                {t('titlePrefix')}
+                {t('titlePrefix')}{" "}
                 <br className="hidden sm:block" />
-                <span>{t('titleMiddle')}</span>
-                <br className="hidden sm:block" />
+                <span> {t('titleMiddle')} </span>
+                <br className="hidden sm:block" /> 
                 <span className="text-purple-600 inline-block max-w-[800px]">{t('titleSuffix')}</span>
               </h1>
 
@@ -68,6 +68,12 @@ export default function Hero() {
                     priority
                     className="object-contain"
                     sizes="100vw"
+                  />
+                  <div 
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                      background: 'linear-gradient(to right, transparent 80%, white 98%)'
+                    }}
                   />
                 </div>
                 {/* <p className="text-center sm:text-left">
@@ -108,7 +114,7 @@ export default function Hero() {
             </div>
 
             {/* Right Column: Image */}
-            <div className="relative w-full h-[400px] md:h-[600px] hidden md:block">
+            <div className="relative w-full h-[400px] md:h-[600px] hidden md:block mt-8 md:mt-0">
               <Image
                 src="/heroupdateimg.png"
                 alt="Copyright Check Badge"
@@ -116,6 +122,12 @@ export default function Hero() {
                 priority
                 className="object-contain"
                 sizes="(max-width: 768px) 100vw, 50vw"
+              />
+              <div 
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background: 'linear-gradient(to right, transparent 80%, white 90%)'
+                }}
               />
             </div>
           </div>

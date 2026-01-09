@@ -142,7 +142,7 @@ export default function ResultsPage() {
       {/* Main Content */}
       <div className="container mx-auto px-5 lg:px-0 py-8 space-y-8">
         {/* Info Banner */}
-        <div className="bg-yellow-100 border-l-4 border-yellow-500 p-5">
+        <div className="bg-yellow-100 border-l-4 border-yellow-500 p-5 hidden">
             <div className="flex items-start gap-3">
             <div className="text-yellow-600 mt-0.5">⏰</div>
             <p className="text-yellow-800 text-sm">
