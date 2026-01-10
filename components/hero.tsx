@@ -2,9 +2,9 @@
 
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
-import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 
 export default function Hero() {
   const t = useTranslations('Hero');
@@ -49,7 +49,7 @@ export default function Hero() {
                     size="lg"
                   >
                     <Link href="/scan">
-                      <span className="mr-2">▶</span> {t('cta')}
+                      <span className="mr-2"></span> {t('cta')}
                     </Link>
                   </Button>
                   <div className="flex items-center justify-center sm:justify-start text-sm text-gray-600">

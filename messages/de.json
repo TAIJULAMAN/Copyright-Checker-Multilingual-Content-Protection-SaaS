@@ -14,9 +14,9 @@
   },
   "Hero": {
     "titlePrefix": "Prüfe deine",
-    "titleMiddle": "Instagram Reels auf ",
-    "titleSuffix": "Urheberrechtlich geschützte Musik",
-    "description": "Schütze deine Inhalte und vermeide Copyright-Strikes. Unser KI-gestütztes Tool scannt deine Instagram Reels in wenigen Minuten auf geschützte Musik.",
+    "titleMiddle": "Instagram Reels auf",
+    "titleSuffix": "Copyright Risiken",
+    "description": "Erhalte eine klare Risiko Einschätzung aller öffentlich sichtbaren Reels eines Accounts und erkenne potenziell problematische Videos innerhalb weniger Minuten.",
     "cta": "Jetzt meine Reels prüfen",
     "secure": "Sicher mit PayPal",
     "noLogin": "Kein Instagram-Login erforderlich",
@@ -29,7 +29,7 @@
     "title": "So funktioniert's",
     "subtitle": "Drei einfache Schritte zum Schutz deiner Inhalte",
     "step1Title": "Profillink einfügen",
-    "step1Desc": "Kopiere einfach deine Instagram Reel URL",
+    "step1Desc": "Kopiere einfach deine Instagram URL",
     "step2Title": "Konto erstellen - Sicher bezahlen",
     "step2Desc": "Sichere Zahlungsabwicklung mit PayPal-Käuferschutz",
     "step3Title": "Sofortigen Bericht erhalten",
@@ -96,6 +96,7 @@
     "contact": "Kontakt",
     "privacy": "Datenschutzerklärung",
     "terms": "AGB",
+    "imprint": "Impressum",
     "about": "Über uns",
     "connect": "Verbinden",
     "copyright": "© 2025 CopyrightChecker.de. Alle Rechte vorbehalten."
@@ -228,7 +229,7 @@
     "scanNow": "Jetzt scannen",
     "viewDetails": "Details ansehen",
     "disclaimerTitle": "Haftungsausschluss",
-    "disclaimerText": "Dieser Bericht dient ausschließlich zu Informations- und Bildungszwecken. Er sollte nicht als Rechtsberatung oder Ersatz für die Konsultation eines qualifizierten Anwalts ausgelegt werden. Obwohl wir uns bemühen, die Richtigkeit und Vollständigkeit der bereitgestellten Informationen sicherzustellen, können wir nicht garantieren, dass alle urheberrechtlich geschützten Materialien, potenziellen Verstöße oder Probleme mit geistigem Eigentum vollständig identifiziert oder bewertet wurden. Urheberrechtsgesetze können komplex sein und je nach Gerichtsbarkeit variieren, und Interpretationen können je nach spezifischen Fakten und Umständen unterschiedlich sein. Wenn Sie Beratung zu Urheberrechtseigentum, Verletzungsrisiken, Lizenzierung oder anderen rechtlichen Erwägungen benötigen, empfehlen wir dringend, einen lizenzierten Rechtsbeistand zu konsultieren, der eine auf Ihre spezielle Situation zugeschnittene Beratung anbieten kann.",
+    "disclaimerText": "Dieser Bericht dient ausschließlich Informations- und Bildungszwecken. Er sollte nicht als Rechtsberatung oder Ersatz für eine Beratung durch einen qualifizierten Anwalt ausgelegt werden. Obwohl wir uns bemühen, die Richtigkeit und Vollständigkeit der präsentierten Informationen sicherzustellen, können wir nicht garantieren, dass alle urheberrechtlich geschützten Materialien, potenziellen Verletzungen oder Fragen des geistigen Eigentums vollständig identifiziert oder bewertet wurden. Urheberrechtsgesetze können komplex sein und je nach Gerichtsbarkeit variieren, und Interpretationen können je nach spezifischen Fakten und Umständen abweichen. Wenn Sie Beratung zu Urheberrechtsinhaberschaft, Verletzungsrisiken, Lizenzierung oder anderen rechtlichen Erwägungen benötigen, empfehlen wir dringend, einen zugelassenen Rechtsexperten zu konsultieren, der eine auf Ihre spezielle Situation zugeschnittene Beratung bieten kann.",
     "riskGuide": "Risiko-Guide",
     "highRisk": "Hohes Risiko, löschen",
     "highRiskDesc": "Starker Hinweis auf urheberrechtlich geschützte Musik.",
@@ -400,5 +401,20 @@
       "title": "Detaillierte Berichte",
       "description": "Erhalten Sie detaillierte Einblicke in Musiknutzung und Risiken"
     }
+  },
+  "Imprint": {
+    "title": "Impressum",
+    "section1Title": "Angaben gemäß § 5 TMG",
+    "section1Content": "[Firmenname]<br />[Straße Hausnummer]<br />[PLZ Ort]",
+    "section2Title": "Vertreten durch",
+    "section2Content": "[Geschäftsführer Name]",
+    "section3Title": "Kontakt",
+    "section3Content": "Telefon: [Telefonnummer]<br />E-Mail: [E-Mail-Adresse]",
+    "section4Title": "Registereintrag",
+    "section4Content": "Eintragung im Handelsregister.<br />Registergericht: [Amtsgericht]<br />Registernummer: [HRB Nummer]",
+    "section5Title": "Umsatzsteuer-ID",
+    "section5Content": "Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:<br />[DE XXXXXXXX]",
+    "section6Title": "Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV",
+    "section6Content": "[Name]<br />[Straße Hausnummer]<br />[PLZ Ort]"
   }
 }

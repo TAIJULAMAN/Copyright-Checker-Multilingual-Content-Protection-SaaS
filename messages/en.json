@@ -13,10 +13,10 @@
     "menu": "Menu"
   },
   "Hero": {
-    "titlePrefix": "Check Your",
-    "titleMiddle": "Instagram Reels for ",
-    "titleSuffix": "Copyrighted Music",
-    "description": "Protect your content and avoid copyright strikes. Our AI‑powered tool scans your Instagram Reels for copyrighted music in minutes.",
+    "titlePrefix": "Check your",
+    "titleMiddle": "Instagram Reels for",
+    "titleSuffix": "copyright risk",
+    "description": "Get a clear risk assessment of all public Reels on an account and identify potentially problematic videos in minutes.",
     "cta": "Check My Reels Now",
     "secure": "PayPal Secure",
     "noLogin": "No Instagram Login required",
@@ -29,7 +29,7 @@
     "title": "How It Works",
     "subtitle": "Three simple steps to protect your content",
     "step1Title": "Paste Your Profile Link",
-    "step1Desc": "Simply copy and paste your Instagram Reel URL",
+    "step1Desc": "Simply copy and paste your Instagram URL",
     "step2Title": "Create Account - Pay Securely",
     "step2Desc": "Secure payment processing with PayPal protection",
     "step3Title": "Get Instant Report",
@@ -96,6 +96,7 @@
     "contact": "Contact Us",
     "privacy": "Privacy Policy",
     "terms": "Terms & Conditions",
+    "imprint": "Imprint",
     "about": "About Us",
     "connect": "Connect",
     "copyright": "© 2025 CopyrightChecker.de. All rights reserved."
@@ -401,5 +402,20 @@
       "title": "Detailed Reports",
       "description": "Receive detailed insights about music usage and risks"
     }
+  },
+  "Imprint": {
+    "title": "Imprint",
+    "section1Title": "Information according to § 5 TMG",
+    "section1Content": "[Company Name]<br />[Street House Number]<br />[Zip Code City]",
+    "section2Title": "Represented by",
+    "section2Content": "[CEO Name]",
+    "section3Title": "Contact",
+    "section3Content": "Phone: [Phone Number]<br />Email: [Email Address]",
+    "section4Title": "Register Entry",
+    "section4Content": "Entry in the Commercial Register.<br />Register Court: [Local Court]<br />Register Number: [HRB Number]",
+    "section5Title": "VAT ID",
+    "section5Content": "Sales tax identification number according to § 27 a Sales Tax Law:<br />[DE XXXXXXXX]",
+    "section6Title": "Responsible for content acc. to § 55 Para. 2 RStV",
+    "section6Content": "[Name]<br />[Street House Number]<br />[Zip Code City]"
   }
 }

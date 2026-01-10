@@ -74,6 +74,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/imprint" className="hover:text-white">
+                  {t('imprint')}
+                </Link>
+              </li>
+              <li>
                 <Link href="/about" className="hover:text-white">
                   {t('about')}
                 </Link>
