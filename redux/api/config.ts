@@ -1,4 +1,4 @@
-export const IMAGE_URL = 'https://instagram-copyright-check-backend.onrender.com';
+export const IMAGE_URL = process.env.NEXT_PUBLIC_IMAGE_URL ? process.env.NEXT_PUBLIC_IMAGE_URL : 'http://localhost:8080';
 export const BASE_URL = `${IMAGE_URL}/api/v1`;
 export const REVALIDATE_TIME = 30;
 
