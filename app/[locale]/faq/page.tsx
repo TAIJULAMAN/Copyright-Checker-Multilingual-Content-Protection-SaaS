@@ -1,23 +1,29 @@
-"use client"
-
 import { Link } from "@/i18n/routing"
-import { ChevronDown } from "lucide-react"
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import PageHeader from "@/components/page-header"
-import { useGetAllFaqQuery } from "@/redux/api/faqApi"
-import { useTranslations } from "next-intl"
+import { getTranslations } from "next-intl/server"
+import { BASE_URL, REVALIDATE_TIME } from "@/redux/api/config"
+import FaqClient from "./faq-client"
 
-export default function FAQ() {
-  const t = useTranslations('FAQ');
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
+async function getFaqs() {
+  try {
+    const res = await fetch(`${BASE_URL}/faqs`, {
+      next: { revalidate: REVALIDATE_TIME },
+    });
+    
+    if (!res.ok) return null;
+    
+    return res.json();
+  } catch (error) {
+    return null;
+  }
+}
 
-  // Fetch FAQs from API
-  const { data, isLoading, isError } = useGetAllFaqQuery(undefined)
-
-  // Extract FAQ items from API response
-  const faqItems = data?.data || []
-
+export default async function FAQ() {
+  const t = await getTranslations('FAQ');
+  const response = await getFaqs();
+  const faqItems = response?.data || [];
+  const isError = !response;
 
   return (
     <div className="min-h-screen bg-white">
@@ -29,13 +35,7 @@ export default function FAQ() {
 
       {/* FAQ Accordion */}
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        {/* Loading State */}
-        {isLoading && (
-          <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
-          </div>
-        )}
-
+        
         {/* Error State */}
         {isError && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
@@ -45,28 +45,8 @@ export default function FAQ() {
         )}
 
         {/* FAQ Items */}
-        {!isLoading && !isError && (
-          <div className="space-y-4">
-            {faqItems?.map((item: any, index: number) => (
-              <div
-                key={item?._id || index}
-                className="border border-gray-200 rounded-lg overflow-hidden bg-white hover:shadow-sm transition-shadow"
-              >
-                <button
-                  onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                  className="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
-                >
-                  <span className="text-lg font-semibold text-gray-900">{item?.question}</span>
-                  <ChevronDown
-                    className={`w-5 h-5 text-gray-600 transition-transform ${openIndex === index ? "rotate-180" : ""}`}
-                  />
-                </button>
-                {openIndex === index && (
-                  <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 text-gray-700">{item?.answer}</div>
-                )}
-              </div>
-            ))}
-          </div>
+        {!isError && (
+          <FaqClient faqItems={faqItems} />
         )}
 
         {/* Contact Support Section */}

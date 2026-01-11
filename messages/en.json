@@ -13,10 +13,10 @@
     "menu": "Menu"
   },
   "Hero": {
-    "titlePrefix": "Check Your",
-    "titleMiddle": "Instagram Reels for ",
-    "titleSuffix": "Copyrighted Music",
-    "description": "Protect your content and avoid copyright strikes. Our AI‑powered tool scans your Instagram Reels for copyrighted music in minutes.",
+    "titlePrefix": "Check your",
+    "titleMiddle": "Instagram Reels for",
+    "titleSuffix": "copyright risk",
+    "description": "Get a clear risk assessment of all public Reels on an account and identify potentially problematic videos in minutes.",
     "cta": "Check My Reels Now",
     "secure": "PayPal Secure",
     "noLogin": "No Instagram Login required",
@@ -29,7 +29,7 @@
     "title": "How It Works",
     "subtitle": "Three simple steps to protect your content",
     "step1Title": "Paste Your Profile Link",
-    "step1Desc": "Simply copy and paste your Instagram Reel URL",
+    "step1Desc": "Simply copy and paste your Instagram URL",
     "step2Title": "Create Account - Pay Securely",
     "step2Desc": "Secure payment processing with PayPal protection",
     "step3Title": "Get Instant Report",
@@ -48,13 +48,13 @@
     "title": "Why Choose Our Service",
     "subtitle": "Advanced features for complete copyright protection",
     "f1Title": "Prevent Copyright Violations",
-    "f1Desc": "Start checking immediately without creating an account",
-    "f2Title": "Save Time, reduce risk",
-    "f2Desc": "Check content in minutes and delete risky posts fast.",
-    "f3Title": "AI‑Powered Detection",
-    "f3Desc": "Technology that outperforms manual checks.",
-    "f4Title": "PDF/CSV Report",
-    "f4Desc": "Download detailed reports in multiple formats"
+    "f1Desc": "Identify copyrighted music in your Instagram Reels before it causes problems. Our scan highlights risky content clearly so you can take action early.",
+    "f2Title": "Save Time & Reduce Risk",
+    "f2Desc": "We pinpoint exactly which Reels contain copyright risks. Direct links take you straight to the affected Reels - no endless scrolling, no manual checking.",
+    "f3Title": "AI Powered Detection",
+    "f3Desc": "Advanced detection technology analyzes audio usage and identifies potential copyright risks more efficiently than manual checks.",
+    "f4Title": "Clear Reports & Export",
+    "f4Desc": "Receive a structured report with clear risk indicators and direct Reel links. Download your results as CSV for documentation and review."
   },
   "Testimonials": {
     "title": "What Our Users Say",
@@ -96,6 +96,7 @@
     "contact": "Contact Us",
     "privacy": "Privacy Policy",
     "terms": "Terms & Conditions",
+    "imprint": "Imprint",
     "about": "About Us",
     "connect": "Connect",
     "copyright": "© 2025 CopyrightChecker.de. All rights reserved."
@@ -156,6 +157,9 @@
       "description": "Update your personal details here.",
       "firstName": "First Name",
       "lastName": "Last Name",
+      "mobile": "Mobile",
+      "address": "Address",
+      "company": "Company",
       "phone": "Phone Number",
       "email": "Email Address",
       "emailWarning": "Email address cannot be changed",
@@ -209,9 +213,9 @@
     "title": "Your Copyright Check Results",
     "subtitle": "Social Media King – Instagram Reels Copyright Checker",
     "secure": "Secure & Trusted",
-    "dataDelete": "All data is deleted 24 hours after report delivery.",
+    "dataDelete": "All analysis data is automatically deleted 24 hours after report generation.",
     "safeReels": "Safe Reels",
-    "safeDesc": "No copyright issues detected",
+    "safeDesc": "No copyright risks detected",
     "flaggedReels": "Flagged Reels",
     "flaggedDesc": "Requires immediate attention",
     "history": "Scan History",
@@ -226,7 +230,16 @@
     "scanNow": "Scan Now",
     "viewDetails": "View Details",
     "disclaimerTitle": "Disclaimer",
-    "disclaimerText": "This report is provided solely for informational and educational purposes. It should not be interpreted as legal advice or a substitute for consultation with a qualified attorney. Although we make every effort to ensure the accuracy and completeness of the information presented, we cannot guarantee that all copyrighted materials, potential infringements, or intellectual property issues have been fully identified or assessed. Copyright laws can be complex and may vary by jurisdiction, and interpretations can differ based on specific facts and circumstances. If you require guidance on copyright ownership, infringement risks, licensing, or any other legal considerations, we strongly recommend consulting with a licensed legal professional who can provide advice tailored to your particular situation."
+    "disclaimerText": "This report is provided solely for informational and educational purposes. It should not be interpreted as legal advice or a substitute for consultation with a qualified attorney. Although we make every effort to ensure the accuracy and completeness of the information presented, we cannot guarantee that all copyrighted materials, potential infringements, or intellectual property issues have been fully identified or assessed. Copyright laws can be complex and may vary by jurisdiction, and interpretations can differ based on specific facts and circumstances. If you require guidance on copyright ownership, infringement risks, licensing, or any other legal considerations, we strongly recommend consulting with a licensed legal professional who can provide advice tailored to your particular situation.",
+    "riskGuide": "Risk Guide",
+    "highRisk": "High risk, delete",
+    "highRiskDesc": "Strong indication of copyrighted music.",
+    "mediumRisk": "Unclear, recommended to delete",
+    "mediumRiskDesc": "Music rights could not be confirmed with certainty.",
+    "lowRisk": "Low risk",
+    "lowRiskDesc": "No known copyright risks detected.",
+    "noAudio": "No audio detected",
+    "noAudioDesc": "No music found or no relevant audio to analyze."
   },
   "JobDetails": {
     "error": "Failed to load job details.",
@@ -259,7 +272,17 @@
     "confidence": "Confidence Score",
     "notes": "Additional Notes",
     "noIssues": "No Issues Found",
-    "noIssuesDesc": "Our AI analyzed this content and did not detect any copyrighted music matches. Your content appears safe to post."
+    "noIssuesDesc": "Our AI analyzed this content and did not detect any copyrighted music matches. Your content appears safe to post.",
+    "riskGuide": "Risk Guide",
+    "highRisk": "High risk, delete",
+    "highRiskDesc": "Strong indication of copyrighted music.",
+    "mediumRisk": "Unclear, recommended to delete",
+    "mediumRiskDesc": "Music rights could not be confirmed with certainty.",
+    "lowRisk": "Low risk",
+    "lowRiskDesc": "No known copyright risks detected.",
+    "noAudio": "No audio detected",
+    "noAudioDesc": "No music found or no relevant audio to analyze.",
+    "disclaimerTitle": "Disclaimer"
   },
   "Scan": {
     "title": "Scan Instagram Reels",
@@ -295,6 +318,10 @@
       "emailPlaceholder": "you@example.com",
       "mobile": "Mobile",
       "mobilePlaceholder": "+1234567890",
+      "address": "Address",
+      "addressPlaceholder": "Your Address",
+      "company": "Company",
+      "companyPlaceholder": "Your Company",
       "password": "Password",
       "passwordPlaceholder": "••••••••",
       "confirmPassword": "Confirm Password",
@@ -375,5 +402,20 @@
       "title": "Detailed Reports",
       "description": "Receive detailed insights about music usage and risks"
     }
+  },
+  "Imprint": {
+    "title": "Imprint",
+    "section1Title": "Information according to § 5 TMG",
+    "section1Content": "[Company Name]<br />[Street House Number]<br />[Zip Code City]",
+    "section2Title": "Represented by",
+    "section2Content": "[CEO Name]",
+    "section3Title": "Contact",
+    "section3Content": "Phone: [Phone Number]<br />Email: [Email Address]",
+    "section4Title": "Register Entry",
+    "section4Content": "Entry in the Commercial Register.<br />Register Court: [Local Court]<br />Register Number: [HRB Number]",
+    "section5Title": "VAT ID",
+    "section5Content": "Sales tax identification number according to § 27 a Sales Tax Law:<br />[DE XXXXXXXX]",
+    "section6Title": "Responsible for content acc. to § 55 Para. 2 RStV",
+    "section6Content": "[Name]<br />[Street House Number]<br />[Zip Code City]"
   }
 }

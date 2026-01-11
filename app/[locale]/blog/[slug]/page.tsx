@@ -1,20 +1,29 @@
-"use client"
-
-import Link from "next/link"
 import { Calendar, User, Clock } from "lucide-react"
-import { useParams } from "next/navigation"
 import PageHeader from "@/components/page-header"
-import { useGetBlogByIdQuery } from "@/redux/api/blogApi"
 import Image from "next/image"
-import { getImageUrl } from "@/redux/api/config"
+import { getImageUrl, BASE_URL, REVALIDATE_TIME } from "@/redux/api/config"
 
-export default function BlogDetail() {
-  const params = useParams()
-  const slug = params.slug as string
+async function getBlog(slug: string) {
+  try {
+    const res = await fetch(`${BASE_URL}/blogs/${slug}`, {
+      next: { revalidate: REVALIDATE_TIME },
+    });
+    
+    if (!res.ok) return null;
+    
+    return res.json();
+  } catch (error) {
+    return null;
+  }
+}
 
-  const { data, isLoading, isError } = useGetBlogByIdQuery(slug)
-
-  const post = data?.data
+export default async function BlogDetail({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  console.log('BlogDetail slug:', slug);
+  const response = await getBlog(slug);
+  console.log('BlogDetail response:', response);
+  const post = response?.data;
+  const isError = !response;
 
   return (
     <div className="min-h-screen bg-white">
@@ -26,13 +35,7 @@ export default function BlogDetail() {
 
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Loading State */}
-        {isLoading && (
-          <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
-          </div>
-        )}
-
+        
         {/* Error State */}
         {isError && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
@@ -42,7 +45,7 @@ export default function BlogDetail() {
         )}
 
         {/* Blog Post Content */}
-        {!isLoading && !isError && post && (
+        {!isError && post && (
           <>
             {/* Featured Image */}
             <div className="mb-8 rounded-lg overflow-hidden h-96 bg-gradient-to-br from-purple-600 to-pink-500">

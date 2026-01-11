@@ -14,6 +14,7 @@ import { useUpdateUserMutation, useUpdateAvatarMutation } from "@/redux/api/user
 import { toast } from "sonner";
 import { Camera, Loader2, Save, Lock, User as UserIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
+import Swal from "sweetalert2";
 
 export default function ProfilePage() {
   const t = useTranslations('Profile');
@@ -29,6 +30,8 @@ export default function ProfilePage() {
     firstName: "",
     lastName: "",
     mobile: "",
+    address: "",
+    company: "",
   });
 
   const [passwordForm, setPasswordForm] = useState({
@@ -47,6 +50,8 @@ export default function ProfilePage() {
         firstName: userIdFirstName || firstName, 
         lastName: userIdLastName || lastName,
         mobile: user.mobile || "",
+        address: user.address || "",
+        company: user.company || "",
       });
     }
   }, [user]);
@@ -65,10 +70,22 @@ export default function ProfilePage() {
   const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await updateUser(profileForm).unwrap();
-      toast.success(t('messages.profileSuccess'));
+      const result = await updateUser(profileForm).unwrap();
+      // Using SweetAlert2 to show the success message with the full response data
+      Swal.fire({
+        title: "Success!",
+        text: result.message,
+        icon: "success",
+        confirmButtonText: "Cool",
+      });
+      // toast.success(t('messages.profileSuccess'));
     } catch (error: any) {
-      toast.error(error?.data?.message || t('messages.profileError'));
+      Swal.fire({
+        title: "Error!",
+        text: error?.data?.message || t('messages.profileError'),
+        icon: "error",
+        confirmButtonText: "Cool",
+      });
     }
   };
 
@@ -79,9 +96,19 @@ export default function ProfilePage() {
       formData.append("avatar", file);
       try {
         await updateAvatar(formData).unwrap();
-        toast.success(t('messages.avatarSuccess'));
+        Swal.fire({
+          title: "Success!",
+          text: "Avatar updated successfully!",
+          icon: "success",
+          confirmButtonText: "Cool",
+        });
       } catch (error: any) {
-        toast.error(error?.data?.message || t('messages.avatarError'));
+        Swal.fire({
+          title: "Error!",
+          text: error?.data?.message || t('messages.avatarError'),
+          icon: "error",
+          confirmButtonText: "Cool",
+        });
       }
     }
   };
@@ -89,7 +116,12 @@ export default function ProfilePage() {
   const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      toast.error(t('messages.passwordMismatch'));
+      Swal.fire({
+        title: "Error!",
+        text: "Passwords do not match!",
+        icon: "error",
+        confirmButtonText: "Cool",
+      });
       return;
     }
     
@@ -98,10 +130,20 @@ export default function ProfilePage() {
         oldPassword: passwordForm.oldPassword,
         newPassword: passwordForm.newPassword,
       }).unwrap();
-      toast.success(t('messages.passwordSuccess'));
+      Swal.fire({
+        title: "Success!",
+        text: "Password changed successfully!",
+        icon: "success",
+        confirmButtonText: "Cool",
+      });
       setPasswordForm({ oldPassword: "", newPassword: "", confirmPassword: "" });
     } catch (error: any) {
-      toast.error(error?.data?.message || t('messages.passwordError'));
+      Swal.fire({
+        title: "Error!",
+        text: error?.data?.message || t('messages.passwordError'),
+        icon: "error",
+        confirmButtonText: "Cool",
+      });
     }
   };
 
@@ -219,6 +261,28 @@ export default function ProfilePage() {
                           value={profileForm.mobile} 
                           onChange={handleProfileChange} 
                           placeholder="+1234567890" 
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="address">{t('personalInfo.address')}</Label>
+                        <Input 
+                          id="address" 
+                          name="address" 
+                          value={profileForm.address} 
+                          onChange={handleProfileChange} 
+                          placeholder="Your Address" 
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="company">{t('personalInfo.company')}</Label>
+                        <Input 
+                          id="company" 
+                          name="company" 
+                          value={profileForm.company} 
+                          onChange={handleProfileChange} 
+                          placeholder="Your Company" 
                         />
                       </div>
 

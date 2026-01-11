@@ -5,12 +5,12 @@ export default function HowItWorks() {
 
   const steps = [
     {
-      title: t('step1Title'),
-      description: t('step1Desc'),
-    },
-    {
       title: t('step2Title'),
       description: t('step2Desc'),
+    },
+    {
+      title: t('step1Title'),
+      description: t('step1Desc'),
     },
     {
       title: t('step3Title'),

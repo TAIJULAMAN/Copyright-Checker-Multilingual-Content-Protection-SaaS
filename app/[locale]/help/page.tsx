@@ -12,7 +12,7 @@ export default function HelpCenter() {
     {
       question: "What's the difference between Basic Check and Full Report?",
       answer:
-        "Basic Check ($29) provides a quick copyright detection on your reels. Full Report ($39) includes advanced copyright detection, detailed analysis of each reel, and PDF/CSV export options for your records.",
+        "Basic Check ($29) provides a quick copyright detection on your reels. Full Report ($39) includes advanced copyright detection, detailed analysis of each reel, and CSV export options for your records.",
     },
     {
       question: "Can you scan private reels?",

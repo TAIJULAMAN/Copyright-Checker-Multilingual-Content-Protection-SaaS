@@ -26,6 +26,8 @@ export default function SignupPage() {
     lastName: "",
     email: "",
     mobile: "",
+    address: "",
+    company: "",
     password: "",
     confirmPassword: "",
     agreeTerms: false,
@@ -79,6 +81,8 @@ export default function SignupPage() {
         lastName: formData.lastName,
         email: formData.email,
         mobile: formData.mobile,
+        address: formData.address,
+        company: formData.company,
         password: formData.password,
       }).unwrap();
 
@@ -162,6 +166,34 @@ export default function SignupPage() {
                   name="mobile"
                   placeholder={t('mobilePlaceholder')}
                   value={formData.mobile}
+                  onChange={handleChange}
+                  disabled={isLoading}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  {t('address')}
+                </label>
+                <Input
+                  type="text"
+                  name="address"
+                  placeholder={t('addressPlaceholder')}
+                  value={formData.address}
+                  onChange={handleChange}
+                  disabled={isLoading}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  {t('company')}
+                </label>
+                <Input
+                  type="text"
+                  name="company"
+                  placeholder={t('companyPlaceholder')}
+                  value={formData.company}
                   onChange={handleChange}
                   disabled={isLoading}
                 />

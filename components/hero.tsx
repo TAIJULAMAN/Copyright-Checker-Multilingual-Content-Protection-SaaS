@@ -2,9 +2,9 @@
 
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
-import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 
 export default function Hero() {
   const t = useTranslations('Hero');
@@ -15,7 +15,7 @@ export default function Hero() {
     >
       <div className="h-full flex items-center">
         <div className="container mx-auto px-5 lg:px-0 py-10 md:py-20 lg:py-24 relative">
-          <div className="relative mx-auto mb-6 md:mb-0 w-40 h-40 sm:w-48 sm:h-48 md:absolute md:top-1/5 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-56 md:h-56 lg:w-48 lg:h-48 z-10">
+          {/* <div className="relative mx-auto mb-6 md:mb-0 w-40 h-40 sm:w-48 sm:h-48 md:absolute md:top-1/5 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-56 md:h-56 lg:w-48 lg:h-48 z-10">
                 <Image
                   src="/hero.png"
                   alt="Copyright Check Badge"
@@ -24,17 +24,17 @@ export default function Hero() {
                   className="object-contain"
                   sizes="(max-width: 768px) 160px, (max-width: 1024px) 192px, 256px"
                 />
-              </div>
+              </div> */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
               
             {/* Left Column: Text and Actions */}
             <div className="flex flex-col gap-6">
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight">
-                {t('titlePrefix')}
+                {t('titlePrefix')}{" "}
                 <br className="hidden sm:block" />
-                <span>{t('titleMiddle')}</span>
-                <br className="hidden sm:block" />
-                <span className="text-purple-600 whitespace-nowrap">{t('titleSuffix')}</span>
+                <span> {t('titleMiddle')} </span>
+                <br className="hidden sm:block" /> 
+                <span className="text-purple-600 inline-block max-w-[800px]">{t('titleSuffix')}</span>
               </h1>
 
               <div className="max-w-2xl">
@@ -49,17 +49,36 @@ export default function Hero() {
                     size="lg"
                   >
                     <Link href="/scan">
-                      <span className="mr-2">▶</span> {t('cta')}
+                      <span className="mr-2"></span> {t('cta')}
                     </Link>
                   </Button>
                   <div className="flex items-center justify-center sm:justify-start text-sm text-gray-600">
                     
                   </div>
                   
+                  
                 </div>
-                <p className="text-center sm:text-left">
+
+                {/* Mobile Image */}
+                <div className="relative w-full h-[400px] mb-8 md:hidden">
+                  <Image
+                    src="/heroupdateimg.png"
+                    alt="Copyright Check Badge"
+                    fill
+                    priority
+                    className="object-contain"
+                    sizes="100vw"
+                  />
+                  <div 
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                      background: 'linear-gradient(to right, transparent 80%, white 98%)'
+                    }}
+                  />
+                </div>
+                {/* <p className="text-center sm:text-left">
                   {t('trust')}
-                </p>
+                </p> */}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3">
@@ -95,14 +114,20 @@ export default function Hero() {
             </div>
 
             {/* Right Column: Image */}
-            <div className="relative w-full h-[400px] md:h-[600px] md:ml-28">
+            <div className="relative w-full h-[400px] md:h-[600px] hidden md:block mt-8 md:mt-0">
               <Image
-                src="/heroimg.jpeg"
+                src="/heroupdateimg.png"
                 alt="Copyright Check Badge"
                 fill
                 priority
                 className="object-contain"
                 sizes="(max-width: 768px) 100vw, 50vw"
+              />
+              <div 
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background: 'linear-gradient(to right, transparent 80%, white 90%)'
+                }}
               />
             </div>
           </div>

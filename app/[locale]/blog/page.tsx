@@ -1,15 +1,27 @@
-"use client"
-
-import Link from "next/link"
+import { Link } from "@/i18n/routing"
 import { ArrowRight } from "lucide-react"
 import PageHeader from "@/components/page-header"
-import { useGetAllBlogsQuery } from "@/redux/api/blogApi"
 import Image from "next/image"
-import { getImageUrl } from "@/redux/api/config"
+import { getImageUrl, BASE_URL, REVALIDATE_TIME } from "@/redux/api/config"
 
-export default function BlogPage() {
-  const { data, isLoading, isError } = useGetAllBlogsQuery(undefined)
-  const posts = data?.data || []
+async function getBlogs() {
+  try {
+    const res = await fetch(`${BASE_URL}/blogs`, {
+      next: { revalidate: REVALIDATE_TIME },
+    });
+    
+    if (!res.ok) return null;
+    
+    return res.json();
+  } catch (error) {
+    return null;
+  }
+}
+
+export default async function BlogPage() {
+  const response = await getBlogs();
+  const posts = response?.data || [];
+  const isError = !response;
 
   return (
     <div className="min-h-screen bg-white">
@@ -21,13 +33,7 @@ export default function BlogPage() {
 
       {/* Blog Grid */}
       <main className="container mx-auto px-5 md:px-0 py-16">
-        {/* Loading State */}
-        {isLoading && (
-          <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
-          </div>
-        )}
-
+        
         {/* Error State */}
         {isError && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
@@ -37,9 +43,9 @@ export default function BlogPage() {
         )}
 
         {/* Blog Posts Grid */}
-        {!isLoading && !isError && (
+        {!isError && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {posts.map((post) => (
+            {posts.map((post: any) => (
               <article
                 key={post._id}
                 className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"

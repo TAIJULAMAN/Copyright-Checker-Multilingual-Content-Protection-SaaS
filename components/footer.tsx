@@ -11,8 +11,8 @@ export default function Footer() {
       <div className="container mx-auto px-5 lg:px-0">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           <div>
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <Image src="/hero.png" alt="Logo" width={100} height={100} />
+            <div className="flex items-center gap-2 mb-4">
+              <Image src="/footer.png" alt="Logo" width={200} height={200} />
             </div>
             <p className="text-sm">
               {t('disclaimer')}
@@ -71,6 +71,11 @@ export default function Footer() {
               <li>
                 <Link href="/terms" className="hover:text-white">
                   {t('terms')}
+                </Link>
+              </li>
+              <li>
+                <Link href="/imprint" className="hover:text-white">
+                  {t('imprint')}
                 </Link>
               </li>
               <li>

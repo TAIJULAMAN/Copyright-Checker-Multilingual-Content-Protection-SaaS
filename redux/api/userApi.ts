@@ -1,8 +1,26 @@
 import { baseApi } from './baseApi';
+import { User } from '../slices/authSlice';
+
+export interface UpdateUserRequest {
+  firstName?: string;
+  lastName?: string;
+  mobile?: string;
+  address?: string;
+  company?: string;
+}
+
+export interface UpdateUserResponse {
+  statusCode: number;
+  data: {
+    user: User;
+  };
+  message: string;
+  success: boolean;
+}
 
 export const userApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    updateUser: builder.mutation({
+    updateUser: builder.mutation<UpdateUserResponse, UpdateUserRequest>({
       query: (data) => ({
         url: '/users/update-user',
         method: 'PATCH',

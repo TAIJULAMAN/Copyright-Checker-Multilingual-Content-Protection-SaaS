@@ -1,13 +1,24 @@
-"use client"
+import { Link } from "@/i18n/routing"
+import { BASE_URL, REVALIDATE_TIME } from "@/redux/api/config"
 
-import Link from "next/link"
-import { useGetPrivacyQuery } from "@/redux/api/privacyApi"
+async function getPrivacy() {
+  try {
+    const res = await fetch(`${BASE_URL}/legal-docs/privacy-policy`, {
+      next: { revalidate: REVALIDATE_TIME },
+    });
+    
+    if (!res.ok) return null;
+    
+    return res.json();
+  } catch (error) {
+    return null;
+  }
+}
 
-export default function PrivacyPolicy() {
-  // Fetch privacy policy from API
-  const { data, isLoading, isError } = useGetPrivacyQuery()
-
-  const privacyData = data?.data
+export default async function PrivacyPolicy() {
+  const response = await getPrivacy();
+  const privacyData = response?.data;
+  const isError = !response;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
@@ -31,13 +42,7 @@ export default function PrivacyPolicy() {
 
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Loading State */}
-        {isLoading && (
-          <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
-          </div>
-        )}
-
+        
         {/* Error State */}
         {isError && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
@@ -47,7 +52,7 @@ export default function PrivacyPolicy() {
         )}
 
         {/* Privacy Policy Content */}
-        {!isLoading && !isError && privacyData && (
+        {!isError && privacyData && (
           <div className="prose max-w-none">
             <div
               className="space-y-8 text-gray-700"

@@ -12,6 +12,8 @@ export interface User {
   role: string;
   isBlocked: boolean;
   hasEverSubscribed: boolean;
+  address?: string;
+  company?: string;
   boundInstagramAccounts: any[];
   createdAt: string;
   updatedAt: string;

@@ -25,6 +25,7 @@ export interface SubscriptionResponse {
 
 export interface CreatePayPalOrderRequest {
   planId: string;
+  couponCode?: string;
 }
 
 export interface CreatePayPalOrderResponse {

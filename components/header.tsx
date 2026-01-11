@@ -23,6 +23,7 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import { selectCurrentUser, logout } from "@/redux/slices/authSlice";
 import { useLogoutMutation } from "@/redux/api/authApi";
+import { baseApi } from "@/redux/api/baseApi";
 import Cookies from "js-cookie";
 import { Link, useRouter, usePathname } from "@/i18n/routing";
 import { useTranslations, useLocale } from "next-intl";
@@ -50,16 +51,17 @@ export default function Header() {
     
     // 1. Clear Redux State
     dispatch(logout());
-    
+    dispatch(baseApi.util.resetApiState()); // Clear RTK Query cache
+
     // 2. Clear Cookies
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
     
     // 3. Clear Session Storage
-    sessionStorage.removeItem("user");
+    sessionStorage.clear();
     
-    // 4. Clear Local Storage (Redux Persist)
-    localStorage.removeItem("persist:root");
+    // 4. Clear Local Storage
+    localStorage.clear();
     
     setMobileMenuOpen(false);
     router.push("/");
@@ -245,6 +247,7 @@ export default function Header() {
 
           {/* Tablet and Mobile Menu - Show language toggle and hamburger */}
           <div className="lg:hidden flex items-center gap-2">
+            {/* Language Toggle */}
             <div className="inline-flex items-center rounded-full overflow-hidden bg-white">
               <button
                 onClick={() => handleLangChange("en")}
@@ -268,6 +271,7 @@ export default function Header() {
               </button>
             </div>
 
+            {/* Hamburger Menu */}
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 ml-1">
@@ -279,28 +283,6 @@ export default function Header() {
                 <SheetHeader className="border-b pb-4">
                   <div className="flex items-center justify-between">
                     <SheetTitle className="text-xl font-bold text-gray-900">{t('menu')}</SheetTitle>
-                    <div className="inline-flex items-center rounded-full overflow-hidden bg-white border border-gray-200">
-                      <button
-                        onClick={() => handleLangChange("en")}
-                        className={`px-4 py-2 text-xs font-medium transition-colors ${
-                          locale === "en"
-                            ? "bg-purple-600 text-white"
-                            : "bg-transparent text-gray-700"
-                        }`}
-                      >
-                        EN
-                      </button>
-                      <button
-                        onClick={() => handleLangChange("de")}
-                        className={`px-4 py-2 text-xs font-medium transition-colors ${
-                          locale === "de"
-                            ? "bg-purple-600 text-white"
-                            : "bg-transparent text-gray-700"
-                        }`}
-                      >
-                        DE
-                      </button>
-                    </div>
                   </div>
                 </SheetHeader>
                 <div className="flex flex-col h-full">
