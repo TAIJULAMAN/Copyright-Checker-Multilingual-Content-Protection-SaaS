@@ -180,7 +180,7 @@ export default function Header() {
                 <DropdownMenuTrigger className="outline-none">
                   <Avatar className="size-8 cursor-pointer ring-2 ring-purple-600 ring-offset-2">
                     <AvatarImage
-                      src={`https://avatar.iran.liara.run/public/boy?username=${displayName}`}
+                      src={`/boy.png`}
                       alt={displayName}
                     />
                     <AvatarFallback className="text-xs font-semibold text-[#1b2149] bg-white">
