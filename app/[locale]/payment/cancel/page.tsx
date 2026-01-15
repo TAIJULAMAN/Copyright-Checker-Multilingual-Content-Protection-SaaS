@@ -4,9 +4,11 @@ import { useRouter } from "next/navigation";
 import { XCircle, RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useTranslations } from "next-intl";
 
 export default function PaymentCancelPage() {
   const router = useRouter();
+  const t = useTranslations("PaymentCancel");
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
@@ -19,10 +21,10 @@ export default function PaymentCancelPage() {
           </div>
 
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Payment Cancelled
+            {t("title")}
           </h1>
           <p className="text-gray-600 mb-8">
-            Your transaction was cancelled and no payment was charged. If you experienced an issue, you can try again.
+            {t("description")}
           </p>
 
           <div className="space-y-3">
@@ -30,14 +32,14 @@ export default function PaymentCancelPage() {
               onClick={() => router.push("/pricing")}
               className="w-full bg-[#d6322f] hover:bg-[#b02220] text-white h-12 text-lg"
             >
-              <RefreshCcw className="mr-2 w-5 h-5" /> Try Again
+              <RefreshCcw className="mr-2 w-5 h-5" /> {t("tryAgain")}
             </Button>
             <Button
               variant="outline"
               onClick={() => router.push("/")}
               className="w-full text-gray-600 border-gray-300 hover:bg-gray-50"
             >
-              Return to Home
+              {t("returnHome")}
             </Button>
           </div>
         </CardContent>

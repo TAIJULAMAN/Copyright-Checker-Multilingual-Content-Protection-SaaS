@@ -416,5 +416,21 @@
     "section5Content": "Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:<br />[DE XXXXXXXX]",
     "section6Title": "Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV",
     "section6Content": "[Name]<br />[Straße Hausnummer]<br />[PLZ Ort]"
+  },
+  "PaymentSuccess": {
+    "title": "Zahlung erfolgreich!",
+    "description": "Vielen Dank für Ihren Kauf. Ihr Konto wurde aktualisiert.",
+    "orderId": "Bestell-ID",
+    "plan": "Plan",
+    "amount": "Gezahlter Betrag",
+    "backupPlan": "Abonnement",
+    "startScanning": "Jetzt scannen",
+    "viewSubscriptions": "Meine Abonnements ansehen"
+  },
+  "PaymentCancel": {
+    "title": "Zahlung abgebrochen",
+    "description": "Ihre Transaktion wurde abgebrochen und es erfolgte keine Belastung. Falls ein Problem aufgetreten ist, können Sie es erneut versuchen.",
+    "tryAgain": "Erneut versuchen",
+    "returnHome": "Zurück zur Startseite"
   }
 }

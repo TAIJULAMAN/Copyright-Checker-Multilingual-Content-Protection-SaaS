@@ -417,5 +417,21 @@
     "section5Content": "Sales tax identification number according to § 27 a Sales Tax Law:<br />[DE XXXXXXXX]",
     "section6Title": "Responsible for content acc. to § 55 Para. 2 RStV",
     "section6Content": "[Name]<br />[Street House Number]<br />[Zip Code City]"
+  },
+  "PaymentSuccess": {
+    "title": "Payment Successful!",
+    "description": "Thank you for your purchase. Your account has been upgraded.",
+    "orderId": "Order ID",
+    "plan": "Plan",
+    "amount": "Amount Paid",
+    "backupPlan": "Subscription",
+    "startScanning": "Start Scanning Now",
+    "viewSubscriptions": "View My Subscriptions"
+  },
+  "PaymentCancel": {
+    "title": "Payment Cancelled",
+    "description": "Your transaction was cancelled and no payment was charged. If you experienced an issue, you can try again.",
+    "tryAgain": "Try Again",
+    "returnHome": "Return to Home"
   }
 }
