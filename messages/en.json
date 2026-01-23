@@ -207,7 +207,12 @@
     "subscribe": "Subscribe Now",
     "processing": "Processing...",
     "noPlans": "No Monthly Plans Available",
-    "noPlansDesc": "We couldn't find any monthly recurring plans at the moment."
+    "noPlansDesc": "We couldn't find any monthly recurring plans at the moment.",
+    "historyTitle": "Subscription History",
+    "plan": "Plan",
+    "status": "Status",
+    "date": "Date",
+    "checksUsed": "Checks Used"
   },
   "Results": {
     "title": "Your Copyright Check Results",

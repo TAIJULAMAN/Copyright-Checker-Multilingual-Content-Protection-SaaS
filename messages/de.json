@@ -206,7 +206,12 @@
     "subscribe": "Jetzt abonnieren",
     "processing": "Verarbeitung...",
     "noPlans": "Keine Monatspläne verfügbar",
-    "noPlansDesc": "Wir konnten derzeit keine monatlichen Abonnements finden."
+    "noPlansDesc": "Wir konnten derzeit keine monatlichen Abonnements finden.",
+    "historyTitle": "Abonnement-Verlauf",
+    "plan": "Plan",
+    "status": "Status",
+    "date": "Datum",
+    "checksUsed": "Genutzte Checks"
   },
   "Results": {
     "title": "Ihre Copyright-Check-Ergebnisse",
