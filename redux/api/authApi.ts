@@ -59,6 +59,39 @@ export const authApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    forgotPassword: builder.mutation<{ message: string }, { email: string }>({
+      query: (data) => ({
+        url: '/auth/forgot-password',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    verifyResetOtp: builder.mutation<
+      { data: { resetToken: string; message: string }; message: string; success: boolean },
+      { email: string; otp: string }
+    >({
+      query: (data) => ({
+        url: '/auth/verify-reset-otp',
+        method: 'POST',
+        // Assuming the API expects otp in the body alongside email. 
+        // If it's strictly cookies, we might need a different approach, 
+        // but typically explicit body is preferred for API clients.
+        body: data,
+      }),
+    }),
+    resetPassword: builder.mutation<
+      { message: string; success: boolean },
+      { newPassword: string; confirmPassword: string; token: string }
+    >({
+      query: ({ token, ...data }) => ({
+        url: '/auth/reset-password',
+        method: 'POST',
+        body: data,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    }),
     logout: builder.mutation<void, void>({
       query: () => ({
         url: '/auth/logout',
@@ -76,6 +109,14 @@ export const authApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation, useChangePasswordMutation, useLogoutMutation, useGetMeQuery } =
-  authApi;
+export const {
+  useLoginMutation,
+  useRegisterMutation,
+  useChangePasswordMutation,
+  useLogoutMutation,
+  useGetMeQuery,
+  useForgotPasswordMutation,
+  useVerifyResetOtpMutation,
+  useResetPasswordMutation
+} = authApi;
 

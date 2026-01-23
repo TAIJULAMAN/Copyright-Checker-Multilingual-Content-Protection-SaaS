@@ -15,29 +15,33 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useTranslations } from "next-intl";
+import { useForgotPasswordMutation } from "@/redux/api/authApi";
+import { toast } from "sonner"; // Assuming sonner is used for toasts based on package.json
 
 export default function ForgotPasswordPage() {
   const t = useTranslations('Auth.forgotPassword');
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
+
+  const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      await forgotPassword({ email }).unwrap();
       sessionStorage.setItem("resetEmail", email);
       setSubmitted(true);
-      setLoading(false);
 
       // Redirect to OTP verification after 2 seconds
       setTimeout(() => {
         router.push("/verify-otp");
       }, 2000);
-    }, 1000);
+    } catch (error: any) {
+      console.error("Forgot password error:", error);
+      toast.error(error?.data?.message || t('error') || "Failed to send reset email");
+    }
   };
 
   if (submitted) {
@@ -98,7 +102,7 @@ export default function ForgotPasswordPage() {
                   placeholder={t('emailPlaceholder')}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  disabled={loading}
+                  disabled={isLoading}
                   required
                 />
               </div>
@@ -106,9 +110,9 @@ export default function ForgotPasswordPage() {
               <Button
                 type="submit"
                 className="w-full bg-purple-600 hover:bg-purple-700"
-                disabled={loading}
+                disabled={isLoading}
               >
-                {loading ? t('submitting') : t('submit')}
+                {isLoading ? t('submitting') : t('submit')}
               </Button>
 
               <p className="text-center text-sm text-gray-600">

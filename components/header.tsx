@@ -27,6 +27,7 @@ import { baseApi } from "@/redux/api/baseApi";
 import Cookies from "js-cookie";
 import { Link, useRouter, usePathname } from "@/i18n/routing";
 import { useTranslations, useLocale } from "next-intl";
+import { getImageUrl } from "@/redux/api/config";
 
 export default function Header() {
   const router = useRouter();
@@ -180,7 +181,7 @@ export default function Header() {
                 <DropdownMenuTrigger className="outline-none">
                   <Avatar className="size-8 cursor-pointer ring-2 ring-purple-600 ring-offset-2">
                     <AvatarImage
-                      src={`/boy.png`}
+                      src={getImageUrl(user?.avatar || "")}
                       alt={displayName}
                     />
                     <AvatarFallback className="text-xs font-semibold text-[#1b2149] bg-white">

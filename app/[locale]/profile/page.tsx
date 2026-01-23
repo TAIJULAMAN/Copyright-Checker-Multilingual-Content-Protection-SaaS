@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { Camera, Loader2, Save, Lock, User as UserIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Swal from "sweetalert2";
+import { getImageUrl } from "@/redux/api/config";
 
 export default function ProfilePage() {
   const t = useTranslations('Profile');
@@ -170,7 +171,7 @@ export default function ProfilePage() {
             <CardContent className="pt-6 flex flex-col items-center text-center">
               <div className="relative group mb-4">
                 <Avatar className="h-24 w-24 ring-2 ring-offset-2 ring-primary/10">
-                  <AvatarImage src={user?.avatar} alt={user?.fullname} className="object-cover" />
+                  <AvatarImage src={getImageUrl(user?.avatar || "")} alt={user?.fullname || ""} className="object-cover" />
                   <AvatarFallback className="text-xl bg-primary/5 text-primary">
                     {user?.fullname?.charAt(0).toUpperCase() || "U"}
                   </AvatarFallback>

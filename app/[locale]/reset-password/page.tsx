@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useTranslations } from "next-intl"
+import { useResetPasswordMutation } from "@/redux/api/authApi"
+import { toast } from "sonner"
 
 export default function ResetPasswordPage() {
   const t = useTranslations('Auth.resetPassword');
@@ -16,51 +18,58 @@ export default function ResetPasswordPage() {
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
+
+  const [resetPassword, { isLoading }] = useResetPasswordMutation()
 
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
-    setLoading(true)
 
     // Validation
     if (!password || !confirmPassword) {
       setError(t('validationError'))
-      setLoading(false)
       return
     }
 
     if (password.length < 8) {
       setError(t('passwordLength'))
-      setLoading(false)
       return
     }
 
     if (password !== confirmPassword) {
       setError(t('passwordMismatch'))
-      setLoading(false)
       return
     }
 
-    // Simulate API call
-    setTimeout(() => {
+    const token = sessionStorage.getItem("resetToken")
+    if (!token) {
+      setError("Session expired. Please start over.")
+      return
+    }
+
+    // Call API
+    try {
+      await resetPassword({ newPassword: password, confirmPassword, token }).unwrap()
       setSuccess(true)
-      setLoading(false)
 
       // Redirect to login after 2 seconds
       setTimeout(() => {
         sessionStorage.removeItem("resetEmail")
         sessionStorage.removeItem("otpVerified")
+        sessionStorage.removeItem("resetToken")
         router.push("/login")
       }, 2000)
-    }, 1000)
+    } catch (err: any) {
+      console.error("Reset password error:", err)
+      setError(err?.data?.message || t('error') || "Failed to reset password")
+    }
   }
 
   if (success) {
     return (
       <>
- 
+
         <main className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
           <Card className="w-full max-w-md text-center">
             <CardContent className="pt-6">
@@ -76,7 +85,7 @@ export default function ResetPasswordPage() {
             </CardContent>
           </Card>
         </main>
-  
+
       </>
     )
   }
@@ -100,7 +109,7 @@ export default function ResetPasswordPage() {
                   placeholder={t('newPasswordPlaceholder')}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  disabled={loading}
+                  disabled={isLoading}
                   required
                 />
                 <p className="text-xs text-gray-500">{t('passwordHint')}</p>
@@ -113,13 +122,13 @@ export default function ResetPasswordPage() {
                   placeholder={t('confirmPasswordPlaceholder')}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  disabled={loading}
+                  disabled={isLoading}
                   required
                 />
               </div>
 
-              <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700" disabled={loading}>
-                {loading ? t('submitting') : t('submit')}
+              <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700" disabled={isLoading}>
+                {isLoading ? t('submitting') : t('submit')}
               </Button>
 
               <p className="text-center text-sm text-gray-600">
