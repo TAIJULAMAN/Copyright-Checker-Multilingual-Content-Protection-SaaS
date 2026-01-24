@@ -42,7 +42,8 @@
     "error": "Fehler beim Laden der Pläne",
     "payment": "Zahlung",
     "buyNow": "Jetzt kaufen",
-    "processing": "Verarbeitung..."
+    "processing": "Verarbeitung...",
+    "couponError": "Sie haben bereits einen Gutschein verwendet. Pro Benutzer ist nur ein Gutschein erlaubt."
   },
   "Features": {
     "title": "Warum Sie sich für unseren Service entscheiden sollten",

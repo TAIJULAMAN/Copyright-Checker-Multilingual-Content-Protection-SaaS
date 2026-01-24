@@ -42,7 +42,8 @@
     "error": "Failed to load plans",
     "payment": "Payment",
     "buyNow": "Buy Now",
-    "processing": "Processing..."
+    "processing": "Processing...",
+    "couponError": "You have already used a coupon. Only one coupon per user is allowed."
   },
   "Features": {
     "title": "Why Choose Our Service",

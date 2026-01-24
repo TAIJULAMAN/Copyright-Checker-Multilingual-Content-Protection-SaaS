@@ -41,8 +41,9 @@ export default function CheckoutPage() {
         toast.error(result.message || "Failed to initiate payment");
       }
     } catch (error: any) {
+      console.log('Checkout Error:', error);
       if (error?.status === 403) {
-        toast.error(error?.data?.message || "You have already used a coupon. Only one coupon per user is allowed.");
+        toast.error(t('couponError'));
       } else {
         toast.error(error?.data?.message || "Something went wrong");
       }
