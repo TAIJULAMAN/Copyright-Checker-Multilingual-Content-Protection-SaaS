@@ -211,7 +211,14 @@
     "plan": "Plan",
     "status": "Status",
     "date": "Datum",
-    "checksUsed": "Genutzte Checks"
+    "noHistory": "Keine Abonnement-Verlauf gefunden",
+    "cancelSubscription": "Abonnement kündigen",
+    "cancelConfirmationTitle": "Sind Sie sicher?",
+    "cancelConfirmationText": "Dies kann nicht rückgängig gemacht werden!",
+    "yesCancel": "Ja, kündigen!",
+    "noKeepIt": "Nein, behalten",
+    "cancelledTitle": "Gekündigt!",
+    "cancelledText": "Ihr Abonnement wurde gekündigt."
   },
   "Results": {
     "title": "Ihre Copyright-Check-Ergebnisse",

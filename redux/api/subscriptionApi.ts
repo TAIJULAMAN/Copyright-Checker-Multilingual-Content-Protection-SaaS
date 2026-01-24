@@ -73,7 +73,7 @@ export const subscriptionApi = baseApi.injectEndpoints({
     }),
     createPayPalOrder: builder.mutation<CreatePayPalOrderResponse, CreatePayPalOrderRequest>({
       query: (data) => ({
-        url: '/paypal', 
+        url: '/paypal',
         method: 'POST',
         body: data,
       }),
@@ -81,7 +81,16 @@ export const subscriptionApi = baseApi.injectEndpoints({
     getMySubscription: builder.query<MySubscriptionResponse, void>({
       query: () => '/subscription/my-subscription',
     }),
+    getSubscriptionHistory: builder.query<any, { page: number; limit: number }>({
+      query: ({ page, limit }) => `/subscription/my-history?limit=${limit}&page=${page}`,
+    }),
+    cancelSubscription: builder.mutation<any, void>({
+      query: () => ({
+        url: '/subscription/cancel',
+        method: 'PUT',
+      }),
+    }),
   }),
 });
 
-export const { useGetSubscriptionPlansQuery, useCreatePayPalOrderMutation, useGetMySubscriptionQuery } = subscriptionApi;
+export const { useGetSubscriptionPlansQuery, useCreatePayPalOrderMutation, useGetMySubscriptionQuery, useGetSubscriptionHistoryQuery, useCancelSubscriptionMutation } = subscriptionApi;

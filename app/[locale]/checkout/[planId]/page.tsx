@@ -17,7 +17,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const params = useParams();
   const planId = params?.planId as string;
-  
+
   const [couponCode, setCouponCode] = useState("");
   const { data: plansData, isLoading: isPlansLoading } = useGetSubscriptionPlansQuery();
   const [createPayPalOrder, { isLoading: isCreatingOrder }] = useCreatePayPalOrderMutation();
@@ -32,16 +32,20 @@ export default function CheckoutPage() {
         planId,
         ...(couponCode.trim() && { couponCode: couponCode.trim() })
       };
-      
+
       const result = await createPayPalOrder(payload).unwrap();
-      
+
       if (result.success && result.data.approveUrl) {
         window.location.href = result.data.approveUrl;
       } else {
         toast.error(result.message || "Failed to initiate payment");
       }
     } catch (error: any) {
-      toast.error(error?.data?.message || "Something went wrong");
+      if (error?.status === 403) {
+        toast.error(error?.data?.message || "You have already used a coupon. Only one coupon per user is allowed.");
+      } else {
+        toast.error(error?.data?.message || "Something went wrong");
+      }
     }
   };
 
@@ -67,10 +71,10 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-gray-50/50 pb-20">
-       <PageHeader 
-        title="Checkout" 
-        description="Review your order and complete payment" 
-        backLink={{ href: "/pricing", text: "Back to Plans" }} 
+      <PageHeader
+        title="Checkout"
+        description="Review your order and complete payment"
+        backLink={{ href: "/pricing", text: "Back to Plans" }}
       />
 
       <div className="max-w-md mx-auto px-4 -mt-8 relative z-10">
@@ -82,7 +86,7 @@ export default function CheckoutPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-6 space-y-6">
-            
+
             <div className="flex justify-between items-end">
               <span className="text-gray-600">Total Amount</span>
               <span className="text-3xl font-bold text-primary">${selectedPlan.price}</span>
@@ -103,8 +107,8 @@ export default function CheckoutPage() {
 
           </CardContent>
           <CardFooter className="pt-2 pb-6">
-            <Button 
-              className="w-full h-11 text-base cursor-pointer bg-purple-600 hover:bg-purple-700" 
+            <Button
+              className="w-full h-11 text-base cursor-pointer bg-purple-600 hover:bg-purple-700"
               onClick={handlePayment}
               disabled={isCreatingOrder}
             >
@@ -119,7 +123,7 @@ export default function CheckoutPage() {
             </Button>
           </CardFooter>
         </Card>
-        
+
         <p className="text-center text-xs text-gray-500 mt-6 max-w-xs mx-auto">
           By proceeding, you agree to our Terms of Service and Privacy Policy. Secure payment processing by PayPal.
         </p>

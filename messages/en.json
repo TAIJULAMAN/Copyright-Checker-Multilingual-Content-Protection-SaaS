@@ -212,7 +212,14 @@
     "plan": "Plan",
     "status": "Status",
     "date": "Date",
-    "checksUsed": "Checks Used"
+    "noHistory": "No subscription history found",
+    "cancelSubscription": "Cancel Subscription",
+    "cancelConfirmationTitle": "Are you sure?",
+    "cancelConfirmationText": "You won't be able to revert this!",
+    "yesCancel": "Yes, cancel it!",
+    "noKeepIt": "No, keep it",
+    "cancelledTitle": "Cancelled!",
+    "cancelledText": "Your subscription has been cancelled."
   },
   "Results": {
     "title": "Your Copyright Check Results",
