@@ -1,11 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Download, Shield, AlertTriangle, CheckCircle, Info } from "lucide-react";
+import { Download, Shield, AlertTriangle, CheckCircle, Info, ShieldCheck, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { useGetMyJobsQuery, Job } from "@/redux/api/copyrightApi";
+import { useGetSubscriptionPlansQuery, useCreatePayPalOrderMutation, Plan } from "@/redux/api/subscriptionApi";
 import { useRouter } from "@/i18n/routing";
 import Cookies from "js-cookie";
 import { BASE_URL } from "@/redux/api/config";
@@ -14,8 +15,29 @@ import { useTranslations } from "next-intl";
 
 export default function ResultsPage() {
   const t = useTranslations('Results');
+  const tSub = useTranslations('MySubscription');
   const router = useRouter();
   const [isDownloading, setIsDownloading] = useState(false);
+  const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
+
+  const { data: plansData } = useGetSubscriptionPlansQuery();
+  const [createPayPalOrder, { isLoading: isCreatingOrder }] = useCreatePayPalOrderMutation();
+
+  const recurringPlans = plansData?.data?.plans.filter((plan: Plan) => plan.subscriptionType === "recurring" && plan.isActive) || [];
+
+  const handleBuyNow = async (planId: string) => {
+    setSelectedPlanId(planId);
+    try {
+      const result = await createPayPalOrder({ planId }).unwrap();
+      if (result.success && result.data.approveUrl) {
+        window.location.href = result.data.approveUrl;
+      }
+    } catch (err) {
+      console.error("Error creating order:", err);
+    } finally {
+      setSelectedPlanId(null);
+    }
+  };
 
   /* eslint-disable @typescript-eslint/no-unused-vars */
   const handleDownloadReport = async (jobId: string) => {
@@ -28,16 +50,16 @@ export default function ResultsPage() {
         },
         cache: 'no-store',
       });
-      
+
       if (!response.ok) {
         throw new Error('Failed to download report');
       }
-      
+
       const contentDisposition = response.headers.get('content-disposition');
-      const filename = contentDisposition 
-        ? contentDisposition.split('filename=')[1].replace(/"/g, '') 
+      const filename = contentDisposition
+        ? contentDisposition.split('filename=')[1].replace(/"/g, '')
         : `copyright-report-${new Date().toISOString().split('T')[0]}.xlsx`;
-      
+
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -45,7 +67,7 @@ export default function ResultsPage() {
       a.download = filename;
       document.body.appendChild(a);
       a.click();
-      
+
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
     } catch (error) {
@@ -56,7 +78,7 @@ export default function ResultsPage() {
   };
   const { data, isLoading } = useGetMyJobsQuery(undefined);
   const jobs = data?.data?.jobs || [];
-  
+
   // Calculate total statistics across all jobs
   const totalSafeReels = jobs.reduce((acc: number, job: Job) => acc + (job.totalVideos - job.copyrightMatches), 0);
   const totalFlaggedReels = jobs.reduce((acc: number, job: Job) => acc + job.copyrightMatches, 0);
@@ -143,39 +165,39 @@ export default function ResultsPage() {
       <div className="container mx-auto px-5 lg:px-0 py-8 space-y-8">
         {/* Info Banner */}
         <div className="bg-yellow-100 border-l-4 border-yellow-500 p-5 hidden">
-            <div className="flex items-start gap-3">
+          <div className="flex items-start gap-3">
             <div className="text-yellow-600 mt-0.5">⏰</div>
             <p className="text-yellow-800 text-sm">
-                {t('dataDelete')}
+              {t('dataDelete')}
             </p>
-            </div>
+          </div>
         </div>
 
         {/* Summary Cards (Total Stats) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Safe Reels Card */}
-            <div className="bg-white border border-green-200 rounded-xl p-6 shadow-sm flex items-center gap-4">
-                <div className="bg-green-100 p-3 rounded-full">
-                    <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                </div>
-                <div>
-                    <div className="text-3xl font-bold text-green-600">{totalSafeReels}</div>
-                    <div className="font-semibold text-gray-900">{t('safeReels')}</div>
-                    <div className="text-sm text-gray-500">{t('safeDesc')}</div>
-                </div>
+          {/* Safe Reels Card */}
+          <div className="bg-white border border-green-200 rounded-xl p-6 shadow-sm flex items-center gap-4">
+            <div className="bg-green-100 p-3 rounded-full">
+              <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
             </div>
+            <div>
+              <div className="text-3xl font-bold text-green-600">{totalSafeReels}</div>
+              <div className="font-semibold text-gray-900">{t('safeReels')}</div>
+              <div className="text-sm text-gray-500">{t('safeDesc')}</div>
+            </div>
+          </div>
 
-            {/* Flagged Reels Card */}
-            <div className="bg-white border border-red-200 rounded-xl p-6 shadow-sm flex items-center gap-4">
-                 <div className="bg-red-100 p-3 rounded-full">
-                    <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                </div>
-                <div>
-                    <div className="text-3xl font-bold text-red-600">{totalFlaggedReels}</div>
-                    <div className="font-semibold text-gray-900">{t('flaggedReels')}</div>
-                    <div className="text-sm text-gray-500">{t('flaggedDesc')}</div>
-                </div>
+          {/* Flagged Reels Card */}
+          <div className="bg-white border border-red-200 rounded-xl p-6 shadow-sm flex items-center gap-4">
+            <div className="bg-red-100 p-3 rounded-full">
+              <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
             </div>
+            <div>
+              <div className="text-3xl font-bold text-red-600">{totalFlaggedReels}</div>
+              <div className="font-semibold text-gray-900">{t('flaggedReels')}</div>
+              <div className="text-sm text-gray-500">{t('flaggedDesc')}</div>
+            </div>
+          </div>
         </div>
 
         {/* Recent Jobs Table */}
@@ -183,7 +205,7 @@ export default function ResultsPage() {
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hidden md:block">
             <div className="p-6 border-b border-gray-200">
               <h2 className="text-xl font-bold text-gray-900">
-              {t('history')}
+                {t('history')}
               </h2>
             </div>
 
@@ -212,93 +234,91 @@ export default function ResultsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                    {jobs.length === 0 ? (
-                      <tr>
-                        <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
-                          <div className="flex flex-col items-center gap-3">
-                            <Shield className="w-12 h-12 text-gray-300" />
-                            <p className="text-lg font-medium text-gray-900">{t('noHistory')}</p>
-                            <p className="text-sm text-gray-500 max-w-sm">
-                              {t('noHistoryDesc')}
-                            </p>
-                            <Link href="/scan" className="mt-2">
-                              <Button variant="outline" className="text-purple-600 border-purple-600 hover:bg-purple-50">
-                                {t('scanNow')}
-                              </Button>
-                            </Link>
-                          </div>
-                        </td>
-                      </tr>
-                    ) : (
+                  {jobs.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
+                        <div className="flex flex-col items-center gap-3">
+                          <Shield className="w-12 h-12 text-gray-300" />
+                          <p className="text-lg font-medium text-gray-900">{t('noHistory')}</p>
+                          <p className="text-sm text-gray-500 max-w-sm">
+                            {t('noHistoryDesc')}
+                          </p>
+                          <Link href="/scan" className="mt-2">
+                            <Button variant="outline" className="text-purple-600 border-purple-600 hover:bg-purple-50">
+                              {t('scanNow')}
+                            </Button>
+                          </Link>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
                     jobs.map((job: Job) => {
                       const riskLevel = getJobRiskLevel(job);
                       const styles = getRiskStyles(riskLevel);
-                      
+
                       return (
-                      <tr
-                        key={job.jobId}
-                        onClick={() => router.push(`/results/${job.jobId}`)}
-                        className={`border-b border-gray-100 cursor-pointer transition-colors ${styles.rowClass}`}
-                      >
-                        <td className="px-6 py-4 text-sm text-gray-700">
-                          {new Date(job.createdAt).toLocaleDateString()}
-                        </td>
-                        <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                          @{job.instagramUsername}
-                        </td>
-                        <td className="px-6 py-4">
-                          <Badge 
-                            variant="secondary"
-                            className={`capitalize ${
-                              job.status === "completed"
+                        <tr
+                          key={job.jobId}
+                          onClick={() => router.push(`/results/${job.jobId}`)}
+                          className={`border-b border-gray-100 cursor-pointer transition-colors ${styles.rowClass}`}
+                        >
+                          <td className="px-6 py-4 text-sm text-gray-700">
+                            {new Date(job.createdAt).toLocaleDateString()}
+                          </td>
+                          <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                            @{job.instagramUsername}
+                          </td>
+                          <td className="px-6 py-4">
+                            <Badge
+                              variant="secondary"
+                              className={`capitalize ${job.status === "completed"
                                 ? "bg-green-100 text-green-700 hover:bg-green-100"
                                 : "bg-yellow-100 text-yellow-700 hover:bg-yellow-100"
-                            }`}
-                          >
-                            {job.status}
-                          </Badge>
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-700">
-                          {job.processedVideos} / {job.totalVideos}
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-2">
-                            <span className={`font-bold ${styles.textClass}`}>
-                              {job.copyrightMatches}
-                            </span>
-                            {styles.icon}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-                            <Button 
-                              size="sm" 
-                              variant="outline"
-                              className={`${
-                                riskLevel === 'high'
-                                  ? "text-purple-600 border-purple-600 hover:bg-purple-50" 
+                                }`}
+                            >
+                              {job.status}
+                            </Badge>
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-700">
+                            {job.processedVideos} / {job.totalVideos}
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-2">
+                              <span className={`font-bold ${styles.textClass}`}>
+                                {job.copyrightMatches}
+                              </span>
+                              {styles.icon}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className={`${riskLevel === 'high'
+                                  ? "text-purple-600 border-purple-600 hover:bg-purple-50"
                                   : "text-green-600 border-green-600 hover:bg-green-50"
-                              }`}
-                              onClick={() => router.push(`/results/${job.jobId}`)}
-                            >
-                              {t('viewDetails')}
-                            </Button>
-                            <Button 
-                              size="sm"
-                              className={`${
-                                riskLevel === 'high'
-                                  ? "bg-purple-600 hover:bg-purple-700 text-white" 
+                                  }`}
+                                onClick={() => router.push(`/results/${job.jobId}`)}
+                              >
+                                {t('viewDetails')}
+                              </Button>
+                              <Button
+                                size="sm"
+                                className={`${riskLevel === 'high'
+                                  ? "bg-purple-600 hover:bg-purple-700 text-white"
                                   : "bg-green-600 hover:bg-green-700 text-white"
-                              }`}
-                              onClick={() => handleDownloadReport(job.jobId)}
-                              disabled={isDownloading}
-                            >
+                                  }`}
+                                onClick={() => handleDownloadReport(job.jobId)}
+                                disabled={isDownloading}
+                              >
                                 <Download className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                    )})
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      )
+                    })
                   )}
                 </tbody>
               </table>
@@ -307,98 +327,96 @@ export default function ResultsPage() {
 
           {/* Mobile Card Layout */}
           <div className="md:hidden space-y-4">
-             <div className="flex items-center justify-between mb-2">
-                <h2 className="text-xl font-bold text-gray-900">{t('history')}</h2>
-             </div>
-             {jobs.length === 0 ? (
-               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
-                 <div className="flex flex-col items-center gap-3">
-                   <Shield className="w-12 h-12 text-gray-300" />
-                   <p className="text-lg font-medium text-gray-900">{t('noHistory')}</p>
-                   <Link href="/scan" className="mt-2 w-full">
-                     <Button className="w-full bg-purple-600 text-white hover:bg-purple-700">
-                       {t('scanNow')}
-                     </Button>
-                   </Link>
-                 </div>
-               </div>
-             ) : (
-               jobs.map((job: Job) => (
-                 <div 
-                   key={job.jobId}
-                   onClick={() => router.push(`/results/${job.jobId}`)}
-                   className={`bg-white rounded-lg shadow-sm border p-4 cursor-pointer relative overflow-hidden ${
-                      job.copyrightMatches > 0 ? "border-red-100" : "border-green-100"
-                   }`}
-                 >
-                   {/* Status Stripe */}
-                   <div className={`absolute top-0 left-0 w-1 h-full ${job.copyrightMatches > 0 ? 'bg-red-500' : 'bg-green-500'}`} />
-                   
-                   <div className="flex justify-between items-start mb-3 pl-2">
-                      <div>
-                        <p className="text-xs text-gray-500 mb-1">{new Date(job.createdAt).toLocaleDateString()}</p>
-                        <p className="text-lg font-bold text-gray-900">@{job.instagramUsername}</p>
-                      </div>
-                      <span
-                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
-                          job.status === "completed"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-yellow-100 text-yellow-700"
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-xl font-bold text-gray-900">{t('history')}</h2>
+            </div>
+            {jobs.length === 0 ? (
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
+                <div className="flex flex-col items-center gap-3">
+                  <Shield className="w-12 h-12 text-gray-300" />
+                  <p className="text-lg font-medium text-gray-900">{t('noHistory')}</p>
+                  <Link href="/scan" className="mt-2 w-full">
+                    <Button className="w-full bg-purple-600 text-white hover:bg-purple-700">
+                      {t('scanNow')}
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              jobs.map((job: Job) => (
+                <div
+                  key={job.jobId}
+                  onClick={() => router.push(`/results/${job.jobId}`)}
+                  className={`bg-white rounded-lg shadow-sm border p-4 cursor-pointer relative overflow-hidden ${job.copyrightMatches > 0 ? "border-red-100" : "border-green-100"
+                    }`}
+                >
+                  {/* Status Stripe */}
+                  <div className={`absolute top-0 left-0 w-1 h-full ${job.copyrightMatches > 0 ? 'bg-red-500' : 'bg-green-500'}`} />
+
+                  <div className="flex justify-between items-start mb-3 pl-2">
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">{new Date(job.createdAt).toLocaleDateString()}</p>
+                      <p className="text-lg font-bold text-gray-900">@{job.instagramUsername}</p>
+                    </div>
+                    <span
+                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${job.status === "completed"
+                        ? "bg-green-100 text-green-700"
+                        : "bg-yellow-100 text-yellow-700"
                         }`}
-                      >
-                        {job.status}
-                      </span>
-                   </div>
+                    >
+                      {job.status}
+                    </span>
+                  </div>
 
-                   <div className="grid grid-cols-2 gap-4 mb-4 pl-2">
-                      <div className="bg-gray-50 rounded-lg p-2 text-center">
-                        <p className="text-xs text-gray-500 mb-0.5">{t('videosScanned')}</p>
-                        <p className="font-semibold text-gray-900">{job.processedVideos} / {job.totalVideos}</p>
+                  <div className="grid grid-cols-2 gap-4 mb-4 pl-2">
+                    <div className="bg-gray-50 rounded-lg p-2 text-center">
+                      <p className="text-xs text-gray-500 mb-0.5">{t('videosScanned')}</p>
+                      <p className="font-semibold text-gray-900">{job.processedVideos} / {job.totalVideos}</p>
+                    </div>
+                    <div className={`rounded-lg p-2 text-center ${job.copyrightMatches > 0 ? 'bg-red-50' : 'bg-green-50'}`}>
+                      <p className="text-xs text-gray-500 mb-0.5">{t('matchesFound')}</p>
+                      <div className="flex items-center justify-center gap-1">
+                        <p className={`font-bold ${job.copyrightMatches > 0 ? 'text-red-700' : 'text-green-700'}`}>
+                          {job.copyrightMatches}
+                        </p>
+                        {job.copyrightMatches > 0 && <Shield className="w-3 h-3 text-red-600" />}
                       </div>
-                      <div className={`rounded-lg p-2 text-center ${job.copyrightMatches > 0 ? 'bg-red-50' : 'bg-green-50'}`}>
-                        <p className="text-xs text-gray-500 mb-0.5">{t('matchesFound')}</p>
-                        <div className="flex items-center justify-center gap-1">
-                          <p className={`font-bold ${job.copyrightMatches > 0 ? 'text-red-700' : 'text-green-700'}`}>
-                             {job.copyrightMatches}
-                          </p>
-                          {job.copyrightMatches > 0 && <Shield className="w-3 h-3 text-red-600" />}
-                        </div>
-                      </div>
-                   </div>
+                    </div>
+                  </div>
 
-                   <div className="flex gap-2 pl-2">
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        className="flex-1 text-xs border-gray-200"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          router.push(`/results/${job.jobId}`);
-                        }}
-                      >
-                       {t('viewDetails')}
-                      </Button>
-                      <Button 
-                         size="sm"
-                         variant="ghost"
-                         className={`px-3 ${job.copyrightMatches > 0 ? 'text-purple-600 bg-purple-50' : 'text-green-600 bg-green-50'}`}
-                         onClick={(e) => {
-                           e.stopPropagation();
-                           handleDownloadReport(job.jobId);
-                         }}
-                         disabled={isDownloading}
-                       >
-                          <Download className="w-4 h-4" />
-                       </Button>
-                   </div>
-                 </div>
-               ))
-             )}
+                  <div className="flex gap-2 pl-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1 text-xs border-gray-200"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        router.push(`/results/${job.jobId}`);
+                      }}
+                    >
+                      {t('viewDetails')}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className={`px-3 ${job.copyrightMatches > 0 ? 'text-purple-600 bg-purple-50' : 'text-green-600 bg-green-50'}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDownloadReport(job.jobId);
+                      }}
+                      disabled={isDownloading}
+                    >
+                      <Download className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
 
         {/* Action Buttons */}
-        </div>
+      </div>
 
 
       {/* Disclaimer Section */}
@@ -425,58 +443,121 @@ export default function ResultsPage() {
               {t('disclaimerText')}
             </p>
           </div>
-      </div>
+        </div>
       </div>
 
       {/* color meaning  */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 !px-4 p-6 container mx-auto my-10">
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="risk-guide" className="border-b-0">
-              <AccordionTrigger className="hover:no-underline py-0">
-                <span className="text-lg font-semibold text-gray-900">{t('riskGuide')}</span>
-              </AccordionTrigger>
-              <AccordionContent className="pt-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div className="flex flex-col gap-2 p-3 rounded-lg bg-green-50 border border-green-100">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-green-500 shadow-sm" />
-                      <span className="font-semibold text-green-900">{t('lowRisk')}</span>
-                    </div>
-                    <span className="text-sm text-green-800 leading-relaxed">{t('lowRiskDesc')}</span>
+        <Accordion type="single" collapsible className="w-full">
+          <AccordionItem value="risk-guide" className="border-b-0">
+            <AccordionTrigger className="hover:no-underline py-0">
+              <span className="text-lg font-semibold text-gray-900">{t('riskGuide')}</span>
+            </AccordionTrigger>
+            <AccordionContent className="pt-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="flex flex-col gap-2 p-3 rounded-lg bg-green-50 border border-green-100">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-green-500 shadow-sm" />
+                    <span className="font-semibold text-green-900">{t('lowRisk')}</span>
                   </div>
-
-                  <div className="flex flex-col gap-2 p-3 rounded-lg bg-yellow-50 border border-yellow-100">
-                    <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-yellow-500 shadow-sm" />
-                      <span className="font-semibold text-yellow-900">{t('mediumRisk')}</span>
-                    </div>
-                    <span className="text-sm text-yellow-800 leading-relaxed">{t('mediumRiskDesc')}</span>
-                  </div>
-
-                  <div className="flex flex-col gap-2 p-3 rounded-lg bg-red-50 border border-red-100">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-red-600 shadow-sm" />
-                      <span className="font-semibold text-red-900">{t('highRisk')}</span>
-                    </div>
-                    <span className="text-sm text-red-800 leading-relaxed">{t('highRiskDesc')}</span>
-                  </div>
-
-                  <div className="flex flex-col gap-2 p-3 rounded-lg bg-gray-50 border border-gray-200">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-white border border-gray-300 shadow-sm" />
-                      <span className="font-semibold text-gray-900">{t('noAudio')}</span>
-                    </div>
-                    <span className="text-sm text-gray-600 leading-relaxed">{t('noAudioDesc')}</span>
-                  </div>
+                  <span className="text-sm text-green-800 leading-relaxed">{t('lowRiskDesc')}</span>
                 </div>
-                
-                <p className="text-xs text-gray-400 mt-4 pt-4 border-t border-gray-100 italic">
-                  {t('disclaimerTitle')}: Technical risk assessment - no legal advice.
-                </p>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+
+                <div className="flex flex-col gap-2 p-3 rounded-lg bg-yellow-50 border border-yellow-100">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-yellow-500 shadow-sm" />
+                    <span className="font-semibold text-yellow-900">{t('mediumRisk')}</span>
+                  </div>
+                  <span className="text-sm text-yellow-800 leading-relaxed">{t('mediumRiskDesc')}</span>
+                </div>
+
+                <div className="flex flex-col gap-2 p-3 rounded-lg bg-red-50 border border-red-100">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-red-600 shadow-sm" />
+                    <span className="font-semibold text-red-900">{t('highRisk')}</span>
+                  </div>
+                  <span className="text-sm text-red-800 leading-relaxed">{t('highRiskDesc')}</span>
+                </div>
+
+                <div className="flex flex-col gap-2 p-3 rounded-lg bg-gray-50 border border-gray-200">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-white border border-gray-300 shadow-sm" />
+                    <span className="font-semibold text-gray-900">{t('noAudio')}</span>
+                  </div>
+                  <span className="text-sm text-gray-600 leading-relaxed">{t('noAudioDesc')}</span>
+                </div>
+              </div>
+
+              <p className="text-xs text-gray-400 mt-4 pt-4 border-t border-gray-100 italic">
+                {t('disclaimerTitle')}: Technical risk assessment - no legal advice.
+              </p>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </div>
+
+
+      {/* monthly plans show if any scan history is present */}
+      {jobs.length > 0 && (
+        /* AVAILABLE monthly PLANS */
+        <div className="border-t border-gray-200 p-6 container mx-auto">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+            {tSub("availablePlans")}
+          </h2>
+
+          {recurringPlans.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
+              {recurringPlans.map((plan: Plan) => (
+                <div
+                  key={plan._id}
+                  className="relative rounded-xl p-8 border border-gray-200 bg-white hover:shadow-lg transition-shadow flex flex-col"
+                >
+                  <div className="text-center">
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                    <div className="flex items-baseline justify-center my-4">
+                      <span className="text-4xl font-bold text-[#1b2149]">${plan.price}</span>
+                    </div>
+                    <p className="text-sm text-gray-500 capitalize mb-6">
+                      {plan.billingCycle} {tSub("payment")}
+                    </p>
+                  </div>
+
+                  <div className="space-y-3 flex-grow mb-8">
+                    {plan.features.map((feature: string, i: number) => (
+                      <div key={i} className="flex items-start gap-3">
+                        <div className="mt-0.5 rounded-full bg-green-100 p-1">
+                          <ShieldCheck className="w-3 h-3 text-green-600" />
+                        </div>
+                        <span className="text-gray-700 text-sm">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <Button
+                    onClick={() => handleBuyNow(plan._id)}
+                    disabled={isCreatingOrder && selectedPlanId === plan._id}
+                    className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                  >
+                    {isCreatingOrder && selectedPlanId === plan._id ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        {tSub("processing")}
+                      </>
+                    ) : (
+                      tSub("subscribe")
+                    )}
+                  </Button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center p-8 bg-white rounded-lg border border-gray-200">
+              <h3 className="text-lg font-medium text-gray-900">{tSub("noPlans")}</h3>
+              <p className="text-gray-500 mt-2">{tSub("noPlansDesc")}</p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

@@ -14,7 +14,7 @@ import { Link } from "@/i18n/routing";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import Swal from "sweetalert2";
-import { toast } from "sonner"; // Assuming sonner is used for toast notifications
+// import { toast } from "sonner"; // Assuming sonner is used for toast notifications
 
 interface MySubscriptionClientProps {
     recurringPlans: any[];
@@ -363,64 +363,7 @@ export default function MySubscriptionClient({ recurringPlans }: MySubscriptionC
                 )}
             </div>
 
-            {/* SECTION 3: AVAILABLE PLANS */}
-            <div className="border-t border-gray-200 pt-12">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-                    {t("availablePlans")}
-                </h2>
 
-                {recurringPlans.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
-                        {recurringPlans.map((plan: any) => (
-                            <div
-                                key={plan._id}
-                                className="relative rounded-xl p-8 border border-gray-200 bg-white hover:shadow-lg transition-shadow flex flex-col"
-                            >
-                                <div className="text-center">
-                                    <h3 className="text-xl font-bold text-gray-900 mb-2">{plan.name}</h3>
-                                    <div className="flex items-baseline justify-center my-4">
-                                        <span className="text-4xl font-bold text-[#1b2149]">${plan.price}</span>
-                                    </div>
-                                    <p className="text-sm text-gray-500 capitalize mb-6">
-                                        {plan.billingCycle} {t("payment")}
-                                    </p>
-                                </div>
-
-                                <div className="space-y-3 flex-grow mb-8">
-                                    {plan.features.map((feature: string, i: number) => (
-                                        <div key={i} className="flex items-start gap-3">
-                                            <div className="mt-0.5 rounded-full bg-green-100 p-1">
-                                                <ShieldCheck className="w-3 h-3 text-green-600" />
-                                            </div>
-                                            <span className="text-gray-700 text-sm">{feature}</span>
-                                        </div>
-                                    ))}
-                                </div>
-
-                                <Button
-                                    onClick={() => handleBuyNow(plan._id)}
-                                    disabled={isCreatingOrder && selectedPlanId === plan._id}
-                                    className="w-full bg-purple-600 hover:bg-purple-700 text-white"
-                                >
-                                    {isCreatingOrder && selectedPlanId === plan._id ? (
-                                        <>
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                            {t("processing")}
-                                        </>
-                                    ) : (
-                                        t("subscribe")
-                                    )}
-                                </Button>
-                            </div>
-                        ))}
-                    </div>
-                ) : (
-                    <div className="text-center p-8 bg-white rounded-lg border border-gray-200">
-                        <h3 className="text-lg font-medium text-gray-900">{t("noPlans")}</h3>
-                        <p className="text-gray-500 mt-2">{t("noPlansDesc")}</p>
-                    </div>
-                )}
-            </div>
         </div>
     );
 }

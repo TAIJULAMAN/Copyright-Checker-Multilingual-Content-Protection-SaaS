@@ -49,7 +49,7 @@ export default function Hero() {
                     size="lg"
                   >
                     <Link href="/scan">
-                      <span className="mr-2"></span> {t('cta')}
+                      <span className=""></span> {t('cta')}
                     </Link>
                   </Button>
                   <div className="flex items-center justify-center sm:justify-start text-sm text-gray-600">
