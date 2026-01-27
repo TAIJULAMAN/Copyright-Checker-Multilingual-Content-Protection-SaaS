@@ -62,7 +62,7 @@ export default async function Pricing() {
               </div>
               <div className="flex items-baseline justify-center my-5">
                 <span className="text-4xl font-bold text-[#1b2149]">
-                  ${plan.price}
+                  €{plan.price}
                 </span>
               </div>
               <div className="flex items-center justify-center">
