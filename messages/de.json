@@ -40,7 +40,7 @@
     "subtitle": "Transparente Preise für jeden Bedarf",
     "loading": "Pläne werden geladen...",
     "error": "Fehler beim Laden der Pläne",
-    "payment": "Zahlung",
+    "payment": "Einmalzahlung",
     "buyNow": "Jetzt kaufen",
     "processing": "Verarbeitung...",
     "couponError": "Sie haben bereits einen Gutschein verwendet. Pro Benutzer ist nur ein Gutschein erlaubt."
@@ -188,7 +188,7 @@
   "MySubscription": {
     "title": "Mein Abonnement",
     "description": "Verwalten Sie Ihren aktuellen Plan und Ihre Nutzung",
-    "payment": "Zahlung",
+    "payment": "Einmalzahlung",
     "startDate": "Startdatum",
     "endDate": "Enddatum",
     "lifetime": "Lebenslanger Zugriff",

@@ -66,7 +66,7 @@ export default async function Pricing() {
                 </span>
               </div>
               <div className="flex items-center justify-center">
-                <p className="text-gray-600 text-sm mb-6 capitalize">{plan.billingCycle} {t('payment')}</p>
+                <p className="text-gray-600 text-sm mb-6 capitalize"> {t('payment')}</p>
               </div>
 
               <PricingClient planId={plan._id} />
