@@ -8,11 +8,12 @@ import { getTranslations } from "next-intl/server";
 async function getBlogs() {
   try {
     const res = await fetch(`${BASE_URL}/blogs`, {
-      next: { revalidate: REVALIDATE_TIME },
+      // next: { revalidate: REVALIDATE_TIME },
+      cache: 'no-store',
     });
-    
+
     if (!res.ok) return null;
-    
+
     return res.json();
   } catch (error) {
     return null;
@@ -51,7 +52,7 @@ export default async function Blog() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
-            
+
             {/* Error State */}
             {isError && (
               <div className="col-span-full bg-red-50 border border-red-200 rounded-lg p-6 text-center">

@@ -7,11 +7,13 @@ import { Plan } from "@/redux/api/subscriptionApi";
 async function getSubscriptionPlans() {
   try {
     const res = await fetch(`${BASE_URL}/subscription/plans`, {
-      next: { revalidate: REVALIDATE_TIME },
+      // // next: { revalidate: REVALIDATE_TIME },
+  
+      cache: 'no-store',
     });
-    
+
     if (!res.ok) return null;
-    
+
     return res.json();
   } catch (error) {
     return null;

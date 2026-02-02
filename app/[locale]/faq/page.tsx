@@ -8,11 +8,12 @@ import FaqClient from "./faq-client"
 async function getFaqs() {
   try {
     const res = await fetch(`${BASE_URL}/faqs`, {
-      next: { revalidate: REVALIDATE_TIME },
+      // next: { revalidate: REVALIDATE_TIME },
+      cache: 'no-store',
     });
-    
+
     if (!res.ok) return null;
-    
+
     return res.json();
   } catch (error) {
     return null;
@@ -35,7 +36,7 @@ export default async function FAQ() {
 
       {/* FAQ Accordion */}
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        
+
         {/* Error State */}
         {isError && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">

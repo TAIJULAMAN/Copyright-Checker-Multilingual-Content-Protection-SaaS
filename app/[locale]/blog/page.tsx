@@ -7,11 +7,12 @@ import { getImageUrl, BASE_URL, REVALIDATE_TIME } from "@/redux/api/config"
 async function getBlogs() {
   try {
     const res = await fetch(`${BASE_URL}/blogs`, {
-      next: { revalidate: REVALIDATE_TIME },
+      // next: { revalidate: REVALIDATE_TIME },
+      cache: 'no-store',
     });
-    
+
     if (!res.ok) return null;
-    
+
     return res.json();
   } catch (error) {
     return null;
@@ -33,7 +34,7 @@ export default async function BlogPage() {
 
       {/* Blog Grid */}
       <main className="container mx-auto px-5 md:px-0 py-16">
-        
+
         {/* Error State */}
         {isError && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">

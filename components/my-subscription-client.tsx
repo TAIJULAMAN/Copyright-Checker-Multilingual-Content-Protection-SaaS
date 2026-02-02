@@ -18,9 +18,10 @@ import Swal from "sweetalert2";
 
 interface MySubscriptionClientProps {
     recurringPlans: any[];
+    subscriptionHistory: any;
 }
 
-export default function MySubscriptionClient({ recurringPlans }: MySubscriptionClientProps) {
+export default function MySubscriptionClient({ recurringPlans, subscriptionHistory: _initialHistory }: MySubscriptionClientProps) {
     const t = useTranslations("MySubscription");
     const { data, isLoading, error } = useGetMySubscriptionQuery();
     const [page, setPage] = useState(1);

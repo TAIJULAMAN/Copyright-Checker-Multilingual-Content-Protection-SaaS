@@ -4,11 +4,12 @@ import { BASE_URL, REVALIDATE_TIME } from "@/redux/api/config"
 async function getImprint() {
   try {
     const res = await fetch(`${BASE_URL}/legal-docs/imprint`, {
-      next: { revalidate: REVALIDATE_TIME },
+      // next: { revalidate: REVALIDATE_TIME },
+      cache: 'no-store',
     });
-    
+
     if (!res.ok) return null;
-    
+
     return res.json();
   } catch (error) {
     return null;
@@ -42,7 +43,7 @@ export default async function Imprint() {
 
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        
+
         {/* Error State */}
         {isError && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
