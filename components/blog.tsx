@@ -1,30 +1,17 @@
+"use client";
+
 import { Link } from "@/i18n/routing";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { Button } from "./ui/button";
-import { getImageUrl, BASE_URL, REVALIDATE_TIME } from "@/redux/api/config";
-import { getTranslations } from "next-intl/server";
+import { getImageUrl } from "@/redux/api/config";
+import { useTranslations } from "next-intl";
+import { useGetAllBlogsQuery } from "@/redux/api/blogApi";
 
-async function getBlogs() {
-  try {
-    const res = await fetch(`${BASE_URL}/blogs`, {
-      // next: { revalidate: REVALIDATE_TIME },
-      cache: 'no-store',
-    });
-
-    if (!res.ok) return null;
-
-    return res.json();
-  } catch (error) {
-    return null;
-  }
-}
-
-export default async function Blog() {
-  const t = await getTranslations('Blog');
-  const response = await getBlogs();
+export default function Blog() {
+  const t = useTranslations('Blog');
+  const { data: response, isLoading, isError } = useGetAllBlogsQuery(undefined);
   const posts = response?.data || [];
-  const isError = !response;
 
   return (
     <main className=" bg-[#1b224a]">
@@ -53,6 +40,13 @@ export default async function Blog() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
 
+            {/* Loading State */}
+            {isLoading && (
+              <div className="col-span-full flex justify-center py-10">
+                <Loader2 className="w-8 h-8 animate-spin text-white" />
+              </div>
+            )}
+
             {/* Error State */}
             {isError && (
               <div className="col-span-full bg-red-50 border border-red-200 rounded-lg p-6 text-center">
@@ -62,7 +56,7 @@ export default async function Blog() {
             )}
 
             {/* Blog Posts */}
-            {!isError && posts?.map((post: any, index: number) => (
+            {!isLoading && !isError && posts?.map((post: any, index: number) => (
               <article key={post._id || index} className="overflow-hidden">
                 <div className="bg-gradient-to-br from-purple-600 to-pink-500 h-48 rounded-lg flex items-center justify-center text-6xl mb-4 overflow-hidden">
                   {post.coverImage ? (

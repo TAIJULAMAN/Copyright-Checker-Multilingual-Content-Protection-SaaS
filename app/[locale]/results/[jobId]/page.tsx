@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetJobDetailsQuery } from "@/redux/api/copyrightApi";
+import { useGetJobDetailsQuery, useExportJobReportMutation } from "@/redux/api/copyrightApi";
 import { useParams } from "next/navigation";
 import { useRouter } from "@/i18n/routing";
 import { ArrowLeft, ExternalLink, Shield, AlertTriangle, CheckCircle, Music, Play, Eye, X, Info } from "lucide-react";
@@ -22,42 +22,24 @@ export default function JobDetailsPage() {
   const router = useRouter();
   const jobId = params.jobId as string;
   const { data, isLoading, error } = useGetJobDetailsQuery(jobId);
-  const [isDownloading, setIsDownloading] = useState(false);
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  const [exportJobReport, { isLoading: isDownloading }] = useExportJobReportMutation();
   const [selectedResult, setSelectedResult] = useState<any>(null);
 
   const handleDownloadReport = async () => {
     try {
-      setIsDownloading(true);
-      const token = Cookies.get("accessToken");
-      const response = await fetch(`${BASE_URL}/copyright/my-jobs/export/${jobId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to download report');
-      }
-      
-      const contentDisposition = response.headers.get('content-disposition');
-      const filename = contentDisposition 
-        ? contentDisposition.split('filename=')[1].replace(/"/g, '') 
-        : `copyright-report-${new Date().toISOString().split('T')[0]}.xlsx`;
-      
-      const blob = await response.blob();
+      const { blob, filename } = await exportJobReport(jobId).unwrap();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
       a.download = filename;
       document.body.appendChild(a);
       a.click();
-      
+
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
     } catch (error) {
       console.error('Error downloading report:', error);
-    } finally {
-      setIsDownloading(false);
     }
   };
 
@@ -96,15 +78,15 @@ export default function JobDetailsPage() {
 
   // Helper to get styling and icons based on risk level
   const getRiskStyles = (riskLevel: string, isVisited: boolean) => {
-    const baseClasses = isVisited 
-      ? "bg-gray-100 border-gray-400" 
+    const baseClasses = isVisited
+      ? "bg-gray-100 border-gray-400"
       : "";
 
     switch (riskLevel?.toLowerCase()) {
       case 'high':
         return {
-          rowClass: isVisited 
-            ? "bg-gray-100 hover:bg-gray-200 border-l-4 border-l-gray-400" 
+          rowClass: isVisited
+            ? "bg-gray-100 hover:bg-gray-200 border-l-4 border-l-gray-400"
             : "bg-red-100 hover:bg-red-200 border-l-4 border-l-red-600",
           cardClass: isVisited
             ? "border-gray-300 bg-gray-50 border-l-[6px] border-l-gray-400"
@@ -117,8 +99,8 @@ export default function JobDetailsPage() {
         };
       case 'medium':
         return {
-          rowClass: isVisited 
-            ? "bg-gray-100 hover:bg-gray-200 border-l-4 border-l-gray-400" 
+          rowClass: isVisited
+            ? "bg-gray-100 hover:bg-gray-200 border-l-4 border-l-gray-400"
             : "bg-yellow-50 hover:bg-yellow-100 border-l-4 border-l-yellow-500",
           cardClass: isVisited
             ? "border-gray-300 bg-gray-50 border-l-[6px] border-l-gray-400"
@@ -131,8 +113,8 @@ export default function JobDetailsPage() {
         };
       case 'low':
         return {
-          rowClass: isVisited 
-            ? "bg-gray-100 hover:bg-gray-200 border-l-4 border-l-gray-400" 
+          rowClass: isVisited
+            ? "bg-gray-100 hover:bg-gray-200 border-l-4 border-l-gray-400"
             : "bg-green-50 hover:bg-green-100 border-l-4 border-l-green-500",
           cardClass: isVisited
             ? "border-gray-300 bg-gray-50 border-l-[6px] border-l-gray-400"
@@ -145,8 +127,8 @@ export default function JobDetailsPage() {
         };
       default: // Unknown or No Audio
         return {
-          rowClass: isVisited 
-            ? "bg-gray-100 hover:bg-gray-200 border-l-4 border-l-gray-400" 
+          rowClass: isVisited
+            ? "bg-gray-100 hover:bg-gray-200 border-l-4 border-l-gray-400"
             : "bg-white hover:bg-gray-50 border-l-4 border-l-gray-200",
           cardClass: isVisited
             ? "border-gray-300 bg-gray-50 border-l-[6px] border-l-gray-400"
@@ -188,7 +170,7 @@ export default function JobDetailsPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ">
           <div>
-             <Button variant="ghost" className="mb-2 pl-0 hover:bg-transparent hover:text-purple-600" onClick={() => router.back()}>
+            <Button variant="ghost" className="mb-2 pl-0 hover:bg-transparent hover:text-purple-600" onClick={() => router.back()}>
               <ArrowLeft className="mr-2 w-4 h-4" /> {t('backToHistory')}
             </Button>
             <h1 className="text-3xl font-bold text-gray-900">{t('title')}</h1>
@@ -197,26 +179,26 @@ export default function JobDetailsPage() {
             </p>
           </div>
           <div className="flex items-center gap-3 hidden md:flex">
-             <Button 
-               onClick={handleDownloadReport}
-               disabled={isDownloading}
-               className="bg-purple-600 hover:bg-purple-700 text-white"
-             >
-               {isDownloading ? (
-                 <>
-                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                   {t('downloading')}
-                 </>
-               ) : (
-                 <>
-                   <Download className="mr-2 h-4 w-4" />
-                   {t('downloadReport')}
-                 </>
-               )}
-             </Button>
-             <Badge variant={jobDetails.status === 'completed' ? 'default' : 'secondary'} className="text-sm px-3 py-1 capitalize">
+            <Button
+              onClick={handleDownloadReport}
+              disabled={isDownloading}
+              className="bg-purple-600 hover:bg-purple-700 text-white"
+            >
+              {isDownloading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {t('downloading')}
+                </>
+              ) : (
+                <>
+                  <Download className="mr-2 h-4 w-4" />
+                  {t('downloadReport')}
+                </>
+              )}
+            </Button>
+            <Badge variant={jobDetails.status === 'completed' ? 'default' : 'secondary'} className="text-sm px-3 py-1 capitalize">
               {jobDetails.status}
-             </Badge>
+            </Badge>
           </div>
         </div>
 
@@ -229,19 +211,19 @@ export default function JobDetailsPage() {
             </CardContent>
           </Card>
           <Card>
-             <CardContent className="p-1.5 md:pt-6 flex flex-col items-center justify-center text-center">
+            <CardContent className="p-1.5 md:pt-6 flex flex-col items-center justify-center text-center">
               <div className="text-[10px] md:text-sm text-gray-500 mb-0.5 md:mb-1 leading-tight ">{t('copyrightDetected')}</div>
               <div className="text-sm md:text-2xl font-bold text-red-600">{summary.copyrightedCount}</div>
             </CardContent>
           </Card>
           <Card>
-             <CardContent className="p-1.5 md:pt-6 flex flex-col items-center justify-center text-center">
+            <CardContent className="p-1.5 md:pt-6 flex flex-col items-center justify-center text-center">
               <div className="text-[10px] md:text-sm text-gray-500 mb-0.5 md:mb-1 leading-tight ">{t('uniqueSongs')}</div>
               <div className="text-sm md:text-2xl font-bold">{summary.uniqueSongs}</div>
             </CardContent>
           </Card>
-           <Card>
-             <CardContent className="p-1.5 md:pt-6 relative flex flex-col items-center justify-center text-center">
+          <Card>
+            <CardContent className="p-1.5 md:pt-6 relative flex flex-col items-center justify-center text-center">
               <div className="flex items-center gap-1 mb-0.5 md:mb-1 justify-center">
                 <div className="text-[10px] md:text-sm text-gray-500 leading-tight">{t('riskLevel')}</div>
                 <Popover>
@@ -251,7 +233,7 @@ export default function JobDetailsPage() {
                   <PopoverContent className="w-80 p-4">
                     <div className="space-y-4">
                       <h4 className="font-medium text-sm text-gray-900 border-b pb-2">{t('riskGuide')}</h4>
-                      
+
                       <div className="flex items-start gap-3">
                         <div className="w-3 h-3 rounded-full bg-green-500 mt-1.5 shrink-0 shadow-sm" />
                         <div>
@@ -262,7 +244,7 @@ export default function JobDetailsPage() {
 
                       <div className="flex items-start gap-3">
                         <div className="w-3 h-3 rounded-full bg-yellow-500 mt-1.5 shrink-0 shadow-sm" />
-                         <div>
+                        <div>
                           <span className="font-medium block text-sm text-gray-900">{t('mediumRisk')}</span>
                           <span className="text-xs text-gray-500 leading-tight block mt-0.5">{t('mediumRiskDesc')}</span>
                         </div>
@@ -278,12 +260,12 @@ export default function JobDetailsPage() {
 
                       <div className="flex items-start gap-3">
                         <div className="w-3 h-3 rounded-full bg-white border border-gray-300 mt-1.5 shrink-0 shadow-sm" />
-                         <div>
+                        <div>
                           <span className="font-medium block text-sm text-gray-900">{t('noAudio')}</span>
                           <span className="text-xs text-gray-500 leading-tight block mt-0.5">{t('noAudioDesc')}</span>
                         </div>
                       </div>
-                      
+
                       <p className="text-[10px] text-gray-400 mt-2 pt-3 border-t border-gray-100 italic">
                         {t('disclaimerTitle')}: Technical risk assessment - no legal advice.
                       </p>
@@ -306,60 +288,60 @@ export default function JobDetailsPage() {
           </Card>
         </div>
 
-                  {/* Risk Guide */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="risk-guide" className="border-b-0">
-                <AccordionTrigger className="hover:no-underline py-0">
-                  <span className="text-lg font-semibold text-gray-900">{t('riskGuide')}</span>
-                </AccordionTrigger>
-                <AccordionContent className="pt-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div className="flex flex-col gap-2 p-3 rounded-lg bg-green-50 border border-green-100">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-green-500 shadow-sm" />
-                        <span className="font-semibold text-green-900">{t('lowRisk')}</span>
-                      </div>
-                      <span className="text-sm text-green-800 leading-relaxed">{t('lowRiskDesc')}</span>
+        {/* Risk Guide */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="risk-guide" className="border-b-0">
+              <AccordionTrigger className="hover:no-underline py-0">
+                <span className="text-lg font-semibold text-gray-900">{t('riskGuide')}</span>
+              </AccordionTrigger>
+              <AccordionContent className="pt-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="flex flex-col gap-2 p-3 rounded-lg bg-green-50 border border-green-100">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-green-500 shadow-sm" />
+                      <span className="font-semibold text-green-900">{t('lowRisk')}</span>
                     </div>
-
-                    <div className="flex flex-col gap-2 p-3 rounded-lg bg-yellow-50 border border-yellow-100">
-                      <div className="flex items-center gap-2">
-                         <div className="w-3 h-3 rounded-full bg-yellow-500 shadow-sm" />
-                        <span className="font-semibold text-yellow-900">{t('mediumRisk')}</span>
-                      </div>
-                      <span className="text-sm text-yellow-800 leading-relaxed">{t('mediumRiskDesc')}</span>
-                    </div>
-
-                    <div className="flex flex-col gap-2 p-3 rounded-lg bg-red-50 border border-red-100">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-red-600 shadow-sm" />
-                        <span className="font-semibold text-red-900">{t('highRisk')}</span>
-                      </div>
-                      <span className="text-sm text-red-800 leading-relaxed">{t('highRiskDesc')}</span>
-                    </div>
-
-                    <div className="flex flex-col gap-2 p-3 rounded-lg bg-gray-50 border border-gray-200">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-white border border-gray-300 shadow-sm" />
-                        <span className="font-semibold text-gray-900">{t('noAudio')}</span>
-                      </div>
-                      <span className="text-sm text-gray-600 leading-relaxed">{t('noAudioDesc')}</span>
-                    </div>
+                    <span className="text-sm text-green-800 leading-relaxed">{t('lowRiskDesc')}</span>
                   </div>
-                  
-                  <p className="text-xs text-gray-400 mt-4 pt-4 border-t border-gray-100 italic">
-                    {t('disclaimerTitle')}: Technical risk assessment - no legal advice.
-                  </p>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </div>
+
+                  <div className="flex flex-col gap-2 p-3 rounded-lg bg-yellow-50 border border-yellow-100">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-yellow-500 shadow-sm" />
+                      <span className="font-semibold text-yellow-900">{t('mediumRisk')}</span>
+                    </div>
+                    <span className="text-sm text-yellow-800 leading-relaxed">{t('mediumRiskDesc')}</span>
+                  </div>
+
+                  <div className="flex flex-col gap-2 p-3 rounded-lg bg-red-50 border border-red-100">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-red-600 shadow-sm" />
+                      <span className="font-semibold text-red-900">{t('highRisk')}</span>
+                    </div>
+                    <span className="text-sm text-red-800 leading-relaxed">{t('highRiskDesc')}</span>
+                  </div>
+
+                  <div className="flex flex-col gap-2 p-3 rounded-lg bg-gray-50 border border-gray-200">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-white border border-gray-300 shadow-sm" />
+                      <span className="font-semibold text-gray-900">{t('noAudio')}</span>
+                    </div>
+                    <span className="text-sm text-gray-600 leading-relaxed">{t('noAudioDesc')}</span>
+                  </div>
+                </div>
+
+                <p className="text-xs text-gray-400 mt-4 pt-4 border-t border-gray-100 italic">
+                  {t('disclaimerTitle')}: Technical risk assessment - no legal advice.
+                </p>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
 
         {/* Results Section */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-             <h2 className="text-xl font-bold text-gray-900">{t('analyzedVideos')}</h2>
+            <h2 className="text-xl font-bold text-gray-900">{t('analyzedVideos')}</h2>
           </div>
 
           {/* Desktop Table View */}
@@ -381,8 +363,8 @@ export default function JobDetailsPage() {
                   const styles = getRiskStyles(riskLevel, isVisited);
 
                   return (
-                    <TableRow 
-                      key={result._id} 
+                    <TableRow
+                      key={result._id}
                       onClick={() => handleResultClick(result)}
                       className={`cursor-pointer transition-colors ${styles.rowClass}`}
                     >
@@ -390,64 +372,63 @@ export default function JobDetailsPage() {
                       <TableCell>
                         <div className={`w-16 h-16 relative rounded-md overflow-hidden border group ${isVisited ? 'border-gray-300 opacity-75' : 'border-gray-200'}`}>
                           {/* eslint-disable-next-line @next/next/no-img-element */}
-                           <img 
-                            src={result.thumbnail} 
-                            alt="Thumbnail" 
+                          <img
+                            src={result.thumbnail}
+                            alt="Thumbnail"
                             className="w-full h-full object-cover"
                           />
                         </div>
                       </TableCell>
 
-                       {/* 2. Status */}
+                      {/* 2. Status */}
                       <TableCell>
-                          <div className="flex items-center gap-2">
-                            <span 
-                                className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${styles.badgeClass}`}
-                            >
-                                {styles.icon}
-                                {styles.label}
-                            </span>
-                          </div>
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${styles.badgeClass}`}
+                          >
+                            {styles.icon}
+                            {styles.label}
+                          </span>
+                        </div>
                       </TableCell>
 
                       {/* 3. Link */}
                       <TableCell>
-                        <a 
-                          href={result.url} 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
+                        <a
+                          href={result.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           onClick={(e) => handleLinkClick(e, result._id)}
-                          className={`inline-flex items-center justify-center w-8 h-8 rounded-full transition-colors ${
-                            isVisited ? "text-gray-400 hover:text-gray-600 hover:bg-gray-200" : "text-purple-600 hover:text-purple-700 hover:bg-purple-50"
-                          }`}
+                          className={`inline-flex items-center justify-center w-8 h-8 rounded-full transition-colors ${isVisited ? "text-gray-400 hover:text-gray-600 hover:bg-gray-200" : "text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+                            }`}
                         >
-                           <ExternalLink className="w-4 h-4" />
+                          <ExternalLink className="w-4 h-4" />
                         </a>
                       </TableCell>
 
                       {/* 4. Actions (Eye) */}
                       <TableCell>
-                        <Button 
-                          variant="ghost" 
+                        <Button
+                          variant="ghost"
                           size="icon"
                           onClick={(e) => {
                             e.stopPropagation();
                             handleResultClick(result);
                           }}
                         >
-                            <Eye className={`w-5 h-5 ${isVisited ? "text-gray-400" : "text-gray-500 hover:text-purple-600"}`} />
+                          <Eye className={`w-5 h-5 ${isVisited ? "text-gray-400" : "text-gray-500 hover:text-purple-600"}`} />
                         </Button>
                       </TableCell>
 
                       {/* 5. Details */}
                       <TableCell>
                         {result.copyright.copyrighted ? (
-                            <div className={`text-sm ${isVisited ? "opacity-60" : ""}`}>
-                                <p className={`font-medium ${isVisited ? "text-gray-700" : "text-gray-900"}`}>{result.detection.title}</p>
-                                <p className="text-gray-500">{result.detection.artist}</p>
-                            </div>
+                          <div className={`text-sm ${isVisited ? "opacity-60" : ""}`}>
+                            <p className={`font-medium ${isVisited ? "text-gray-700" : "text-gray-900"}`}>{result.detection.title}</p>
+                            <p className="text-gray-500">{result.detection.artist}</p>
+                          </div>
                         ) : (
-                            <span className="text-sm text-gray-500">{t('noCopyright')}</span>
+                          <span className="text-sm text-gray-500">{t('noCopyright')}</span>
                         )}
                       </TableCell>
                     </TableRow>
@@ -465,8 +446,8 @@ export default function JobDetailsPage() {
               const styles = getRiskStyles(riskLevel, isVisited);
 
               return (
-                <div 
-                  key={result._id} 
+                <div
+                  key={result._id}
                   onClick={() => handleResultClick(result)}
                   className={`rounded-lg shadow-sm border p-4 cursor-pointer transition-colors ${styles.cardClass}`}
                 >
@@ -474,9 +455,9 @@ export default function JobDetailsPage() {
                     {/* Thumbnail */}
                     <div className="flex-shrink-0">
                       <div className={`w-20 h-20 relative rounded-md overflow-hidden border ${isVisited ? 'border-gray-300 opacity-75' : 'border-gray-200'}`}>
-                         <img 
-                          src={result.thumbnail} 
-                          alt="Thumbnail" 
+                        <img
+                          src={result.thumbnail}
+                          alt="Thumbnail"
                           className="w-full h-full object-cover"
                         />
                       </div>
@@ -485,28 +466,27 @@ export default function JobDetailsPage() {
                     {/* Content */}
                     <div className="flex-1 min-w-0 space-y-2">
                       <div className="flex items-start justify-between gap-2">
-                         {/* Status Badge */}
-                         <span 
-                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${styles.badgeClass}`}
+                        {/* Status Badge */}
+                        <span
+                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${styles.badgeClass}`}
                         >
-                            {styles.icon}
-                            {styles.label}
+                          {styles.icon}
+                          {styles.label}
                         </span>
-                        
-                         {/* Link Icon */}
-                         <a 
-                            href={result.url} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            onClick={(e) => handleLinkClick(e, result._id)}
-                            className={`p-1.5 rounded-full ${
-                              isVisited 
-                                ? "text-gray-400 hover:bg-gray-200" 
-                                : "text-purple-600 hover:bg-purple-50"
+
+                        {/* Link Icon */}
+                        <a
+                          href={result.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => handleLinkClick(e, result._id)}
+                          className={`p-1.5 rounded-full ${isVisited
+                            ? "text-gray-400 hover:bg-gray-200"
+                            : "text-purple-600 hover:bg-purple-50"
                             }`}
-                          >
-                           <ExternalLink className="w-4 h-4" />
-                          </a>
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                        </a>
                       </div>
 
                       {/* Title/Artist or Safe Text */}
@@ -528,34 +508,34 @@ export default function JobDetailsPage() {
           </div>
 
 
-{/* Mobile View */}
-             <div className="flex items-center gap-3 md:hidden">
-             <Button 
-               onClick={handleDownloadReport}
-               disabled={isDownloading}
-               className="bg-purple-600 hover:bg-purple-700 text-white"
-             >
-               {isDownloading ? (
-                 <>
-                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                   {t('downloading')}
-                 </>
-               ) : (
-                 <>
-                   <Download className="mr-2 h-4 w-4" />
-                   {t('downloadReport')}
-                 </>
-               )}
-             </Button>
-             <Badge variant={jobDetails.status === 'completed' ? 'default' : 'secondary'} className="text-sm px-3 py-1 capitalize">
+          {/* Mobile View */}
+          <div className="flex items-center gap-3 md:hidden">
+            <Button
+              onClick={handleDownloadReport}
+              disabled={isDownloading}
+              className="bg-purple-600 hover:bg-purple-700 text-white"
+            >
+              {isDownloading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {t('downloading')}
+                </>
+              ) : (
+                <>
+                  <Download className="mr-2 h-4 w-4" />
+                  {t('downloadReport')}
+                </>
+              )}
+            </Button>
+            <Badge variant={jobDetails.status === 'completed' ? 'default' : 'secondary'} className="text-sm px-3 py-1 capitalize">
               {jobDetails.status}
-             </Badge>
+            </Badge>
           </div>
 
 
 
 
-          
+
         </div>
       </div>
 
@@ -568,30 +548,30 @@ export default function JobDetailsPage() {
                 <h2 className="text-xl font-bold text-gray-900">{t('modalTitle')}</h2>
                 <p className="text-gray-500 text-sm mt-1">{t('modalDesc')}</p>
               </div>
-              <Button 
-                variant="ghost" 
-                size="icon" 
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => setSelectedResult(null)}
                 className="h-8 w-8 rounded-full"
               >
                 <X className="w-5 h-5" />
               </Button>
             </div>
-            
+
             <div className="p-6">
               <div className="flex flex-col md:flex-row gap-8">
                 {/* Thumbnail */}
                 <div className="w-full md:w-64 flex-shrink-0">
                   <div className="aspect-[9/16] relative rounded-lg overflow-hidden bg-gray-100 border border-gray-200 group shadow-sm">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img 
-                      src={selectedResult.thumbnail} 
-                      alt="Reel Thumbnail" 
+                    <img
+                      src={selectedResult.thumbnail}
+                      alt="Reel Thumbnail"
                       className="w-full h-full object-cover"
                     />
-                    <a 
-                      href={selectedResult.url} 
-                      target="_blank" 
+                    <a
+                      href={selectedResult.url}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                     >
@@ -604,18 +584,17 @@ export default function JobDetailsPage() {
                 <div className="flex-1 space-y-6">
                   <div>
                     <div className="flex items-center gap-3 mb-2">
-                       <span 
-                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium ${
-                            selectedResult.copyright.copyrighted 
-                              ? "bg-red-100 text-red-700" 
-                              : "bg-green-100 text-green-700"
+                      <span
+                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium ${selectedResult.copyright.copyrighted
+                          ? "bg-red-100 text-red-700"
+                          : "bg-green-100 text-green-700"
                           }`}
-                        >
-                          {selectedResult.copyright.copyrighted ? <AlertTriangle className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
-                          {selectedResult.copyright.copyrighted ? t('copyrightDetected') : t('safeContent')}
-                        </span>
+                      >
+                        {selectedResult.copyright.copyrighted ? <AlertTriangle className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
+                        {selectedResult.copyright.copyrighted ? t('copyrightDetected') : t('safeContent')}
+                      </span>
                     </div>
-                    
+
                     <a href={selectedResult.url} target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:text-purple-700 font-medium flex items-center gap-2 text-lg">
                       {t('viewReel')} <ExternalLink className="w-4 h-4" />
                     </a>
@@ -623,42 +602,42 @@ export default function JobDetailsPage() {
 
                   {selectedResult.copyright.copyrighted ? (
                     <div className="bg-red-50 rounded-xl p-6 border border-red-100 space-y-6">
-                        <div className="flex items-start gap-4">
-                          <div className="p-3 bg-red-100 rounded-full">
-                            <Music className="w-6 h-6 text-red-600" />
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-red-600 mb-1">{t('detectedDetails')}</p>
-                            <p className="text-xl font-bold text-gray-900">{selectedResult.detection.title}</p>
-                            <p className="text-lg text-gray-700">{selectedResult.detection.artist}</p>
-                          </div>
+                      <div className="flex items-start gap-4">
+                        <div className="p-3 bg-red-100 rounded-full">
+                          <Music className="w-6 h-6 text-red-600" />
                         </div>
-                        
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
-                          <div className="bg-white p-4 rounded-lg border border-red-100 shadow-sm">
-                            <span className="block text-sm text-gray-500 mb-1">{t('label')}</span>
-                            <span className="block text-gray-900 font-semibold">{selectedResult.detection.label}</span>
-                          </div>
-                          <div className="bg-white p-4 rounded-lg border border-red-100 shadow-sm">
-                            <span className="block text-sm text-gray-500 mb-1">{t('confidence')}</span>
-                            <span className="block text-gray-900 font-semibold text-lg">{selectedResult.detection.confidence}%</span>
-                          </div>
+                        <div>
+                          <p className="text-sm font-medium text-red-600 mb-1">{t('detectedDetails')}</p>
+                          <p className="text-xl font-bold text-gray-900">{selectedResult.detection.title}</p>
+                          <p className="text-lg text-gray-700">{selectedResult.detection.artist}</p>
                         </div>
+                      </div>
 
-                        {selectedResult.copyright.notes && (
-                          <div className="bg-red-100/50 p-4 rounded-lg border border-red-100">
-                             <p className="text-sm font-semibold text-red-900 mb-1">{t('notes')}</p>
-                             <p className="text-sm text-red-800">{selectedResult.copyright.notes}</p>
-                          </div>
-                        )}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
+                        <div className="bg-white p-4 rounded-lg border border-red-100 shadow-sm">
+                          <span className="block text-sm text-gray-500 mb-1">{t('label')}</span>
+                          <span className="block text-gray-900 font-semibold">{selectedResult.detection.label}</span>
+                        </div>
+                        <div className="bg-white p-4 rounded-lg border border-red-100 shadow-sm">
+                          <span className="block text-sm text-gray-500 mb-1">{t('confidence')}</span>
+                          <span className="block text-gray-900 font-semibold text-lg">{selectedResult.detection.confidence}%</span>
+                        </div>
+                      </div>
+
+                      {selectedResult.copyright.notes && (
+                        <div className="bg-red-100/50 p-4 rounded-lg border border-red-100">
+                          <p className="text-sm font-semibold text-red-900 mb-1">{t('notes')}</p>
+                          <p className="text-sm text-red-800">{selectedResult.copyright.notes}</p>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <div className="bg-green-50 rounded-xl p-8 border border-green-100 flex flex-col items-center justify-center text-center space-y-3">
-                       <div className="p-4 bg-green-100 rounded-full">
-                         <CheckCircle className="w-8 h-8 text-green-600" />
-                       </div>
-                       <h3 className="text-lg font-bold text-green-900">{t('noIssues')}</h3>
-                       <p className="text-green-800 max-w-md">{t('noIssuesDesc')}</p>
+                      <div className="p-4 bg-green-100 rounded-full">
+                        <CheckCircle className="w-8 h-8 text-green-600" />
+                      </div>
+                      <h3 className="text-lg font-bold text-green-900">{t('noIssues')}</h3>
+                      <p className="text-green-800 max-w-md">{t('noIssuesDesc')}</p>
                     </div>
                   )}
                 </div>

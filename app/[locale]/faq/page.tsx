@@ -1,30 +1,17 @@
+"use client";
+
 import { Link } from "@/i18n/routing"
 import { Button } from "@/components/ui/button"
 import PageHeader from "@/components/page-header"
-import { getTranslations } from "next-intl/server"
-import { BASE_URL, REVALIDATE_TIME } from "@/redux/api/config"
+import { useTranslations } from "next-intl"
 import FaqClient from "./faq-client"
+import { useGetAllFaqQuery } from "@/redux/api/faqApi"
+import { Loader2 } from "lucide-react"
 
-async function getFaqs() {
-  try {
-    const res = await fetch(`${BASE_URL}/faqs`, {
-      // next: { revalidate: REVALIDATE_TIME },
-      cache: 'no-store',
-    });
-
-    if (!res.ok) return null;
-
-    return res.json();
-  } catch (error) {
-    return null;
-  }
-}
-
-export default async function FAQ() {
-  const t = await getTranslations('FAQ');
-  const response = await getFaqs();
+export default function FAQ() {
+  const t = useTranslations('FAQ');
+  const { data: response, isLoading, isError } = useGetAllFaqQuery(undefined);
   const faqItems = response?.data || [];
-  const isError = !response;
 
   return (
     <div className="min-h-screen bg-white">
@@ -37,6 +24,13 @@ export default async function FAQ() {
       {/* FAQ Accordion */}
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
 
+        {/* Loading State */}
+        {isLoading && (
+          <div className="flex items-center justify-center py-10">
+            <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
+          </div>
+        )}
+
         {/* Error State */}
         {isError && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
@@ -46,7 +40,7 @@ export default async function FAQ() {
         )}
 
         {/* FAQ Items */}
-        {!isError && (
+        {!isLoading && !isError && (
           <FaqClient faqItems={faqItems} />
         )}
 

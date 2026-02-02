@@ -1,37 +1,28 @@
-import { Check } from "lucide-react";
+"use client";
+
+import { Check, Loader2 } from "lucide-react";
 import PricingClient from "./pricing-client";
-import { BASE_URL, REVALIDATE_TIME } from "@/redux/api/config";
-import { getTranslations } from "next-intl/server";
-import { Plan } from "@/redux/api/subscriptionApi";
+import { useTranslations } from "next-intl";
+import { Plan, useGetSubscriptionPlansQuery } from "@/redux/api/subscriptionApi";
 
-async function getSubscriptionPlans() {
-  try {
-    const res = await fetch(`${BASE_URL}/subscription/plans`, {
-      // // next: { revalidate: REVALIDATE_TIME },
-  
-      cache: 'no-store',
-    });
-
-    if (!res.ok) return null;
-
-    return res.json();
-  } catch (error) {
-    return null;
-  }
-}
-
-export default async function Pricing() {
-  const t = await getTranslations('Pricing');
-  const response = await getSubscriptionPlans();
+export default function Pricing() {
+  const t = useTranslations('Pricing');
+  const { data: response, isLoading, isError } = useGetSubscriptionPlansQuery();
   const plans = response?.data?.plans || [];
-  const isLoading = !response && !plans.length; // Not exactly loading, but initial state logic if needed, though mostly null check handles it.
-  const error = !response;
 
   const oneTimePlans = plans.filter(
     (plan: Plan) => plan.subscriptionType === "one-time"
   ) || [];
 
-  if (error) return <div className="py-20 text-center text-red-500">{t('error')}</div>;
+  if (isLoading) {
+    return (
+      <div className="py-20 flex justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-[#1b2149]" />
+      </div>
+    );
+  }
+
+  if (isError) return <div className="py-20 text-center text-red-500">{t('error')}</div>;
 
   return (
     <section className="py-20 bg-white">

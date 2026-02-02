@@ -1,30 +1,26 @@
-import { Calendar, User, Clock } from "lucide-react"
+"use client";
+
+import { Calendar, User, Clock, Loader2 } from "lucide-react"
 import PageHeader from "@/components/page-header"
 import Image from "next/image"
-import { getImageUrl, BASE_URL, REVALIDATE_TIME } from "@/redux/api/config"
+import { getImageUrl } from "@/redux/api/config"
+import { useGetBlogByIdQuery } from "@/redux/api/blogApi"
+import { useParams } from "next/navigation"
 
-async function getBlog(slug: string) {
-  try {
-    const res = await fetch(`${BASE_URL}/blogs/${slug}`, {
-      // next: { revalidate: REVALIDATE_TIME },
-      cache: 'no-store',
-    });
-
-    if (!res.ok) return null;
-
-    return res.json();
-  } catch (error) {
-    return null;
-  }
-}
-
-export default async function BlogDetail({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  console.log('BlogDetail slug:', slug);
-  const response = await getBlog(slug);
-  console.log('BlogDetail response:', response);
+export default function BlogDetail() {
+  const { slug } = useParams();
+  const { data: response, isLoading, isError } = useGetBlogByIdQuery(slug as string, {
+    skip: !slug,
+  });
   const post = response?.data;
-  const isError = !response;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white">

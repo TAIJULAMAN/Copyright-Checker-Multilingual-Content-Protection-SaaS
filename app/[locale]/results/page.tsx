@@ -5,7 +5,7 @@ import { Download, Shield, AlertTriangle, CheckCircle, Info, ShieldCheck, Loader
 import { useState } from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
-import { useGetMyJobsQuery, Job } from "@/redux/api/copyrightApi";
+import { useGetMyJobsQuery, Job, useExportJobReportMutation } from "@/redux/api/copyrightApi";
 import { useGetSubscriptionPlansQuery, useCreatePayPalOrderMutation, Plan } from "@/redux/api/subscriptionApi";
 import { useRouter } from "@/i18n/routing";
 import Cookies from "js-cookie";
@@ -16,8 +16,8 @@ import { useTranslations } from "next-intl";
 export default function ResultsPage() {
   const t = useTranslations('Results');
   const tSub = useTranslations('MySubscription');
+  /* eslint-disable @typescript-eslint/no-unused-vars */
   const router = useRouter();
-  const [isDownloading, setIsDownloading] = useState(false);
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
 
   const { data: plansData } = useGetSubscriptionPlansQuery();
@@ -40,27 +40,11 @@ export default function ResultsPage() {
   };
 
   /* eslint-disable @typescript-eslint/no-unused-vars */
+  const [exportJobReport, { isLoading: isDownloading }] = useExportJobReportMutation();
+
   const handleDownloadReport = async (jobId: string) => {
     try {
-      setIsDownloading(true);
-      const token = Cookies.get("accessToken");
-      const response = await fetch(`${BASE_URL}/copyright/my-jobs/export/${jobId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        cache: 'no-store',
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to download report');
-      }
-
-      const contentDisposition = response.headers.get('content-disposition');
-      const filename = contentDisposition
-        ? contentDisposition.split('filename=')[1].replace(/"/g, '')
-        : `copyright-report-${new Date().toISOString().split('T')[0]}.xlsx`;
-
-      const blob = await response.blob();
+      const { blob, filename } = await exportJobReport(jobId).unwrap();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -72,8 +56,6 @@ export default function ResultsPage() {
       document.body.removeChild(a);
     } catch (error) {
       console.error('Error downloading report:', error);
-    } finally {
-      setIsDownloading(false);
     }
   };
   const { data, isLoading } = useGetMyJobsQuery(undefined);

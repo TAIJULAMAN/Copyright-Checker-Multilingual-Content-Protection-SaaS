@@ -116,7 +116,22 @@ export const copyrightApi = baseApi.injectEndpoints({
     getJobDetails: builder.query<JobDetailsResponse, string>({
       query: (jobId) => `/copyright/my-jobs/${jobId}`,
     }),
+    exportJobReport: builder.mutation<{ blob: Blob; filename: string }, string>({
+      query: (jobId) => ({
+        url: `/copyright/my-jobs/export/${jobId}`,
+        method: 'GET',
+        responseHandler: async (response: Response) => {
+          const blob = await response.blob();
+          const contentDisposition = response.headers.get('content-disposition');
+          const filename = contentDisposition
+            ? contentDisposition.split('filename=')[1].replace(/"/g, '')
+            : `copyright-report-${new Date().toISOString().split('T')[0]}.xlsx`;
+          return { blob, filename };
+        },
+        cache: 'no-store',
+      }),
+    }),
   }),
 });
 
-export const { useCheckProfileMutation, useGetMyJobsQuery, useGetJobDetailsQuery } = copyrightApi;
+export const { useCheckProfileMutation, useGetMyJobsQuery, useGetJobDetailsQuery, useExportJobReportMutation } = copyrightApi;

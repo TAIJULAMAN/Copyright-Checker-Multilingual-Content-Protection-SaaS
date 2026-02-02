@@ -10,9 +10,18 @@ const termsAndConditionsApi = baseApi.injectEndpoints({
       providesTags: ["termsAndConditions"],
     }),
 
+    getImprint: builder.query({
+      query: () => ({
+        url: "legal-docs/imprint",
+        method: "GET",
+      }),
+      providesTags: ["imprint"],
+    }),
+
   }),
 });
 
 export const {
   useGetTermsAndConditionsQuery,
+  useGetImprintQuery,
 } = termsAndConditionsApi;

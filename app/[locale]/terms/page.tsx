@@ -1,25 +1,19 @@
+"use client";
+
 import { Loader2 } from "lucide-react";
-import { BASE_URL, REVALIDATE_TIME } from "@/redux/api/config";
+import { useGetTermsAndConditionsQuery } from "@/redux/api/termsApi";
 
-async function getTerms() {
-  try {
-    const res = await fetch(`${BASE_URL}/legal-docs/terms-conditions`, {
-      // next: { revalidate: REVALIDATE_TIME },
-      cache: 'no-store',
-    });
+export default function TermsPage() {
+  const { data: response, isLoading, isError } = useGetTermsAndConditionsQuery({});
+  const content = response?.data?.content;
 
-    if (!res.ok) return null;
-
-    return res.json();
-  } catch (error) {
-    return null;
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-gray-500" />
+      </div>
+    );
   }
-}
-
-export default async function TermsPage() {
-  const response = await getTerms();
-  const data = response?.data;
-  const isError = !response;
 
   if (isError) {
     return (
@@ -35,7 +29,7 @@ export default async function TermsPage() {
         <h1 className="text-3xl font-bold text-gray-900 mb-8 border-b pb-4">Terms and Conditions</h1>
         <div
           className="prose prose-purple max-w-none"
-          dangerouslySetInnerHTML={{ __html: data?.content || '' }}
+          dangerouslySetInnerHTML={{ __html: content || '' }}
         />
       </div>
     </div>

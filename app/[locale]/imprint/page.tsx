@@ -1,25 +1,20 @@
+"use client";
+
 import { Link } from "@/i18n/routing"
-import { BASE_URL, REVALIDATE_TIME } from "@/redux/api/config"
+import { useGetImprintQuery } from "@/redux/api/termsApi"
+import { Loader2 } from "lucide-react"
 
-async function getImprint() {
-  try {
-    const res = await fetch(`${BASE_URL}/legal-docs/imprint`, {
-      // next: { revalidate: REVALIDATE_TIME },
-      cache: 'no-store',
-    });
-
-    if (!res.ok) return null;
-
-    return res.json();
-  } catch (error) {
-    return null;
-  }
-}
-
-export default async function Imprint() {
-  const response = await getImprint();
+export default function Imprint() {
+  const { data: response, isLoading, isError } = useGetImprintQuery(undefined);
   const imprintData = response?.data;
-  const isError = !response;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-gray-500" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">

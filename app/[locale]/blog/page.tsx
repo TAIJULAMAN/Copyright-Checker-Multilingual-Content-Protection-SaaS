@@ -1,28 +1,15 @@
+"use client";
+
 import { Link } from "@/i18n/routing"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, Loader2 } from "lucide-react"
 import PageHeader from "@/components/page-header"
 import Image from "next/image"
-import { getImageUrl, BASE_URL, REVALIDATE_TIME } from "@/redux/api/config"
+import { getImageUrl } from "@/redux/api/config"
+import { useGetAllBlogsQuery } from "@/redux/api/blogApi"
 
-async function getBlogs() {
-  try {
-    const res = await fetch(`${BASE_URL}/blogs`, {
-      // next: { revalidate: REVALIDATE_TIME },
-      cache: 'no-store',
-    });
-
-    if (!res.ok) return null;
-
-    return res.json();
-  } catch (error) {
-    return null;
-  }
-}
-
-export default async function BlogPage() {
-  const response = await getBlogs();
+export default function BlogPage() {
+  const { data: response, isLoading, isError } = useGetAllBlogsQuery(undefined);
   const posts = response?.data || [];
-  const isError = !response;
 
   return (
     <div className="min-h-screen bg-white">
@@ -35,6 +22,13 @@ export default async function BlogPage() {
       {/* Blog Grid */}
       <main className="container mx-auto px-5 md:px-0 py-16">
 
+        {/* Loading State */}
+        {isLoading && (
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
+          </div>
+        )}
+
         {/* Error State */}
         {isError && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
@@ -44,7 +38,7 @@ export default async function BlogPage() {
         )}
 
         {/* Blog Posts Grid */}
-        {!isError && (
+        {!isLoading && !isError && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {posts.map((post: any) => (
               <article
