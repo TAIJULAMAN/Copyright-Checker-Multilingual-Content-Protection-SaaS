@@ -299,7 +299,7 @@
   },
   "Scan": {
     "title": "Instagram Reels scannen",
-    "description": "Überprüfen Sie Ihre Instagram Reels auf urheberrechtlich geschützte Musik und stellen Sie sicher, dass Ihr Inhalt sicher veröffentlicht werden kann"
+    "description": "Überprüfen Sie Ihre Instagram Reels auf urheberrechtlich geschützte Musik"
   },
   "Auth": {
     "login": {
@@ -409,7 +409,7 @@
     },
     "fastResults": {
       "title": "Schnelle Ergebnisse",
-      "description": "Erhalten Sie umfassende Urheberrechtsanalysen in Sekunden"
+      "description": "Erhalten Sie umfassende Urheberrechtsanalysen in Minuten"
     },
     "detailedReports": {
       "title": "Detaillierte Berichte",

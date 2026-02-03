@@ -300,7 +300,7 @@
   },
   "Scan": {
     "title": "Scan Instagram Reels",
-    "description": "Check your Instagram Reels for copyrighted music and ensure your content is safe to publish"
+    "description": "Check your Instagram Reels for copyrighted music"
   },
   "Auth": {
     "login": {
@@ -410,7 +410,7 @@
     },
     "fastResults": {
       "title": "Fast Results",
-      "description": "Get comprehensive copyright analysis in seconds"
+      "description": "Get comprehensive copyright analysis in minutes"
     },
     "detailedReports": {
       "title": "Detailed Reports",
