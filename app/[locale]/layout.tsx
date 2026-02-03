@@ -13,11 +13,101 @@ import { getMessages } from 'next-intl/server';
 const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
-export const metadata: Metadata = {
-  title: "copywright checker",
-  description: "The best way to check your Instagram reels for copyrighted music",
-  generator: "copywright checker",
 
+
+
+
+
+export const metadata: Metadata = {
+  title: {
+    default: "Instagram Reels Copyright Checker | CopyrightChecker.de",
+    template: "%s | CopyrightChecker.de",
+  },
+ 
+  description:
+    "Prüfen Sie öffentliche Instagram Reels automatisch auf Urheberrechtsrisiken. KI-gestützte Musikerkennung, kein Instagram-Login erforderlich, Ergebnisse in Minuten. Sicher bezahlen mit PayPal.",
+ 
+  applicationName: "CopyrightChecker.de",
+  generator: "CopyrightChecker.de",
+  referrer: "origin-when-cross-origin",
+ 
+  keywords: [
+    // Core German keywords
+    "Instagram Reels Copyright Check",
+    "Instagram Urheberrecht prüfen",
+    "Reels Copyright Risiko",
+    "Instagram Musik Copyright",
+    "Urheberrechtsprüfung Instagram",
+    "Instagram Reels analysieren",
+    "Copyright Checker Instagram",
+ 
+    // AI / Tool intent
+    "KI Musik Erkennung",
+    "automatische Copyright Prüfung",
+    "AI Copyright Checker",
+    "Musik Urheberrecht erkennen",
+ 
+    // Creator / business intent
+    "Content Creator Tools",
+    "Social Media Urheberrecht",
+    "Instagram Creator Tool",
+    "Reels vor Veröffentlichung prüfen",
+ 
+    // Brand
+    "CopyrightChecker",
+    "CopyrightChecker.de",
+  ],
+ 
+  authors: [{ name: "CopyrightChecker.de" }],
+  creator: "CopyrightChecker.de",
+  publisher: "CopyrightChecker.de",
+ 
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+ 
+  alternates: {
+    canonical: "https://www.copyrightchecker.de",
+    languages: {
+      de: "https://www.copyrightchecker.de/de",
+      en: "https://www.copyrightchecker.de/en",
+    },
+  },
+ 
+  openGraph: {
+    type: "website",
+    locale: "de_DE",
+    url: "https://www.copyrightchecker.de",
+    siteName: "CopyrightChecker.de",
+    title: "Instagram Reels Copyright Checker – Schnell & Sicher",
+    description:
+      "Automatische KI-Analyse öffentlicher Instagram Reels auf mögliche Urheberrechtsprobleme. Kein Login, Ergebnisse in Minuten.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Instagram Reels Copyright Checker",
+      },
+    ],
+  },
+ 
+  twitter: {
+    card: "summary_large_image",
+    title: "Instagram Reels Copyright Checker",
+    description:
+      "KI-basierte Urheberrechtsprüfung für Instagram Reels. Schnell, sicher, kein Login erforderlich.",
+    images: ["/og-image.png"],
+  },
+ 
   icons: {
     icon: [
       {
@@ -35,7 +125,14 @@ export const metadata: Metadata = {
     ],
     apple: "/logo.svg",
   },
-}
+ 
+  category: "technology",
+};
+
+
+
+
+
 
 export default async function LocaleLayout({
   children,
