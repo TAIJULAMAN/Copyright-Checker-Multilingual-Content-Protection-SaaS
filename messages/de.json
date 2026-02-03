@@ -36,8 +36,8 @@
     "step3Desc": "Erhalte sofort eine detaillierte Urheberrechtsanalyse"
   },
   "Pricing": {
-    "title": "Noch einen Account prüfen?",
-    "subtitle": "Erhalte vergünstigte Einmal-Scans hier.",
+    "title": "Wähle deinen Plan",
+    "subtitle": "Transparente Preise für jeden Bedarf",
     "loading": "Pläne werden geladen...",
     "error": "Fehler beim Laden der Pläne",
     "payment": "Einmalzahlung",
@@ -203,7 +203,8 @@
     "startNewScan": "Neuen Scan starten",
     "noActive": "Kein aktives Abonnement",
     "noActiveDesc": "Sie haben kein aktives Abonnement, das auf Ihre Bedürfnisse zugeschnitten ist.",
-    "availablePlans": "Verfügbare Monatspläne",
+    "availablePlans": "Noch einen Account prüfen?",
+    "availablePlansDesc": "Erhalte vergünstigte Einmal-Scans hier.",
     "subscribe": "Jetzt abonnieren",
     "processing": "Verarbeitung...",
     "noPlans": "Keine Monatspläne verfügbar",

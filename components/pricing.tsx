@@ -58,9 +58,9 @@ export default function Pricing() {
                   €{plan.price}
                 </span>
               </div>
-              <div className="flex items-center justify-center">
+              {/* <div className="flex items-center justify-center">
                 <p className="text-gray-600 text-sm mb-6 capitalize"> {t('payment')}</p>
-              </div>
+              </div> */}
 
               <PricingClient planId={plan._id} />
             </div>

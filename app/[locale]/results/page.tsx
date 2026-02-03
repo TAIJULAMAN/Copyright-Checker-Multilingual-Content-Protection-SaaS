@@ -483,9 +483,10 @@ export default function ResultsPage() {
       {jobs.length > 0 && (
         /* AVAILABLE monthly PLANS */
         <div className="border-t border-gray-200 p-6 container mx-auto">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">
             {tSub("availablePlans")}
           </h2>
+          <p className="text-sm text-gray-600 leading-relaxed text-center mb-6">{tSub("availablePlansDesc")}</p>
 
           {recurringPlans.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">

@@ -36,8 +36,8 @@
     "step3Desc": "Receive detailed copyright analysis immediately"
   },
   "Pricing": {
-    "title": "Need to scan another account?",
-    "subtitle": "Get discounted one time scans below.",
+    "title": "Choose Your Plan",
+    "subtitle": "Transparent pricing for every need",
     "loading": "Loading plans...",
     "error": "Failed to load plans",
     "payment": "Payment",
@@ -204,7 +204,8 @@
     "startNewScan": "Start New Scan",
     "noActive": "No Active Subscription",
     "noActiveDesc": "You don't have an active subscription tailored for your needs.",
-    "availablePlans": "Available Monthly Plans",
+    "availablePlans": "Need to scan another account?",
+    "availablePlansDesc": "Get discounted one time scans below.",
     "subscribe": "Subscribe Now",
     "processing": "Processing...",
     "noPlans": "No Monthly Plans Available",
