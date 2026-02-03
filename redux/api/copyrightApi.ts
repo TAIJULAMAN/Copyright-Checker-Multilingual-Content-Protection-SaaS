@@ -92,6 +92,14 @@ export interface JobDetails {
   createdAt: string;
   updatedAt: string;
   completedAt: string;
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    totalResults: number;
+    resultsPerPage: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+  };
 }
 
 export interface JobDetailsResponse {
@@ -113,8 +121,8 @@ export const copyrightApi = baseApi.injectEndpoints({
     getMyJobs: builder.query<MyJobsResponse, void>({
       query: () => '/copyright/my-jobs',
     }),
-    getJobDetails: builder.query<JobDetailsResponse, string>({
-      query: (jobId) => `/copyright/my-jobs/${jobId}`,
+    getJobDetails: builder.query<JobDetailsResponse, { jobId: string; page: number; limit: number }>({
+      query: ({ jobId, page, limit }) => `/copyright/my-jobs/${jobId}?page=${page}&limit=${limit}`,
     }),
     exportJobReport: builder.mutation<{ blob: Blob; filename: string }, string>({
       query: (jobId) => ({

@@ -3,7 +3,7 @@
 import { useGetJobDetailsQuery, useExportJobReportMutation } from "@/redux/api/copyrightApi";
 import { useParams } from "next/navigation";
 import { useRouter } from "@/i18n/routing";
-import { ArrowLeft, ExternalLink, Shield, AlertTriangle, CheckCircle, Music, Play, Eye, X, Info } from "lucide-react";
+import { ArrowLeft, ExternalLink, Shield, AlertTriangle, CheckCircle, Music, Play, Eye, X, Info, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,8 +11,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useState, useEffect } from "react";
-import Cookies from "js-cookie";
-import { BASE_URL } from "@/redux/api/config";
 import { Download, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -21,7 +19,8 @@ export default function JobDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const jobId = params.jobId as string;
-  const { data, isLoading, error } = useGetJobDetailsQuery(jobId);
+  const [page, setPage] = useState(1);
+  const { data, isLoading, error } = useGetJobDetailsQuery({ jobId, page, limit: 10 });
   /* eslint-disable @typescript-eslint/no-unused-vars */
   const [exportJobReport, { isLoading: isDownloading }] = useExportJobReportMutation();
   const [selectedResult, setSelectedResult] = useState<any>(null);
@@ -537,6 +536,33 @@ export default function JobDetailsPage() {
 
 
         </div>
+
+        {/* Pagination */
+          jobDetails.pagination && jobDetails.pagination.totalPages > 1 && (
+            <div className="flex items-center justify-center gap-4 mt-8 pb-8">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                disabled={!jobDetails.pagination.hasPrevPage}
+              >
+                <ChevronLeft className="w-4 h-4 mr-2" />
+                Previous
+              </Button>
+              <span className="text-sm text-gray-600">
+                Page {jobDetails.pagination.currentPage} of {jobDetails.pagination.totalPages}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPage(p => p + 1)}
+                disabled={!jobDetails.pagination.hasNextPage}
+              >
+                Next
+                <ChevronRight className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
+          )}
       </div>
 
       {/* Custom Modal */}
