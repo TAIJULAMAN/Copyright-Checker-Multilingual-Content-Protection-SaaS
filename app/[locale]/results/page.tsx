@@ -8,8 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import { useGetMyJobsQuery, Job, useExportJobReportMutation } from "@/redux/api/copyrightApi";
 import { useGetSubscriptionPlansQuery, useCreatePayPalOrderMutation, Plan } from "@/redux/api/subscriptionApi";
 import { useRouter } from "@/i18n/routing";
-import Cookies from "js-cookie";
-import { BASE_URL } from "@/redux/api/config";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 
@@ -58,7 +56,7 @@ export default function ResultsPage() {
       console.error('Error downloading report:', error);
     }
   };
-  const { data, isLoading } = useGetMyJobsQuery(undefined);
+  const { data, isLoading } = useGetMyJobsQuery(undefined, { pollingInterval: 30000 });
   const jobs = data?.data?.jobs || [];
 
   // Calculate total statistics across all jobs
