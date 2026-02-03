@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
-import { Lock, ShieldCheck, Twitter, Instagram, Linkedin } from "lucide-react";
+import { Lock, ShieldCheck, Twitter, Instagram, Linkedin, TicketCheckIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { AiFillTikTok } from "react-icons/ai";
 
 export default function Footer() {
   const t = useTranslations('Footer');
@@ -89,26 +90,20 @@ export default function Footer() {
           <div>
             <h4 className="text-white font-semibold mb-4">{t('connect')}</h4>
             <div className="flex items-center gap-3">
+              
               <Link
-                href="#"
-                aria-label="Twitter"
-                className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors"
-              >
-                <Twitter className="w-5 h-5 text-sky-400" />
-              </Link>
-              <Link
-                href="#"
+                href="https://instagram.com/socialmediaking.de"
                 aria-label="Instagram"
                 className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors"
               >
                 <Instagram className="w-5 h-5 text-purple-500" />
               </Link>
               <Link
-                href="#"
-                aria-label="LinkedIn"
+                href="https://www.tiktok.com/@socialmediaking.de"
+                aria-label="TikTok"
                 className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors"
               >
-                <Linkedin className="w-5 h-5 text-sky-500" />
+                <AiFillTikTok className="w-5 h-5 text-sky-500" />
               </Link>
             </div>
           </div>

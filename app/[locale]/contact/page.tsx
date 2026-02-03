@@ -133,7 +133,7 @@ export default function ContactUs() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900">{t('emailLabel')}</h3>
-                    <p className="text-gray-600">support@reelcheck.com</p>
+                    <p className="text-gray-600">team@copyrightchecker.de</p>
                   </div>
                 </div>
 
@@ -150,7 +150,7 @@ export default function ContactUs() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900">{t('phoneLabel')}</h3>
-                    <p className="text-gray-600">+1 (555) 123-4567</p>
+                    <p className="text-gray-600">+ 49 72217791999</p>
                   </div>
                 </div>
 
@@ -173,7 +173,7 @@ export default function ContactUs() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900">{t('addressLabel')}</h3>
-                    <p className="text-gray-600">123 Tech Street, San Francisco, CA 94105</p>
+                    <p className="text-gray-600">Social Media King GmbH, Lichtentalerstrasse 88, 76530 Baden-Baden</p>
                   </div>
                 </div>
               </div>
@@ -184,10 +184,10 @@ export default function ContactUs() {
               <h3 className="font-semibold text-gray-900 mb-4">{t('businessHours')}</h3>
               <div className="space-y-2 text-sm text-gray-600">
                 <p>
-                  <span className="font-medium">{t('daysWeek')}</span> 9:00 AM - 6:00 PM PST
+                  <span className="font-medium">{t('daysWeek')}</span> 9:00 AM - 6:00 PM 
                 </p>
                 <p>
-                  <span className="font-medium">{t('daysSat')}</span> 10:00 AM - 4:00 PM PST
+                  <span className="font-medium">{t('daysSat')}</span> {t('closed')}
                 </p>
                 <p>
                   <span className="font-medium">{t('daysSun')}</span> {t('closed')}
