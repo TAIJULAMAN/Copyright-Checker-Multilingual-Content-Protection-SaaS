@@ -499,9 +499,9 @@ export default function ResultsPage() {
                     <div className="flex items-baseline justify-center my-4">
                       <span className="text-4xl font-bold text-[#1b2149]">€{plan.price}</span>
                     </div>
-                    <p className="text-sm text-gray-500 capitalize mb-6">
+                    {/* <p className="text-sm text-gray-500 capitalize mb-6">
                       {plan.billingCycle} {tSub("payment")}
-                    </p>
+                    </p> */}
                   </div>
 
                   <div className="space-y-3 flex-grow mb-8">
