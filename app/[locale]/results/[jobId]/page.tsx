@@ -359,7 +359,7 @@ export default function JobDetailsPage() {
               <TableBody>
                 {results.map((result: any) => {
                   const isVisited = visitedResults.has(result._id);
-                  const riskLevel = result.copyright.riskLevel || (result.copyright.copyrighted ? 'high' : 'low');
+                  const riskLevel = result.copyright?.riskLevel || (result.copyright?.copyrighted ? 'high' : 'low');
                   const styles = getRiskStyles(riskLevel, isVisited);
 
                   return (
@@ -422,7 +422,7 @@ export default function JobDetailsPage() {
 
                       {/* 5. Details */}
                       <TableCell>
-                        {result.copyright.copyrighted ? (
+                        {result.copyright?.copyrighted ? (
                           <div className={`text-sm ${isVisited ? "opacity-60" : ""}`}>
                             <p className={`font-medium ${isVisited ? "text-gray-700" : "text-gray-900"}`}>{result.detection.title}</p>
                             <p className="text-gray-500">{result.detection.artist}</p>
@@ -442,7 +442,7 @@ export default function JobDetailsPage() {
           <div className="md:hidden space-y-2">
             {results.map((result: any) => {
               const isVisited = visitedResults.has(result._id);
-              const riskLevel = result.copyright.riskLevel || (result.copyright.copyrighted ? 'high' : 'low');
+              const riskLevel = result.copyright?.riskLevel || (result.copyright?.copyrighted ? 'high' : 'low');
               const styles = getRiskStyles(riskLevel, isVisited);
 
               return (
@@ -490,7 +490,7 @@ export default function JobDetailsPage() {
                       </div>
 
                       {/* Title/Artist or Safe Text */}
-                      {result.copyright.copyrighted ? (
+                      {result.copyright?.copyrighted ? (
                         <div className={`${isVisited ? "opacity-60" : ""}`}>
                           <p className={`font-medium text-sm truncate ${isVisited ? "text-gray-700" : "text-gray-900"}`}>
                             {result.detection.title}
@@ -585,13 +585,13 @@ export default function JobDetailsPage() {
                   <div>
                     <div className="flex items-center gap-3 mb-2">
                       <span
-                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium ${selectedResult.copyright.copyrighted
+                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium ${selectedResult.copyright?.copyrighted
                           ? "bg-red-100 text-red-700"
                           : "bg-green-100 text-green-700"
                           }`}
                       >
-                        {selectedResult.copyright.copyrighted ? <AlertTriangle className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
-                        {selectedResult.copyright.copyrighted ? t('copyrightDetected') : t('safeContent')}
+                        {selectedResult.copyright?.copyrighted ? <AlertTriangle className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
+                        {selectedResult.copyright?.copyrighted ? t('copyrightDetected') : t('safeContent')}
                       </span>
                     </div>
 
@@ -600,7 +600,7 @@ export default function JobDetailsPage() {
                     </a>
                   </div>
 
-                  {selectedResult.copyright.copyrighted ? (
+                  {selectedResult.copyright?.copyrighted ? (
                     <div className="bg-red-50 rounded-xl p-6 border border-red-100 space-y-6">
                       <div className="flex items-start gap-4">
                         <div className="p-3 bg-red-100 rounded-full">
@@ -624,10 +624,10 @@ export default function JobDetailsPage() {
                         </div>
                       </div>
 
-                      {selectedResult.copyright.notes && (
+                      {selectedResult.copyright?.notes && (
                         <div className="bg-red-100/50 p-4 rounded-lg border border-red-100">
                           <p className="text-sm font-semibold text-red-900 mb-1">{t('notes')}</p>
-                          <p className="text-sm text-red-800">{selectedResult.copyright.notes}</p>
+                          <p className="text-sm text-red-800">{selectedResult.copyright?.notes}</p>
                         </div>
                       )}
                     </div>
