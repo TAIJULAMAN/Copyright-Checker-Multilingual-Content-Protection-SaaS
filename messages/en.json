@@ -447,5 +447,23 @@
     "description": "Your transaction was cancelled and no payment was charged. If you experienced an issue, you can try again.",
     "tryAgain": "Try Again",
     "returnHome": "Return to Home"
+  },
+  "HomeResults": {
+    "title": "Your Result at a Glance",
+    "subtitle": "All safe and flagged Reels clearly structured in a report",
+    "safeReels": "Safe Reels",
+    "safeDesc": "No copyright risks detected",
+    "flaggedReels": "Flagged Reels",
+    "flaggedDesc": "Requires immediate attention",
+    "scanHistory": "Scan History",
+    "table": {
+      "date": "Date",
+      "username": "Username",
+      "status": "Status",
+      "scannedVideos": "Scanned Videos",
+      "hitsFound": "Hits Found",
+      "actions": "Actions",
+      "viewDetails": "View Details"
+    }
   }
 }

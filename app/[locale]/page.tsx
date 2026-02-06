@@ -5,6 +5,7 @@ import Pricing from "@/components/pricing";
 import Testimonials from "@/components/testimonials";
 import Blog from "@/components/blog";
 import ImagePart from "@/components/imagePart";
+import ResultsSection from "@/components/results-section";
 
 export default function Home() {
   return (
@@ -12,6 +13,7 @@ export default function Home() {
       <Hero />
       <div id="how-it-works">
         <HowItWorks />
+        <ResultsSection />
       </div>
       <Pricing />
       <Features />

@@ -446,5 +446,23 @@
     "description": "Ihre Transaktion wurde abgebrochen und es erfolgte keine Belastung. Falls ein Problem aufgetreten ist, können Sie es erneut versuchen.",
     "tryAgain": "Erneut versuchen",
     "returnHome": "Zurück zur Startseite"
+  },
+  "HomeResults": {
+    "title": "Dein Ergebnis auf einen Blick",
+    "subtitle": "Alle sicheren und markierten Reels klar strukturiert in einem Report",
+    "safeReels": "Sichere Reels",
+    "safeDesc": "Keine Urheberrechtsrisiken erkannt",
+    "flaggedReels": "Markierte Reels",
+    "flaggedDesc": "Erfordert sofortige Aufmerksamkeit",
+    "scanHistory": "Scan-Historie",
+    "table": {
+      "date": "Datum",
+      "username": "Benutzername",
+      "status": "Status",
+      "scannedVideos": "Gescannte Videos",
+      "hitsFound": "Treffer gefunden",
+      "actions": "Aktionen",
+      "viewDetails": "Details ansehen"
+    }
   }
 }
