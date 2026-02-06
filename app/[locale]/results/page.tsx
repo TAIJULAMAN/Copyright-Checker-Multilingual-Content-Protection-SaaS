@@ -124,20 +124,20 @@ export default function ResultsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* Header */}
-      <div className="border-b bg-white mt-2 md:mt-12">
+      <div className="border-b bg-white ">
         <div className="container mx-auto px-5 lg:px-0 py-4 flex flex-col lg:flex-row gap-5 lg:gap-0 items-start lg:items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-3xl font-bold text-gray-900 my-2 md:my-5">
               {t('title')}
             </h1>
-            <p className="text-gray-600 mt-1">
+            {/* <p className="text-gray-600 mt-1">
               {t('subtitle')}
-            </p>
+            </p> */}
           </div>
-          <div className="flex items-center gap-2 text-green-600">
+          {/* <div className="flex items-center gap-2 text-green-600">
             <Shield className="w-5 h-5" />
             <span className="text-sm font-medium">{t('secure')}</span>
-          </div>
+          </div> */}
         </div>
       </div>
 

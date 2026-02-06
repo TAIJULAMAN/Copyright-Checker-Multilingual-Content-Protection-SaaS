@@ -5,7 +5,7 @@ export default function ImagePart() {
     <div className="w-full bg-white">
       <div className="w-full relative">
         <Image
-          src="/image.png"
+          src="/imagepart.png"
           alt="Section image"
           width={1920}
           height={500}
