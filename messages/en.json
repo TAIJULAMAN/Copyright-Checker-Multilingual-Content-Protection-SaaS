@@ -401,7 +401,8 @@
     "info": "We only analyze public Reels. Private Reels cannot be scanned.",
     "submit": "Start Scan",
     "submitting": "Scanning...",
-    "error": "Scan failed. Please verify the link and try again."
+    "error": "Scan failed. Please verify the link and try again.",
+    "example": "Example:"
   },
   "ScanBenefits": {
     "secureAnalysis": {

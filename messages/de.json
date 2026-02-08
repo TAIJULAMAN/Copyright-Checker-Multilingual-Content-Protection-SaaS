@@ -394,13 +394,14 @@
     }
   },
   "ScanForm": {
-    "title": "Fügen Sie Ihren Profillink ein",
+    "title": "Profillink einfügen:",
     "description": "Geben Sie Ihre Instagram-Profil-URL ein, um den Scan zu starten",
     "placeholder": "Fügen Sie Ihren Profillink ein",
     "info": "Wir analysieren nur öffentliche Reels. Private Reels können nicht gescannt werden.",
     "submit": "Scan starten",
     "submitting": "Wird gescannt...",
-    "error": "Scan fehlgeschlagen. Bitte überprüfen Sie den Link und versuchen Sie es erneut."
+    "error": "Scan fehlgeschlagen. Bitte überprüfen Sie den Link und versuchen Sie es erneut.",
+    "example": "Beispiel:"
   },
   "ScanBenefits": {
     "secureAnalysis": {
