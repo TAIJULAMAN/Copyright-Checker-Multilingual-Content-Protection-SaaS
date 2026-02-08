@@ -53,7 +53,7 @@ export default function ScanForm() {
         <h2 className="text-xl md:text-4xl font-bold text-gray-900 mb-2 md:mb-4 tracking-tight">{t('title')}</h2>
         <p className="text-sm md:text-lg text-gray-600 mb-4 md:mb-6 max-w-2xl mx-auto">{t('description')}</p>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 bg-purple-50 border border-purple-100 px-3 py-2 md:px-4 md:py-3 rounded-xl sm:rounded-full transition-colors hover:bg-purple-100/80 max-w-3xl mx-auto">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 bg-purple-50 border border-purple-100 px-3 py-2 md:px-4 md:py-3 rounded-xl sm:rounded-xl transition-colors hover:bg-purple-100/80 max-w-3xl mx-auto">
           <span className="text-purple-700 font-medium text-xs md:text-base whitespace-nowrap">{t('example')}</span>
           <code className="text-purple-600 font-mono text-xs md:text-base break-all">{'https://www.instagram.com/deinbenutzername'}</code>
         </div>

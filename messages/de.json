@@ -396,7 +396,7 @@
   "ScanForm": {
     "title": "Profillink einfügen:",
     "description": "Geben Sie Ihre Instagram-Profil-URL ein, um den Scan zu starten",
-    "placeholder": "Fügen Sie Ihren Profillink ein",
+    "placeholder": "Profillink einfügen",
     "info": "Wir analysieren nur öffentliche Reels. Private Reels können nicht gescannt werden.",
     "submit": "Scan starten",
     "submitting": "Wird gescannt...",
