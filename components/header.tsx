@@ -171,7 +171,7 @@ export default function Header() {
             </div>
 
             <Link href="/scan">
-              <Button className="bg-purple-600 hover:bg-purple-700 text-white cursor-pointer">
+              <Button className="bg-purple-600 hover:bg-purple-700 text-white cursor-pointer rounded-full ">
                  {t('checkReels')}
               </Button>
             </Link>

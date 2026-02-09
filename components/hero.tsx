@@ -45,7 +45,7 @@ export default function Hero() {
                 <div className="flex flex-col sm:flex-row gap-4 mb-6">
                   <Button 
                     asChild
-                    className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-4 text-base sm:text-lg w-full sm:w-auto flex-shrink-0"
+                    className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-4 text-base sm:text-lg w-full sm:w-auto flex-shrink-0 cursor-pointer rounded-full"
                     size="lg"
                   >
                     <Link href="/scan">
