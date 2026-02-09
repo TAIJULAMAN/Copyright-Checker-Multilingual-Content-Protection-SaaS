@@ -358,7 +358,10 @@ export default function JobDetailsPage() {
               <TableBody>
                 {results.map((result: any) => {
                   const isVisited = visitedResults.has(result._id);
-                  const riskLevel = result.copyright?.riskLevel || (result.copyright?.copyrighted ? 'high' : 'low');
+                  let riskLevel = result.copyright?.riskLevel || (result.copyright?.copyrighted ? 'high' : 'low');
+                  if (result.detection?.confidence > 30 && riskLevel === 'low') {
+                    riskLevel = 'medium';
+                  }
                   const styles = getRiskStyles(riskLevel, isVisited);
 
                   return (
@@ -441,7 +444,10 @@ export default function JobDetailsPage() {
           <div className="md:hidden space-y-2">
             {results.map((result: any) => {
               const isVisited = visitedResults.has(result._id);
-              const riskLevel = result.copyright?.riskLevel || (result.copyright?.copyrighted ? 'high' : 'low');
+              let riskLevel = result.copyright?.riskLevel || (result.copyright?.copyrighted ? 'high' : 'low');
+              if (result.detection?.confidence > 30 && riskLevel === 'low') {
+                riskLevel = 'medium';
+              }
               const styles = getRiskStyles(riskLevel, isVisited);
 
               return (
