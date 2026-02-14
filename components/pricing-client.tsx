@@ -26,7 +26,7 @@ export default function PricingClient({ planId }: PricingClientProps) {
   return (
     <Button
       onClick={handleBuyNow}
-      className="w-full mb-6 bg-purple-600 hover:bg-purple-700 text-white"
+      className="w-full mb-6 bg-purple-600 hover:bg-purple-700 text-white rounded-full"
     >
       {t('buyNow')}
     </Button>

@@ -399,34 +399,7 @@ export default function ResultsPage() {
       </div>
 
 
-      {/* Disclaimer Section */}
-      <div className="bg-blue-50 border-l-4 border-blue-400 p-5 sm:p-15 rounded-lg my-10 !px-4 container mx-auto px-5 lg:px-0">
-        <div className="flex items-start gap-3">
-          <div className="flex-shrink-0">
-            <svg
-              className="w-5 h-5 text-blue-600"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h2a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold text-blue-800 mb-2">
-              {t('disclaimerTitle')}
-            </h3>
-            <p className="text-xs text-blue-700">
-              {t('disclaimerText')}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* color meaning  */}
+            {/* color meaning  */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 !px-4 p-6 container mx-auto my-10">
         <Accordion type="single" collapsible className="w-full">
           <AccordionItem value="risk-guide" className="border-b-0">
@@ -477,6 +450,36 @@ export default function ResultsPage() {
       </div>
 
 
+      {/* Disclaimer Section */}
+      <div className="bg-blue-50 border-l-4 border-blue-400 p-5 sm:p-15 rounded-lg my-10 !px-4 container mx-auto px-5 lg:px-0">
+        <div className="flex items-start gap-3">
+          <div className="flex-shrink-0">
+            <svg
+              className="w-5 h-5 text-blue-600"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h2a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-blue-800 mb-2">
+              {t('disclaimerTitle')}
+            </h3>
+            <p className="text-xs text-blue-700">
+              {t('disclaimerText')}
+            </p>
+          </div>
+        </div>
+      </div>
+
+
+
+
       {/* monthly plans show if any scan history is present */}
       {jobs.length > 0 && (
         /* AVAILABLE monthly PLANS */
@@ -517,7 +520,7 @@ export default function ResultsPage() {
                   <Button
                     onClick={() => handleBuyNow(plan._id)}
                     disabled={isCreatingOrder && selectedPlanId === plan._id}
-                    className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                    className="w-full bg-purple-600 hover:bg-purple-700 text-white rounded-full"
                   >
                     {isCreatingOrder && selectedPlanId === plan._id ? (
                       <>

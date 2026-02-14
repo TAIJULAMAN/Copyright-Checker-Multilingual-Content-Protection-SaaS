@@ -43,7 +43,7 @@ export default function PageHeader({
           </div>
         )}
         {title && <h1 className="text-4xl font-bold text-gray-900 mb-4">{title}</h1>}
-        {description && <p className="text-lg md:text-xl text-gray-600">{description}</p>}
+      
       </div>
     </header>
   )

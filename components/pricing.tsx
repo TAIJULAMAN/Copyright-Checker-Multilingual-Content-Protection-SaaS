@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Loader2 } from "lucide-react";
+import { Check, Loader2, ShieldCheck } from "lucide-react";
 import PricingClient from "./pricing-client";
 import { useTranslations } from "next-intl";
 import { Plan, useGetSubscriptionPlansQuery } from "@/redux/api/subscriptionApi";
@@ -48,7 +48,7 @@ export default function Pricing() {
               <div className="space-y-3 mt-5 min-h-[150px]">
                 {plan.features.map((feature, i) => (
                   <div key={i} className="flex items-start gap-3">
-                    <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                    <ShieldCheck className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                     <span className="text-gray-700 text-sm">{feature}</span>
                   </div>
                 ))}
