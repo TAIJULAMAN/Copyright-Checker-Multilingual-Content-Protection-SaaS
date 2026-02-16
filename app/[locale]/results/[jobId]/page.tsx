@@ -12,6 +12,23 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useState, useEffect } from "react";
 import { Download, Loader2 } from "lucide-react";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
 import { useTranslations } from "next-intl";
 
 export default function JobDetailsPage() {
@@ -20,7 +37,8 @@ export default function JobDetailsPage() {
   const router = useRouter();
   const jobId = params.jobId as string;
   const [page, setPage] = useState(1);
-  const { data, isLoading, error } = useGetJobDetailsQuery({ jobId, page, limit: 10 });
+  const [limit, setLimit] = useState(10);
+  const { data, isLoading, error } = useGetJobDetailsQuery({ jobId, page, limit });
   /* eslint-disable @typescript-eslint/no-unused-vars */
   const [exportJobReport, { isLoading: isDownloading }] = useExportJobReportMutation();
   const [selectedResult, setSelectedResult] = useState<any>(null);
@@ -543,32 +561,151 @@ export default function JobDetailsPage() {
 
         </div>
 
-        {/* Pagination */
-          jobDetails.pagination && jobDetails.pagination.totalPages > 1 && (
-            <div className="flex items-center justify-center gap-4 mt-8 pb-8">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setPage(p => Math.max(1, p - 1))}
-                disabled={!jobDetails.pagination.hasPrevPage}
+        {/* Pagination */}
+        {jobDetails.pagination && jobDetails.pagination.totalPages > 1 && (
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 mt-8 pb-8">
+
+            {/* Rows per page */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-500 whitespace-nowrap">{t('rowsPerPage') || "Rows per page"}</span>
+              <Select
+                value={limit.toString()}
+                onValueChange={(value) => {
+                  setLimit(Number(value));
+                  setPage(1); // Reset to page 1 when limit changes
+                }}
               >
-                <ChevronLeft className="w-4 h-4 mr-2" />
-                Previous
-              </Button>
-              <span className="text-sm text-gray-600">
-                Page {jobDetails.pagination.currentPage} of {jobDetails.pagination.totalPages}
-              </span>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setPage(p => p + 1)}
-                disabled={!jobDetails.pagination.hasNextPage}
-              >
-                Next
-                <ChevronRight className="w-4 h-4 ml-2" />
-              </Button>
+                <SelectTrigger className="h-8 w-[70px]">
+                  <SelectValue placeholder={limit.toString()} />
+                </SelectTrigger>
+                <SelectContent>
+                  {[10, 20, 30, 50].map((pageSize) => (
+                    <SelectItem key={pageSize} value={pageSize.toString()}>
+                      {pageSize}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-          )}
+
+            {/* Pagination Component */}
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (jobDetails.pagination.hasPrevPage) setPage(p => Math.max(1, p - 1));
+                    }}
+                    className={!jobDetails.pagination.hasPrevPage ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                  />
+                </PaginationItem>
+
+                {(() => {
+                  const totalPages = jobDetails.pagination.totalPages;
+                  const currentPage = jobDetails.pagination.currentPage;
+                  const siblingCount = 1;
+
+                  // Logic to determine which page numbers to show
+                  const generatePagination = () => {
+                    const paginationItems = [];
+
+                    // Always show first page
+                    paginationItems.push(1);
+
+
+                    if (currentPage > siblingCount + 2) {
+                      paginationItems.push('...');
+                    }
+
+                    const startPage = Math.max(2, currentPage - siblingCount);
+                    const endPage = Math.min(totalPages - 1, currentPage + siblingCount);
+
+                    for (let i = startPage; i <= endPage; i++) {
+                      paginationItems.push(i);
+                    }
+
+                    if (currentPage < totalPages - siblingCount - 1) {
+                      paginationItems.push('...');
+                    }
+
+                    // Always show last page if totalPages > 1
+                    if (totalPages > 1) {
+                      paginationItems.push(totalPages);
+                    }
+
+                    return paginationItems;
+                  };
+
+                  const items = generatePagination();
+
+                  return items.map((item, index) => (
+                    <PaginationItem key={index}>
+                      {item === '...' ? (
+                        <PaginationEllipsis />
+                      ) : (
+                        <PaginationLink
+                          href="#"
+                          isActive={currentPage === item}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setPage(Number(item));
+                          }}
+                        >
+                          {item}
+                        </PaginationLink>
+                      )}
+                    </PaginationItem>
+                  ));
+                })()}
+
+                <PaginationItem>
+                  <PaginationNext
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (jobDetails.pagination.hasNextPage) setPage(p => p + 1);
+                    }}
+                    className={!jobDetails.pagination.hasNextPage ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+
+            {/* Go to page */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-500 whitespace-nowrap">{t('goToPage') || "Go to page"}</span>
+              <Input
+                type="number"
+                min={1}
+                max={jobDetails.pagination.totalPages}
+                className="h-8 w-[60px]"
+                defaultValue={page}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    const val = Number(e.currentTarget.value);
+                    if (val >= 1 && val <= jobDetails.pagination.totalPages) {
+                      setPage(val);
+                    }
+                  }
+                }}
+                onBlur={(e) => {
+                  const val = Number(e.target.value);
+                  if (val >= 1 && val <= jobDetails.pagination.totalPages) {
+                    setPage(val);
+                  } else {
+                    // Reset input to current page if invalid
+                    e.target.value = page.toString();
+                  }
+                }}
+              />
+            </div>
+
+          </div>
+        )}
+
+
       </div>
 
       {/* Custom Modal */}

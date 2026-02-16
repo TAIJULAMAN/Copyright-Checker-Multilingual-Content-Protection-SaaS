@@ -15,7 +15,7 @@
   "Hero": {
     "titlePrefix": "Prüfe deine",
     "titleMiddle": "Instagram Reels auf",
-    "titleSuffix": "Copyright Risiken",
+    "titleSuffix": "Copyright Risiken!",
     "description": "Erhalte eine klare Risiko Einschätzung aller öffentlich sichtbaren Reels eines Accounts und erkenne potenziell problematische Videos innerhalb weniger Minuten.",
     "cta": "Jetzt meine Reels prüfen",
     "secure": "Sicher bezahlen mit PayPal",
@@ -295,11 +295,13 @@
     "lowRiskDesc": "Keine bekannten Urheberrechtsrisiken erkannt.",
     "noAudio": "Kein Audio erkannt",
     "noAudioDesc": "Keine Musik gefunden oder kein relevantes Audio zum Analysieren.",
-    "disclaimerTitle": "Haftungsausschluss"
+    "disclaimerTitle": "Haftungsausschluss",
+    "rowsPerPage": "Zeilen pro Seite",
+    "goToPage": "Gehe zu Seite"
   },
   "Scan": {
     "title": "Instagram Reels scannen",
-    "description": "Überprüfen Sie Ihre Instagram Reels auf urheberrechtlich geschützte Musik"
+    "description": "Überprüfe deine öffentlichen Instagram Reels auf urheberrechtlich Geschütze Musik"
   },
   "Auth": {
     "login": {
@@ -395,7 +397,7 @@
   },
   "ScanForm": {
     "title": "Profillink einfügen:",
-    "description": "Geben Sie Ihre Instagram-Profil-URL ein, um den Scan zu starten",
+    "description": "Gebe deine Instagram-Profil-Url ein, um den Scan zu starten",
     "placeholder": "Profillink einfügen",
     "info": "Wir analysieren nur öffentliche Reels. Private Reels können nicht gescannt werden.",
     "submit": "Scan starten",
@@ -406,15 +408,15 @@
   "ScanBenefits": {
     "secureAnalysis": {
       "title": "Sichere Analyse",
-      "description": "Ihre Inhalte werden sicher analysiert, ohne persönliche Daten zu speichern"
+      "description": "Deine Inhalte werden sicher analysiert, ohne persönliche Daten zu speichern"
     },
     "fastResults": {
       "title": "Schnelle Ergebnisse",
-      "description": "Erhalten Sie umfassende Urheberrechtsanalysen in Minuten"
+      "description": "Erhalte umfassende Urheberrechtsanalysen in Minuten"
     },
     "detailedReports": {
       "title": "Detaillierte Berichte",
-      "description": "Erhalten Sie detaillierte Einblicke in Musiknutzung und Risiken"
+      "description": "Erhalte detaillierte Einblicke in Musiknutzung und Risiken"
     }
   },
   "Imprint": {

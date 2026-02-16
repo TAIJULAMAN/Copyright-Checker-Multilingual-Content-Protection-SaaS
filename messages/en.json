@@ -296,7 +296,9 @@
     "lowRiskDesc": "No known copyright risks detected.",
     "noAudio": "No audio detected",
     "noAudioDesc": "No music found or no relevant audio to analyze.",
-    "disclaimerTitle": "Disclaimer"
+    "disclaimerTitle": "Disclaimer",
+    "rowsPerPage": "Rows per page",
+    "goToPage": "Go to page"
   },
   "Scan": {
     "title": "Scan Instagram Reels",

@@ -96,7 +96,7 @@ export default function ScanForm() {
           <Button
             type="submit"
             disabled={isLoading || !profileLink.trim()}
-            className="w-full sm:w-auto min-w-[240px] bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-3 md:py-7 text-sm md:text-lg font-bold rounded-xl shadow-lg hover:shadow-xl shadow-purple-500/20 flex items-center justify-center gap-2.5 transition-all transform hover:-translate-y-0.5 disabled:opacity-70 disabled:hover:translate-y-0 disabled:shadow-none"
+            className="w-full sm:w-auto min-w-[240px] bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-3 md:py-7 text-sm md:text-lg font-bold rounded-full shadow-lg hover:shadow-xl shadow-purple-500/20 flex items-center justify-center gap-2.5 transition-all transform hover:-translate-y-0.5 disabled:opacity-70 disabled:hover:translate-y-0 disabled:shadow-none"
           >
             {isLoading ? (
               <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

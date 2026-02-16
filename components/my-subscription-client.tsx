@@ -240,8 +240,11 @@ export default function MySubscriptionClient({ recurringPlans, subscriptionHisto
             {/* SECTION 2: SUBSCRIPTION HISTORY */}
             <div className="border-t border-gray-200 pt-12">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-                    {t("historyTitle") || "Subscription History"}
+                    {t("historyTitle") || "Subscription History"} 
                 </h2>
+                <p className="text-center font-bold">
+                    Vollständiger Verlauf hier: <Link className="text-blue-500" href="/results">Link</Link>
+                </p>
 
                 {isHistoryLoading ? (
                     <div className="flex justify-center py-8">
