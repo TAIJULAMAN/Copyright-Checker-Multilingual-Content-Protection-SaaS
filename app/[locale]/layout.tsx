@@ -87,7 +87,7 @@ export const metadata: Metadata = {
     locale: "de_DE",
     url: "https://www.copyrightchecker.de",
     siteName: "CopyrightChecker.de",
-    title: "Instagram Reels Copyright Checker – Schnell & Sicher",
+    title: "Instagram Reel Abmahnung vermeiden – Copyright Check für Unternehmen & Creator",
     description:
       "Automatische KI-Analyse öffentlicher Instagram Reels auf mögliche Urheberrechtsprobleme. Kein Login, Ergebnisse in Minuten.",
     images: [
