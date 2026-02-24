@@ -38,7 +38,7 @@ export default function Header() {
   const [logoutApi] = useLogoutMutation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   // const [lang, setLang] = useState<"EN" | "DE">("EN"); // Replaced by useLocale
-  
+
   const user = useSelector(selectCurrentUser);
   const isLoggedIn = !!user;
   const displayName = user?.fullname || user?.name || user?.email?.split('@')[0] || "User";
@@ -49,7 +49,7 @@ export default function Header() {
     } catch (error) {
       console.error("Logout API failed", error);
     }
-    
+
     // 1. Clear Redux State
     dispatch(logout());
     dispatch(baseApi.util.resetApiState()); // Clear RTK Query cache
@@ -57,25 +57,25 @@ export default function Header() {
     // 2. Clear Cookies
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
-    
+
     // 3. Clear Session Storage
     sessionStorage.clear();
-    
+
     // 4. Clear Local Storage
     localStorage.clear();
-    
+
     setMobileMenuOpen(false);
     router.push("/");
   };
 
   const handleLangChange = (newLocale: string) => {
-      router.replace(pathname, {locale: newLocale});
+    router.replace(pathname, { locale: newLocale });
   };
 
   const NavLinks = ({ variant = 'light' }: { variant?: 'light' | 'dark' }) => {
     const textColor = variant === 'dark' ? 'text-gray-900' : 'text-white';
     const hoverColor = variant === 'dark' ? 'hover:text-purple-600' : 'hover:text-purple-400';
-    
+
     return (
       <div className="flex flex-col space-y-3">
         <Link
@@ -97,14 +97,14 @@ export default function Header() {
           className={`${textColor} ${hoverColor} text-sm transition-colors py-1.5`}
           onClick={() => setMobileMenuOpen(false)}
         >
-           {t('faq')}
+          {t('faq')}
         </Link>
         <Link
           href="/contact"
           className={`${textColor} ${hoverColor} text-sm transition-colors py-1.5`}
           onClick={() => setMobileMenuOpen(false)}
         >
-           {t('contact')}
+          {t('contact')}
         </Link>
       </div>
     );
@@ -131,16 +131,16 @@ export default function Header() {
                 Home
               </Link> */}
               <Link href="/#how-it-works" className="text-white hover:text-purple-400 transition-colors">
-                 {t('howItWorks')}
+                {t('howItWorks')}
               </Link>
               <Link href="/pricing" className="text-white hover:text-purple-400 transition-colors">
-                 {t('pricing')}
+                {t('pricing')}
               </Link>
               <Link href="/faq" className="text-white hover:text-purple-400 transition-colors">
-                 {t('faq')}
+                {t('faq')}
               </Link>
               <Link href="/contact" className="text-white hover:text-purple-400 transition-colors">
-                 {t('contact')}
+                {t('contact')}
               </Link>
             </div>
           </nav>
@@ -150,31 +150,38 @@ export default function Header() {
             <div className="inline-flex items-center rounded-full overflow-hidden bg-white cursor-pointer">
               <button
                 onClick={() => handleLangChange("en")}
-                className={`px-4 py-2 text-sm font-semibold transition-colors ${
-                  locale === "en"
-                    ? "bg-purple-600 text-white"
-                    : "bg-transparent text-[#1b2149]"
-                }`}
+                className={`px-4 py-2 text-sm font-semibold transition-colors ${locale === "en"
+                  ? "bg-purple-600 text-white"
+                  : "bg-transparent text-[#1b2149]"
+                  }`}
               >
                 EN
               </button>
               <button
                 onClick={() => handleLangChange("de")}
-                className={`px-4 py-2 text-sm font-semibold transition-colors ${
-                  locale === "de"
-                    ? "bg-purple-600 text-white"
-                    : "bg-transparent text-[#1b2149]"
-                }`}
+                className={`px-4 py-2 text-sm font-semibold transition-colors ${locale === "de"
+                  ? "bg-purple-600 text-white"
+                  : "bg-transparent text-[#1b2149]"
+                  }`}
               >
                 DE
               </button>
             </div>
 
-            <Link href="/scan">
-              <Button className="bg-purple-600 hover:bg-purple-700 text-white cursor-pointer rounded-full ">
-                 {t('checkReels')}
-              </Button>
-            </Link>
+            <Button
+              onClick={() => {
+                if (!isLoggedIn) {
+                  const isReturningUser = localStorage.getItem("returningUser") === "true";
+                  const targetPath = isReturningUser ? "/login" : "/signup";
+                  router.push(`${targetPath}?callbackUrl=/scan`);
+                } else {
+                  router.push("/scan");
+                }
+              }}
+              className="bg-purple-600 hover:bg-purple-700 text-white cursor-pointer rounded-full "
+            >
+              {t('checkReels')}
+            </Button>
 
             {isLoggedIn ? (
               <DropdownMenu>
@@ -238,7 +245,7 @@ export default function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-               <Link href="/login">
+              <Link href="/login">
                 <Button variant="outline" className="border-purple-600 text-purple-600 hover:bg-purple-50">
                   {t('login')}
                 </Button>
@@ -252,21 +259,19 @@ export default function Header() {
             <div className="inline-flex items-center rounded-full overflow-hidden bg-white">
               <button
                 onClick={() => handleLangChange("en")}
-                className={`px-3 py-2 text-xs font-medium transition-colors ${
-                  locale === "en"
-                    ? "bg-purple-600 text-white"
-                    : "bg-transparent text-[#1b2149]"
-                }`}
+                className={`px-3 py-2 text-xs font-medium transition-colors ${locale === "en"
+                  ? "bg-purple-600 text-white"
+                  : "bg-transparent text-[#1b2149]"
+                  }`}
               >
                 EN
               </button>
               <button
                 onClick={() => handleLangChange("de")}
-                className={`px-3 py-2 text-xs font-medium transition-colors ${
-                  locale === "de"
-                    ? "bg-purple-600 text-white"
-                    : "bg-transparent text-[#1b2149]"
-                }`}
+                className={`px-3 py-2 text-xs font-medium transition-colors ${locale === "de"
+                  ? "bg-purple-600 text-white"
+                  : "bg-transparent text-[#1b2149]"
+                  }`}
               >
                 DE
               </button>
@@ -298,20 +303,20 @@ export default function Header() {
                       <>
                         <Link href="/mysubscription" onClick={() => setMobileMenuOpen(false)} className="block">
                           <Button variant="ghost" className="w-full justify-start">
-                             <Crown className="mr-2 h-4 w-4" /> {t('mySubscription')}
+                            <Crown className="mr-2 h-4 w-4" /> {t('mySubscription')}
                           </Button>
                         </Link>
-                         <Link href="/results" onClick={() => setMobileMenuOpen(false)} className="block">
+                        <Link href="/results" onClick={() => setMobileMenuOpen(false)} className="block">
                           <Button variant="ghost" className="w-full justify-start">
-                             <History className="mr-2 h-4 w-4" /> {t('scanHistory')}
+                            <History className="mr-2 h-4 w-4" /> {t('scanHistory')}
                           </Button>
                         </Link>
-                        <Button 
-                          variant="ghost" 
+                        <Button
+                          variant="ghost"
                           className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
                           onClick={handleLogout}
                         >
-                           <LogOut className="mr-2 h-4 w-4" /> {t('logout')}
+                          <LogOut className="mr-2 h-4 w-4" /> {t('logout')}
                         </Button>
                       </>
                     ) : (
@@ -323,12 +328,22 @@ export default function Header() {
                         </Link>
                       </>
                     )}
-                   
-                    <Link href="/scan" onClick={() => setMobileMenuOpen(false)} className="block">
-                      <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white">
-                        {t('checkReels')}
-                      </Button>
-                    </Link>
+
+                    <Button
+                      className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        if (!isLoggedIn) {
+                          const isReturningUser = localStorage.getItem("returningUser") === "true";
+                          const targetPath = isReturningUser ? "/login" : "/signup";
+                          router.push(`${targetPath}?callbackUrl=/scan`);
+                        } else {
+                          router.push("/scan");
+                        }
+                      }}
+                    >
+                      {t('checkReels')}
+                    </Button>
                   </div>
 
                   {/* User Profile Section - Removed from mobile/tablet as per request */}

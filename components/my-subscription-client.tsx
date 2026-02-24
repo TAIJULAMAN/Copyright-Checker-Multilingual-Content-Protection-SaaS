@@ -118,7 +118,7 @@ export default function MySubscriptionClient({ recurringPlans, subscriptionHisto
                                         <div>
                                             <CardTitle className="text-2xl text-purple-700">{plan.name}</CardTitle>
                                             <CardDescription className="capitalize mt-1">
-                                                {subscription.subscriptionType} {t("payment")}
+
                                             </CardDescription>
                                         </div>
                                         <div
@@ -161,7 +161,10 @@ export default function MySubscriptionClient({ recurringPlans, subscriptionHisto
                                             </div>
                                             <div>
                                                 <h3 className="font-medium text-gray-900">{t("amountPaid")}</h3>
-                                                <p className="text-sm text-gray-500">${plan.price}</p>
+                                                <div className="flex flex-col">
+                                                    <p className="text-sm text-gray-500 font-bold">€{plan.price}</p>
+                                                    <span className="text-[10px] text-gray-400 italic">inkl. 19% MwSt.</span>
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="flex items-start gap-4">
@@ -175,19 +178,6 @@ export default function MySubscriptionClient({ recurringPlans, subscriptionHisto
                                         </div>
                                     </div>
 
-                                    {subscription.status === 'active' && (
-                                        <div className="pt-4 border-t border-gray-100 flex justify-end">
-                                            <Button
-                                                variant="destructive"
-                                                onClick={handleCancelSubscription}
-                                                disabled={isCancelling}
-                                                className="flex items-center gap-2"
-                                            >
-                                                {isCancelling ? <Loader2 className="w-4 h-4 animate-spin" /> : <XCircle className="w-4 h-4" />}
-                                                {t('cancelSubscription') || "Cancel Subscription"}
-                                            </Button>
-                                        </div>
-                                    )}
                                 </CardContent>
                             </Card>
 
@@ -240,7 +230,7 @@ export default function MySubscriptionClient({ recurringPlans, subscriptionHisto
             {/* SECTION 2: SUBSCRIPTION HISTORY */}
             <div className="border-t border-gray-200 pt-12">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-                    {t("historyTitle") || "Subscription History"} 
+                    {t("historyTitle") || "Subscription History"}
                 </h2>
                 <p className="text-center font-bold">
                     Vollständiger Verlauf hier: <Link className="text-blue-500" href="/results">Link</Link>

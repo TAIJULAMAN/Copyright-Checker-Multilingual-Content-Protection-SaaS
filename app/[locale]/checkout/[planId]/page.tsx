@@ -25,12 +25,25 @@ export default function CheckoutPage() {
   const selectedPlan = plansData?.data?.plans.find(p => p._id === planId);
 
   const handlePayment = async () => {
-    if (!planId) return;
+    if (!planId || !selectedPlan) return;
 
     try {
+      const grossAmount = selectedPlan.price;
+      const netAmount = Math.round((grossAmount / 1.19) * 100) / 100;
+      const taxAmount = Math.round((grossAmount - netAmount) * 100) / 100;
+
       const payload = {
         planId,
-        ...(couponCode.trim() && { couponCode: couponCode.trim() })
+        ...(couponCode.trim() && { couponCode: couponCode.trim() }),
+        paypalInfo: {
+          description: "Copyrightchecker.de - Instagram Account/s Copyright Risikoanalyse 1x Account Check (Einmalzahlung)",
+          currency: "EUR",
+          breakdown: {
+            item_total: netAmount,
+            tax_total: taxAmount,
+            total: grossAmount
+          }
+        }
       };
 
       const result = await createPayPalOrder(payload).unwrap();
@@ -75,31 +88,44 @@ export default function CheckoutPage() {
       <PageHeader
         title="Checkout"
         description="Review your order and complete payment"
-        backLink={{ href: "/pricing", text: "Back to Plans" }}
+        backLink={{ href: "/pricing", text: "Zurück" }}
       />
 
-      <div className="max-w-md mx-auto px-4 -mt-8 relative z-10">
+      <div className="max-w-md mx-auto px-4 mt-8 relative z-10">
         <Card className="shadow-lg border-0 ring-1 ring-gray-200">
           <CardHeader className="space-y-1 pb-4 border-b border-gray-100">
             <CardTitle className="text-2xl font-bold">{selectedPlan.name}</CardTitle>
             <CardDescription>
-              {selectedPlan.billingCycle} subscription
+              Einmalzahlung
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-6 space-y-6">
 
-            <div className="flex justify-between items-end">
-              <span className="text-gray-600">Total Amount</span>
-              <span className="text-3xl font-bold text-primary">${selectedPlan.price}</span>
+            <div className="space-y-3">
+              <div className="flex justify-between text-sm text-gray-500">
+                <span>Zwischensumme (Netto)</span>
+                <span>€{(selectedPlan.price / 1.19).toFixed(2).replace(".", ",")}</span>
+              </div>
+              <div className="flex justify-between text-sm text-gray-500">
+                <span>MwSt. (19%)</span>
+                <span>€{(selectedPlan.price - (selectedPlan.price / 1.19)).toFixed(2).replace(".", ",")}</span>
+              </div>
+              <div className="flex justify-between items-end pt-2 border-t border-gray-100">
+                <span className="text-gray-900 font-bold">Gesamtbetrag (Brutto)</span>
+                <div className="text-right">
+                  <span className="text-3xl font-bold text-primary block">€{selectedPlan.price}</span>
+                  <span className="text-sm text-gray-500 italic">{t('vatIncl')}</span>
+                </div>
+              </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2 pt-4">
               <label htmlFor="coupon" className="text-sm font-medium text-gray-700 flex items-center gap-2">
                 <Tag className="h-4 w-4" /> Coupon Code (Optional)
               </label>
               <Input
                 id="coupon"
-                placeholder="Enter coupon code"
+                placeholder="Rabattcode hier einfügen"
                 value={couponCode}
                 onChange={(e) => setCouponCode(e.target.value)}
                 className="bg-white"
@@ -107,26 +133,37 @@ export default function CheckoutPage() {
             </div>
 
           </CardContent>
-          <CardFooter className="pt-2 pb-6">
-            <Button
-              className="w-full h-11 text-base cursor-pointer bg-purple-600 hover:bg-purple-700"
-              onClick={handlePayment}
-              disabled={isCreatingOrder}
-            >
-              {isCreatingOrder ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Processing...
-                </>
-              ) : (
-                <>Proceed to Payment</>
-              )}
-            </Button>
+          <CardFooter className="flex flex-col gap-4   py-8 px-6 border-t bg-gray-50/30 ">
+            <div className="w-full space-y-4">
+              <h3 className="text-center text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                Kostenpflichtig bestellen und zu PayPal
+              </h3>
+
+              <Button
+                className="w-full h-14 cursor-pointer transition-all rounded-full border-none shadow-md hover:shadow-xl flex items-center justify-center py-6 bg-[#ffc439] hover:bg-[#f2ba36] active:scale-[0.98] ring-offset-2 focus:ring-2 focus:ring-[#ffc439] group"
+                onClick={handlePayment}
+                disabled={isCreatingOrder}
+              >
+                {isCreatingOrder ? (
+                  <div className="flex items-center gap-2">
+                    <Loader2 className="h-5 w-5 animate-spin text-[#003087]" />
+                    <span className="text-[#003087] font-bold">Verarbeitung...</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <img src="/paypal.png" alt="PayPal" className="h-7 object-contain" />
+                    <span className="text-[#003087] font-extrabold text-xl italic group-hover:scale-105 transition-transform">Checkout</span>
+                  </div>
+                )}
+              </Button>
+            </div>
+
           </CardFooter>
         </Card>
 
-        <p className="text-center text-xs text-gray-500 mt-6 max-w-xs mx-auto">
-          By proceeding, you agree to our Terms of Service and Privacy Policy. Secure payment processing by PayPal.
+        <p className="text-center text-xs text-gray-500 mt-6 max-w-xl mx-auto">
+          Mit Klick auf „Jetzt kostenpflichtig bestellen und mit PayPal zahlen“ akzeptierst du unsere Nutzungsbedingungen und Datenschutzerklärung.
+          Die Zahlung wird über PayPal abgewickelt.
         </p>
       </div>
     </div>

@@ -26,6 +26,15 @@ export interface SubscriptionResponse {
 export interface CreatePayPalOrderRequest {
   planId: string;
   couponCode?: string;
+  paypalInfo?: {
+    description: string;
+    currency: string;
+    breakdown: {
+      item_total: number;
+      tax_total: number;
+      total: number;
+    }
+  };
 }
 
 export interface CreatePayPalOrderResponse {

@@ -43,6 +43,7 @@
     "payment": "Payment",
     "buyNow": "Buy Now",
     "processing": "Processing...",
+    "vatIncl": "incl. 19% VAT",
     "couponError": "You have already used a coupon. Only one coupon per user is allowed."
   },
   "Features": {
@@ -403,6 +404,7 @@
     "info": "We only analyze public Reels. Private Reels cannot be scanned.",
     "submit": "Start Scan",
     "submitting": "Scanning...",
+    "processing": "Processing...",
     "error": "Scan failed. Please verify the link and try again.",
     "example": "Example:"
   },
@@ -445,6 +447,19 @@
     "startScanning": "Start Scanning Now",
     "viewSubscriptions": "View My Subscriptions"
   },
+  "PaymentSuccessModal": {
+    "title": "Payment Successful!",
+    "description": "Thank you for your order.",
+    "status": "Your payment has been successfully processed. We are now generating your detailed copyright scan report. This will be ready shortly.",
+    "generating": "Generating your results, this might take a moment...",
+    "ready": "Your results are ready!",
+    "invoice": "Invoice",
+    "date": "Date",
+    "item": "Instagram Reels Copyright Scan",
+    "paymentMethod": "Payment Method",
+    "totalPaid": "Total Paid",
+    "cta": "Start Account Check"
+  },
   "PaymentCancel": {
     "title": "Payment Cancelled",
     "description": "Your transaction was cancelled and no payment was charged. If you experienced an issue, you can try again.",
@@ -468,5 +483,19 @@
       "actions": "Actions",
       "viewDetails": "View Details"
     }
+  },
+  "CookieBanner": {
+    "title": "We use cookies and other technologies.",
+    "description": "This website uses cookies and similar functions to process end device information and personal data. The processing serves the integration of content, external services and elements of third parties, statistical analysis/measurement, personalized advertising, Remarketing and the integration of social media. Depending on the function, data may be passed on to third parties within the EU. Your consent is always voluntary, not required for the use of our website and can be rejected or revoked at any time via the icon at the bottom right.",
+    "deny": "DENY",
+    "settings": "SETTINGS",
+    "ok": "OK",
+    "imprint": "Imprint",
+    "privacy": "Privacy Policy",
+    "terms": "Terms & Conditions",
+    "about": "About Us",
+    "accessibility": "Accessibility",
+    "denyMessage": "You have denied cookies. To focus on your preferences, would you like to switch to the German version of the website?",
+    "switchToGerman": "Allow and use website in German"
   }
 }

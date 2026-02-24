@@ -8,21 +8,21 @@ const invoices = [
   {
     id: "CW-2025-0001",
     date: new Date().toLocaleDateString(),
-    total: "$9.99",
+    total: "€9,99",
     method: "PayPal",
     status: "Paid",
   },
   {
     id: "CW-2025-0002",
     date: new Date().toLocaleDateString(),
-    total: "$19.98",
+    total: "€19,98",
     method: "Card",
     status: "Paid",
   },
   {
     id: "CW-2025-0003",
     date: new Date().toLocaleDateString(),
-    total: "$9.99",
+    total: "€9,99",
     method: "PayPal",
     status: "Refunded",
   },
@@ -79,15 +79,36 @@ export default function InvoicesPage() {
             <div>${inv.status}</div>
           </div>
           <div class='line'></div>
+          <div class='item'>
+            <div>Subtotal (Net)</div>
+            <div id="subtotal">Calculating...</div>
+          </div>
+          <div class='item'>
+            <div>VAT (19%)</div>
+            <div id="vat">Calculating...</div>
+          </div>
+          <div class='line'></div>
           <div class='total'>
-            <div>Total Paid</div>
+            <div>Total Paid (Gross)</div>
             <div>${inv.total}</div>
+          </div>
+          <div style='font-size: 10px; color: #94a3b8; margin-top: 10px; font-style: italic;'>
+            Inkl. 19% MwSt.
           </div>
         </div>
         <script>
           window.onload = function(){
-            window.print();
-            window.onafterprint = () => window.close();
+            const totalStr = "${inv.total}".replace("€", "").replace(",", ".");
+            const total = parseFloat(totalStr);
+            const net = total / 1.19;
+            const vat = total - net;
+            document.getElementById("subtotal").innerText = "€" + net.toFixed(2).replace(".", ",");
+            document.getElementById("vat").innerText = "€" + vat.toFixed(2).replace(".", ",");
+            
+            setTimeout(() => {
+              window.print();
+              window.onafterprint = () => window.close();
+            }, 500);
           }
         </script>
       </body>
@@ -128,13 +149,12 @@ export default function InvoicesPage() {
                   <td className="px-6 py-4 text-gray-700">{inv.method}</td>
                   <td className="px-6 py-4">
                     <span
-                      className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold ${
-                        inv.status === "Paid"
-                          ? "bg-green-100 text-green-700"
-                          : inv.status === "Refunded"
+                      className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold ${inv.status === "Paid"
+                        ? "bg-green-100 text-green-700"
+                        : inv.status === "Refunded"
                           ? "bg-yellow-100 text-yellow-700"
                           : "bg-gray-100 text-gray-700"
-                      }`}
+                        }`}
                     >
                       {inv.status}
                     </span>

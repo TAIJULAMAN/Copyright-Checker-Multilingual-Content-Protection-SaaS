@@ -53,10 +53,11 @@ export default function Pricing() {
                   </div>
                 ))}
               </div>
-              <div className="flex items-baseline justify-center my-5">
+              <div className="flex flex-col items-center justify-center my-5">
                 <span className="text-4xl font-bold text-[#1b2149]">
                   €{plan.price}
                 </span>
+                <span className="text-sm text-gray-500 italic mt-1">{t('vatIncl')}</span>
               </div>
               {/* <div className="flex items-center justify-center">
                 <p className="text-gray-600 text-sm mb-6 capitalize"> {t('payment')}</p>

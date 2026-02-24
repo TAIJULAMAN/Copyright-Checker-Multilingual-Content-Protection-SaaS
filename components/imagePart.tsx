@@ -15,6 +15,18 @@ export default function ImagePart() {
           quality={100}
         />
       </div>
+      <div className="md:w-[300px] md:h-[100px] w-[250px] h-[80px] mx-auto mt-10">
+        <Image
+          src="/googlerating.png"
+          alt="Section image"
+          width={350}
+          height={200}
+          sizes="100vw"
+          className="w-full h-auto object-cover"
+          priority
+          quality={100}
+        />
+      </div>
     </div>
   );
 }

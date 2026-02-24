@@ -3,24 +3,31 @@
 import type React from "react";
 
 import { useState } from "react";
-import { useRouter } from "@/i18n/routing";
-import { Link } from "@/i18n/routing";
+import { useRouter, Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
-import { useRegisterMutation } from "@/redux/api/authApi";
+import { useLoginMutation, useRegisterMutation } from "@/redux/api/authApi";
+import { setCredentials } from "@/redux/slices/authSlice";
+import { useDispatch } from "react-redux";
+import Cookies from "js-cookie";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 export default function SignupPage() {
   const t = useTranslations('Auth.signup');
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const dispatch = useDispatch();
+  const callbackUrl = searchParams.get("callbackUrl") || "/scan"
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -33,7 +40,10 @@ export default function SignupPage() {
     agreeTerms: false,
   });
   const [error, setError] = useState("");
-  const [register, { isLoading }] = useRegisterMutation();
+  const [register, { isLoading: isRegisterLoading }] = useRegisterMutation();
+  const [login, { isLoading: isLoginLoading }] = useLoginMutation();
+
+  const isLoading = isRegisterLoading || isLoginLoading;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -87,8 +97,44 @@ export default function SignupPage() {
       }).unwrap();
 
       if (result.success) {
-        // Redirection to Login after successful registration
-        router.push("/login");
+        // Automatically login after successful registration
+        try {
+          const loginResult = await login({
+            email: formData.email,
+            password: formData.password
+          }).unwrap();
+
+          if (loginResult.success) {
+            dispatch(
+              setCredentials({
+                user: loginResult.data.user,
+                accessToken: loginResult.data.accessToken,
+                refreshToken: loginResult.data.refreshToken,
+              })
+            );
+
+            // Store user data in session storage (optional if persisting redux)
+            sessionStorage.setItem("user", JSON.stringify(loginResult.data.user));
+
+            // Store tokens in cookies
+            Cookies.set("accessToken", loginResult.data.accessToken);
+            Cookies.set("refreshToken", loginResult.data.refreshToken);
+
+            // Mark as returning user
+            localStorage.setItem("returningUser", "true");
+
+            // Redirect to callbackUrl with welcome message
+            const welcomeUrl = callbackUrl.includes('?')
+              ? `${callbackUrl}&welcome=true`
+              : `${callbackUrl}${callbackUrl === '/scan' ? '?welcome=true' : ''}`;
+
+            router.push(welcomeUrl);
+          }
+        } catch (loginErr: any) {
+          console.error("Auto-login failed:", loginErr);
+          // If auto-login fails, still redirect to login page
+          router.push("/login");
+        }
       }
     } catch (err: any) {
       console.error("Registration failed:", err);
@@ -249,23 +295,29 @@ export default function SignupPage() {
 
               <Button
                 type="submit"
-                className="w-full bg-purple-600 hover:bg-purple-700"
+                className="w-full bg-purple-600 hover:bg-purple-700 h-12 text-base font-bold rounded-lg transition-all active:scale-[0.98]"
                 disabled={isLoading}
               >
                 {isLoading ? t('submitting') : t('submit')}
               </Button>
-
-              <p className="text-center text-sm text-gray-600">
-                {t('hasAccount')}{" "}
-                <Link
-                  href="/login"
-                  className="text-purple-600 hover:text-purple-700 font-medium"
-                >
-                  {t('login')}
-                </Link>
-              </p>
             </form>
           </CardContent>
+          <CardFooter className="flex flex-col gap-4 border-t bg-gray-50/50 p-6">
+            <div className="flex flex-col w-full gap-3">
+              <p className="text-center text-sm text-gray-500 font-medium">
+                {t('hasAccount')}
+              </p>
+              <Button
+                asChild
+                variant="outline"
+                className="w-full border-purple-200 text-purple-600 hover:bg-purple-50 hover:border-purple-300 h-12 text-base font-semibold rounded-lg"
+              >
+                <Link href={`/login${callbackUrl !== '/scan' ? `?callbackUrl=${callbackUrl}` : ''}`}>
+                  {t('login')}
+                </Link>
+              </Button>
+            </div>
+          </CardFooter>
         </Card>
       </main>
     </>

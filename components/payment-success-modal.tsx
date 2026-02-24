@@ -2,20 +2,23 @@
 
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 interface PaymentSuccessModalProps {
   isOpen: boolean;
   onClose: () => void;
+  price?: number;
 }
 
 export default function PaymentSuccessModal({
   isOpen,
   onClose,
+  price = 9.99,
 }: PaymentSuccessModalProps) {
   const router = useRouter();
+  const t = useTranslations('PaymentSuccessModal');
   const [generatingTime, setGeneratingTime] = useState(5);
 
   useEffect(() => {
@@ -36,76 +39,82 @@ export default function PaymentSuccessModal({
 
   const handleViewResults = () => {
     onClose();
-    router.push("/results");
+    router.push("/scan");
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-12 max-w-lg w-full text-center space-y-6">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+      <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-12 max-w-lg w-full text-center space-y-6 animate-in zoom-in-95 duration-300">
         {/* Success Icon */}
         <div className="flex justify-center">
-          <Image src="/payment.png" alt="PayPal" width={50} height={50} />
+          <div className="bg-green-100 p-4 rounded-full">
+            <Image src="/payment.png" alt="Success" width={60} height={60} className="object-contain" />
+          </div>
         </div>
 
         {/* Heading */}
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Payment Successful
+        <div className="space-y-2">
+          <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+            {t('title')}
           </h2>
-          <p className="text-gray-600">
-            Thank you! We're preparing your report...
+          <p className="text-gray-600 font-medium text-lg">
+            {t('description')}
           </p>
         </div>
 
         {/* Status Message */}
-        <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-          <p className="text-sm text-gray-700">
-            Your payment has been successfully processed, and we are now
-            generating your detailed copyright scan report. This will be ready
-            shortly.
+        <div className="bg-gray-50 rounded-xl p-5 space-y-4 border border-gray-100">
+          <p className="text-sm text-gray-600 leading-relaxed">
+            {t('status')}
           </p>
-          <p className="text-sm font-semibold text-red-600">
-            {generatingTime > 0
-              ? `Generating your results, this might take a moment... (${generatingTime}s)`
-              : "Your results are ready!"}
-          </p>
+          <div className="flex items-center justify-center gap-2 py-2 px-4 bg-white rounded-lg shadow-sm w-fit mx-auto border border-purple-100">
+            <div className="w-2 h-2 rounded-full bg-purple-600 animate-pulse" />
+            <p className="text-sm font-bold text-purple-600">
+              {generatingTime > 0
+                ? `${t('generating')} (${generatingTime}s)`
+                : t('ready')}
+            </p>
+          </div>
         </div>
 
-        <div className="rounded-lg border border-gray-200 p-4 text-left space-y-3">
-          <div className="flex items-center justify-between">
+        <div className="rounded-xl border border-gray-100 p-5 text-left space-y-4 bg-white shadow-sm">
+          <div className="flex items-center justify-between border-b border-gray-50 pb-3">
             <div>
-              <p className="text-sm text-gray-500">Invoice</p>
-              <p className="font-semibold text-gray-900">#CW-2025-0001</p>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t('invoice')}</p>
+              <p className="font-bold text-gray-900">#CW-{new Date().getFullYear()}-00{Math.floor(Math.random() * 99) + 1}</p>
             </div>
             <div className="text-right">
-              <p className="text-sm text-gray-500">Date</p>
-              <p className="font-medium text-gray-900">{new Date().toLocaleDateString()}</p>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t('date')}</p>
+              <p className="font-bold text-gray-900">{new Date().toLocaleDateString('de-DE')}</p>
             </div>
           </div>
-          <div className="border-t border-gray-200 pt-3 space-y-2">
+          <div className="space-y-3">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-700">Instagram Reels Copyright Scan</span>
-              <span className="text-gray-900 font-medium">$9.99</span>
+              <span className="text-gray-500 font-medium">{t('item')}</span>
+              <span className="text-gray-900 font-bold">€{price.toFixed(2).replace('.', ',')}</span>
             </div>
             <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-500">Payment Method</span>
-              <span className="text-gray-700">PayPal</span>
+              <span className="text-gray-500 font-medium">{t('paymentMethod')}</span>
+              <span className="text-[#003087] font-bold flex items-center gap-1.5">
+                <img src="/paypal.png" alt="PayPal" className="h-3" />
+                PayPal
+              </span>
             </div>
           </div>
-          <div className="border-t border-gray-200 pt-3 flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-900">Total Paid</span>
-            <span className="text-base font-bold text-gray-900">$9.99</span>
+          <div className="border-t border-gray-100 pt-3 flex items-center justify-between">
+            <span className="text-sm font-extrabold text-gray-900 uppercase tracking-tight">{t('totalPaid')}</span>
+            <span className="text-xl font-black text-purple-600">€{price.toFixed(2).replace('.', ',')}</span>
           </div>
         </div>
 
         {/* View Results Button */}
         <Button
           onClick={handleViewResults}
-          className="w-full bg-red-600 text-white py-6 text-lg font-semibold rounded-lg transition-all"
+          className="w-full bg-purple-600 hover:bg-purple-700 text-white py-7 text-xl font-bold rounded-xl transition-all shadow-lg hover:shadow-purple-200 active:scale-[0.98] ring-offset-2 focus:ring-2 focus:ring-purple-600"
         >
-          View My Results
+          {t('cta')}
         </Button>
       </div>
     </div>

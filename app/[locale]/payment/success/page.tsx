@@ -49,7 +49,7 @@ function SuccessContent() {
             <div className="flex justify-between">
               <span className="text-gray-500 text-sm">{t("amount")}</span>
               <span className="text-gray-900 font-bold text-sm">
-                ${amount || "0.00"}
+                €{amount || "0.00"}
               </span>
             </div>
           </div>

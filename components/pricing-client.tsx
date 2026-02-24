@@ -17,7 +17,9 @@ export default function PricingClient({ planId }: PricingClientProps) {
 
   const handleBuyNow = () => {
     if (!user) {
-      router.push(`/login?callbackUrl=/checkout/${planId}`);
+      const isReturningUser = localStorage.getItem("returningUser") === "true";
+      const targetPath = isReturningUser ? "/login" : "/signup";
+      router.push(`${targetPath}?callbackUrl=/checkout/${planId}`);
       return;
     }
     router.push(`/checkout/${planId}`);

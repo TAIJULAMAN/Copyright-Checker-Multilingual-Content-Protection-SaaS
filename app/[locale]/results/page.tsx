@@ -399,7 +399,7 @@ export default function ResultsPage() {
       </div>
 
 
-            {/* color meaning  */}
+      {/* color meaning  */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 !px-4 p-6 container mx-auto my-10">
         <Accordion type="single" collapsible className="w-full">
           <AccordionItem value="risk-guide" className="border-b-0">
@@ -498,8 +498,9 @@ export default function ResultsPage() {
                 >
                   <div className="text-center">
                     <h3 className="text-xl font-bold text-gray-900 mb-2">{plan.name}</h3>
-                    <div className="flex items-baseline justify-center my-4">
+                    <div className="flex flex-col items-center justify-center my-4">
                       <span className="text-4xl font-bold text-[#1b2149]">€{plan.price}</span>
+                      <span className="text-sm text-gray-500 italic mt-1">{tSub("vatIncl")}</span>
                     </div>
                     {/* <p className="text-sm text-gray-500 capitalize mb-6">
                       {plan.billingCycle} {tSub("payment")}

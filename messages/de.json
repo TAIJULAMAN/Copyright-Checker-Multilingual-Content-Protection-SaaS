@@ -8,7 +8,7 @@
     "login": "Anmelden",
     "myProfile": "Mein Profil",
     "mySubscription": "Meine Scans",
-    "scanHistory": "Scan-Verlauf",
+    "scanHistory": "Scan-Ergebnisse",
     "logout": "Abmelden",
     "menu": "Menü"
   },
@@ -43,6 +43,7 @@
     "payment": "Einmalzahlung",
     "buyNow": "Jetzt kaufen",
     "processing": "Verarbeitung...",
+    "vatIncl": "inkl. 19% MwSt.",
     "couponError": "Sie haben bereits einen Gutschein verwendet. Pro Benutzer ist nur ein Gutschein erlaubt."
   },
   "Features": {
@@ -186,7 +187,7 @@
     }
   },
   "MySubscription": {
-    "title": "Mein Abonnement",
+    "title": "Meine Käufe",
     "description": "Verwalten Sie Ihren aktuellen Plan und Ihre Nutzung",
     "payment": "Einmalzahlung",
     "startDate": "Startdatum",
@@ -209,7 +210,7 @@
     "processing": "Verarbeitung...",
     "noPlans": "Keine Monatspläne verfügbar",
     "noPlansDesc": "Wir konnten derzeit keine monatlichen Abonnements finden.",
-    "historyTitle": "Scan-Verlauf",
+    "historyTitle": "Scan-Ergebnisse",
     "plan": "Plan",
     "status": "Status",
     "date": "Datum",
@@ -346,7 +347,7 @@
       "submit": "Registrieren",
       "submitting": "Konto erstellen...",
       "hasAccount": "Du hast bereits ein Konto?",
-      "login": "Jetzt annmelden",
+      "login": "Hier anmelden.",
       "validationError": "Bitte füllen Sie alle Felder aus",
       "passwordLength": "Das Passwort muss mindestens 8 Zeichen lang sein",
       "passwordMismatch": "Passwörter stimmen nicht überein",
@@ -402,6 +403,7 @@
     "info": "Wir analysieren nur öffentliche Reels. Private Reels können nicht gescannt werden.",
     "submit": "Scan starten",
     "submitting": "Wird gescannt...",
+    "processing": "Wird verarbeitet...",
     "error": "Scan fehlgeschlagen. Bitte überprüfen Sie den Link und versuchen Sie es erneut.",
     "example": "Beispiel:"
   },
@@ -444,6 +446,19 @@
     "startScanning": "Jetzt scannen",
     "viewSubscriptions": "Meine Abonnements ansehen"
   },
+  "PaymentSuccessModal": {
+    "title": "Zahlung erfolgreich!",
+    "description": "Vielen Dank für deine Bestellung.",
+    "status": "Ihre Zahlung wurde erfolgreich verarbeitet. Wir erstellen nun Ihren detaillierten Copyright-Scan-Bericht. Dieser ist in Kürze fertig.",
+    "generating": "Ergebnisse werden generiert, dies kann einen Moment dauern...",
+    "ready": "Ihre Ergebnisse sind bereit!",
+    "invoice": "Rechnung",
+    "date": "Datum",
+    "item": "Instagram Reels Copyright Scan",
+    "paymentMethod": "Zahlungsmethode",
+    "totalPaid": "Gesamtbetrag",
+    "cta": "Account-Check starten"
+  },
   "PaymentCancel": {
     "title": "Zahlung abgebrochen",
     "description": "Ihre Transaktion wurde abgebrochen und es erfolgte keine Belastung. Falls ein Problem aufgetreten ist, können Sie es erneut versuchen.",
@@ -467,5 +482,19 @@
       "actions": "Aktionen",
       "viewDetails": "Details ansehen"
     }
+  },
+  "CookieBanner": {
+    "title": "Wir verwenden Cookies und andere Technologien.",
+    "description": "Diese Website verwendet Cookies und ähnliche Funktionen zur Verarbeitung von Endgeräteinformationen und personenbezogenen Daten. Die Verarbeitung dient der Einbindung von Inhalten, externen Diensten und Elementen Dritter, der statistischen Analyse/Messung, der personalisierten Werbung, dem Remarketing sowie der Einbindung sozialer Medien. Je nach Funktion werden dabei Daten an Dritte innerhalb der EU weitergegeben. Ihre Einwilligung ist stets freiwillig, für die Nutzung unserer Website nicht erforderlich und kann jederzeit über das Icon unten rechts abgelehnt oder widerrufen werden.",
+    "deny": "ABLEHNEN",
+    "settings": "EINSTELLUNGEN",
+    "ok": "OK",
+    "imprint": "Impressum",
+    "privacy": "Datenschutz",
+    "terms": "AGB",
+    "about": "Über uns",
+    "accessibility": "Barrierefreiheit",
+    "denyMessage": "Sie haben Cookies abgelehnt. Möchten Sie die Website stattdessen auf Deutsch nutzen, um eine lokalisierte Erfahrung zu erhalten?",
+    "switchToGerman": "Akzeptieren und auf Deutsch nutzen"
   }
 }
