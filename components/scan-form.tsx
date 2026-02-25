@@ -6,7 +6,8 @@ import { useState, useMemo } from "react"
 import { useRouter } from "@/i18n/routing"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Search, InfoIcon, Instagram, Loader2 } from "lucide-react"
+import { Search, InfoIcon, Instagram, Loader2, Clock } from "lucide-react"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 import { useCheckProfileMutation, useGetMyJobsQuery, Job } from "@/redux/api/copyrightApi"
 import { useTranslations } from "next-intl"
@@ -15,6 +16,7 @@ export default function ScanForm() {
   const t = useTranslations('ScanForm');
   const [profileLink, setProfileLink] = useState("")
   const [error, setError] = useState("")
+  const [scanStarted, setScanStarted] = useState(false)
   const router = useRouter()
 
   const { data: jobsData, isLoading: isJobsLoading } = useGetMyJobsQuery(undefined, {
@@ -45,7 +47,11 @@ export default function ScanForm() {
       }).unwrap()
 
       if (result.success) {
-        router.push("/results")
+        setScanStarted(true)
+        // Keep the alert visible for a bit or until redirect
+        setTimeout(() => {
+          router.push("/results")
+        }, 1500)
       }
     } catch (err: any) {
       console.error("Scan failed:", err)
@@ -85,20 +91,28 @@ export default function ScanForm() {
         )}
 
         {/* Processing Notification */}
-        {activeJob && (
-          <div className="bg-purple-50 border border-purple-200 text-purple-700 p-4 rounded-xl text-sm flex flex-col md:flex-row items-center justify-between gap-3 animate-in fade-in">
-            <div className="flex items-center gap-3">
-              <Loader2 className="w-4 h-4 animate-spin text-purple-600" />
-              <span>Ein Scan läuft gerade für <strong>@{activeJob.instagramUsername}</strong>...</span>
-            </div>
-            <Button
-              variant="outline"
-              className="bg-white border-purple-200 text-purple-700 hover:bg-purple-50 hover:border-purple-300 font-bold px-4 py-1 h-9 rounded-lg"
-              onClick={() => router.push('/results')}
-            >
-              Ergebnisse ansehen
-            </Button>
-          </div>
+        {(activeJob || scanStarted || isMutationLoading) && (
+          <Alert className="bg-purple-50 border-purple-200 text-purple-900 animate-in fade-in slide-in-from-top-2">
+            <Clock className="h-5 w-5 text-purple-600" />
+            <AlertTitle className="font-bold text-purple-800">
+              {scanStarted || isMutationLoading ? t('submitting') : t('processing')}
+            </AlertTitle>
+            <AlertDescription className="text-purple-700 mt-1">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <p>{t('timeNotice')}</p>
+                {activeJob && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="bg-white border-purple-200 text-purple-700 hover:bg-purple-50 hover:border-purple-300 font-bold px-4 py-1 h-9 rounded-lg shrink-0"
+                    onClick={() => router.push('/results')}
+                  >
+                    {t('viewResults')}
+                  </Button>
+                )}
+              </div>
+            </AlertDescription>
+          </Alert>
         )}
 
         {/* Input Field */}

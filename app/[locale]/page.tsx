@@ -16,6 +16,18 @@ export default function Home() {
         <ResultsSection />
       </div>
       <Pricing />
+      <div className="flex justify-center items-center pb-0 md:pb-20">
+        <iframe
+          width="800"
+          height="500"
+          src="https://www.youtube.com/embed/Dn63NzP9to4?si=YvfiVkwg2QuPU_aO"
+          title="Erklärung Copyright Chevcker"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allowFullScreen
+        ></iframe>
+      </div>
       <Features />
       <ImagePart />
       <Testimonials />

@@ -405,7 +405,9 @@
     "submitting": "Wird gescannt...",
     "processing": "Wird verarbeitet...",
     "error": "Scan fehlgeschlagen. Bitte überprüfen Sie den Link und versuchen Sie es erneut.",
-    "example": "Beispiel:"
+    "example": "Beispiel:",
+    "timeNotice": "Dein Scan wurde gestartet! Bitte beachte, dass die Analyse je nach Anzahl der Reels 1-3 Minuten dauern kann. Du kannst die Ergebnisse gleich hier oder in deiner Historie einsehen.",
+    "viewResults": "Ergebnisse ansehen"
   },
   "ScanBenefits": {
     "secureAnalysis": {
