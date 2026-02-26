@@ -42,6 +42,18 @@ export const authApi = baseApi.injectEndpoints({
         method: 'POST',
         body: credentials,
       }),
+      async onQueryStarted(args, { queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          if (data.success && data.data.accessToken) {
+            const Cookies = (await import('js-cookie')).default;
+            Cookies.set('accessToken', data.data.accessToken);
+            Cookies.set('refreshToken', data.data.refreshToken);
+          }
+        } catch (err) {
+          // login failed
+        }
+      },
       invalidatesTags: ['Auth'],
     }),
     register: builder.mutation<RegisterResponse, RegisterRequest>({
@@ -50,6 +62,15 @@ export const authApi = baseApi.injectEndpoints({
         method: 'POST',
         body: data,
       }),
+      async onQueryStarted(args, { queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          // Note: RegisterResponse might not include tokens, check data structure
+          // If it does, set them here. 
+        } catch (err) {
+          // register failed
+        }
+      },
       invalidatesTags: ['Auth'],
     }),
     changePassword: builder.mutation<void, any>({
