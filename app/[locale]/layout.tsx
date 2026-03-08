@@ -4,12 +4,13 @@ import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
-import CookieBanner from "@/components/cookie-banner"
 import { Toaster } from "@/components/ui/sonner"
 import ReduxProvider from "@/redux/provider"
 import "../globals.css"
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
+import Script from "next/script"
+import MetaPixel from "@/components/meta-pixel"
 
 const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
@@ -147,15 +148,66 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale}>
+      <head>
+        {/* 1. Cookiebot */}
+        <Script
+          id="Cookiebot"
+          src="https://consent.cookiebot.com/uc.js"
+          data-cbid="05ffcbf8-d6c1-49ba-8e6c-0e25caeb7e22"
+          data-blockingmode="auto"
+          type="text/javascript"
+          strategy="beforeInteractive"
+        />
+
+        {/* 2. Google Analytics */}
+        <Script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-YG846MDVOJ"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-YG846MDVOJ');
+          `}
+        </Script>
+
+        {/* 3. Meta Pixel */}
+        <Script id="facebook-pixel" strategy="afterInteractive">
+          {`
+            !function(f,b,e,v,n,t,s)
+            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window, document,'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '1251478372560101');
+            fbq('track', 'PageView');
+          `}
+        </Script>
+      </head>
       <body className={`font-sans antialiased flex flex-col min-h-screen`} suppressHydrationWarning>
+        <noscript>
+          <img
+            height="1"
+            width="1"
+            style={{ display: "none" }}
+            src="https://www.facebook.com/tr?id=1251478372560101&ev=PageView&noscript=1"
+            alt=""
+          />
+        </noscript>
         <NextIntlClientProvider messages={messages}>
           <ReduxProvider>
+            <MetaPixel />
             <Header />
 
             <main className="flex-grow">{children}</main>
 
             <Footer />
-            <CookieBanner />
             <Toaster />
             <Analytics />
           </ReduxProvider>
