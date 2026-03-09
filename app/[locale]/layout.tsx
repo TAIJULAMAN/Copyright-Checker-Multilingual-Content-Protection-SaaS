@@ -147,25 +147,25 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
       <head>
-        {/* 1. Cookiebot */}
+        {/* 1. Cookiebot - Using next/script with afterInteractive to avoid hydration errors */}
         <Script
           id="Cookiebot"
           src="https://consent.cookiebot.com/uc.js"
           data-cbid="05ffcbf8-d6c1-49ba-8e6c-0e25caeb7e22"
           data-blockingmode="auto"
-          type="text/javascript"
-          strategy="beforeInteractive"
+          strategy="afterInteractive"
         />
 
-        {/* 2. Google Analytics */}
+        {/* 2. Google Analytics - Integrated with Cookiebot Statistics consent */}
         <Script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-YG846MDVOJ"
           strategy="afterInteractive"
+          data-cookieconsent="statistics"
         />
-        <Script id="google-analytics" strategy="afterInteractive">
+        <Script id="google-analytics" strategy="afterInteractive" data-cookieconsent="statistics">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
@@ -174,8 +174,8 @@ export default async function LocaleLayout({
           `}
         </Script>
 
-        {/* 3. Meta Pixel */}
-        <Script id="facebook-pixel" strategy="afterInteractive">
+        {/* 3. Meta Pixel - Integrated with Cookiebot Marketing consent */}
+        <Script id="facebook-pixel" strategy="afterInteractive" data-cookieconsent="marketing">
           {`
             !function(f,b,e,v,n,t,s)
             {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
