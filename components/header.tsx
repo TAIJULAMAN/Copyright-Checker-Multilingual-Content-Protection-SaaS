@@ -37,7 +37,6 @@ export default function Header() {
   const dispatch = useDispatch();
   const [logoutApi] = useLogoutMutation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  // const [lang, setLang] = useState<"EN" | "DE">("EN"); // Replaced by useLocale
 
   const user = useSelector(selectCurrentUser);
   const isLoggedIn = !!user;
@@ -50,20 +49,12 @@ export default function Header() {
       console.error("Logout API failed", error);
     }
 
-    // 1. Clear Redux State
     dispatch(logout());
-    dispatch(baseApi.util.resetApiState()); // Clear RTK Query cache
-
-    // 2. Clear Cookies
+    dispatch(baseApi.util.resetApiState());
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
-
-    // 3. Clear Session Storage
     sessionStorage.clear();
-
-    // 4. Clear Local Storage
     localStorage.clear();
-
     setMobileMenuOpen(false);
     router.push("/");
   };
@@ -80,28 +71,28 @@ export default function Header() {
       <div className="flex flex-col space-y-3">
         <Link
           href="/#how-it-works"
-          className={`${textColor} ${hoverColor} text-sm transition-colors py-1.5`}
+          className={`${textColor} ${hoverColor} text-sm font-medium transition-colors py-1.5`}
           onClick={() => setMobileMenuOpen(false)}
         >
           {t('howItWorks')}
         </Link>
         <Link
           href="/pricing"
-          className={`${textColor} ${hoverColor} text-sm transition-colors py-1.5`}
+          className={`${textColor} ${hoverColor} text-sm font-medium transition-colors py-1.5`}
           onClick={() => setMobileMenuOpen(false)}
         >
           {t('pricing')}
         </Link>
         <Link
           href="/faq"
-          className={`${textColor} ${hoverColor} text-sm transition-colors py-1.5`}
+          className={`${textColor} ${hoverColor} text-sm font-medium transition-colors py-1.5`}
           onClick={() => setMobileMenuOpen(false)}
         >
           {t('faq')}
         </Link>
         <Link
           href="/contact"
-          className={`${textColor} ${hoverColor} text-sm transition-colors py-1.5`}
+          className={`${textColor} ${hoverColor} text-sm font-medium transition-colors py-1.5`}
           onClick={() => setMobileMenuOpen(false)}
         >
           {t('contact')}
@@ -111,257 +102,294 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-[#1b2149] border-b border-gray-200 sticky top-0 z-40">
-      <div className="container mx-auto px-5 md:px-0">
-        <div className="relative flex items-center justify-between h-20">
-          <Link href="/" className="flex items-center gap-2 z-10">
-            <Image
-              src="/logo.svg"
-              alt="logo"
-              width={100}
-              height={60}
-              className="w-[100px] h-[60px] md:w-[150px] md:h-[60px]"
-            />
-          </Link>
+    <header className="bg-[#1b2149] border-b border-white/10 sticky top-0 z-50">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-20 gap-4">
+          {/* Logo Section */}
+          <div className="flex-shrink-0 flex items-center">
+            <Link href="/" className="flex items-center transition-opacity hover:opacity-90">
+              <Image
+                src="/logo.svg"
+                alt="logo"
+                width={150}
+                height={60}
+                className="w-[110px] h-auto sm:w-[130px] md:w-[150px]"
+                priority
+              />
+            </Link>
+          </div>
 
-          {/* Desktop Navigation - Centered */}
-          <nav className="hidden lg:flex absolute left-1/2 transform -translate-x-1/2">
-            <div className="flex items-center gap-8">
-              {/* <Link href="/" className="text-white hover:text-red-500 transition-colors">
-                Home
-              </Link> */}
-              <Link href="/#how-it-works" className="text-white hover:text-purple-400 transition-colors">
+          {/* Desktop Navigation - Centered, visible from large screens */}
+          <nav className="hidden lg:flex items-center justify-center flex-1 mx-4">
+            <div className="flex items-center gap-4 xl:gap-8">
+              <Link href="/#how-it-works" className="text-white hover:text-purple-400 transition-colors text-sm font-medium whitespace-nowrap">
                 {t('howItWorks')}
               </Link>
-              <Link href="/pricing" className="text-white hover:text-purple-400 transition-colors">
+              <Link href="/pricing" className="text-white hover:text-purple-400 transition-colors text-sm font-medium whitespace-nowrap">
                 {t('pricing')}
               </Link>
-              <Link href="/faq" className="text-white hover:text-purple-400 transition-colors">
+              <Link href="/faq" className="text-white hover:text-purple-400 transition-colors text-sm font-medium whitespace-nowrap">
                 {t('faq')}
               </Link>
-              <Link href="/contact" className="text-white hover:text-purple-400 transition-colors">
+              <Link href="/contact" className="text-white hover:text-purple-400 transition-colors text-sm font-medium whitespace-nowrap">
                 {t('contact')}
               </Link>
             </div>
           </nav>
 
-          {/* Desktop Actions - Hidden on tablet */}
-          <div className="hidden lg:flex items-center gap-5">
-            <div className="inline-flex items-center rounded-full overflow-hidden bg-white cursor-pointer">
-              <button
-                onClick={() => handleLangChange("en")}
-                className={`px-4 py-2 text-sm font-semibold transition-colors ${locale === "en"
-                  ? "bg-purple-600 text-white"
-                  : "bg-transparent text-[#1b2149]"
-                  }`}
-              >
-                EN
-              </button>
-              <button
-                onClick={() => handleLangChange("de")}
-                className={`px-4 py-2 text-sm font-semibold transition-colors ${locale === "de"
-                  ? "bg-purple-600 text-white"
-                  : "bg-transparent text-[#1b2149]"
-                  }`}
-              >
-                DE
-              </button>
-            </div>
-
-            <Button
-              onClick={() => {
-                if (!isLoggedIn) {
-                  const isReturningUser = localStorage.getItem("returningUser") === "true";
-                  const targetPath = isReturningUser ? "/login" : "/signup";
-                  router.push(`${targetPath}?callbackUrl=/scan`);
-                } else {
-                  router.push("/scan");
-                }
-              }}
-              className="bg-purple-600 hover:bg-purple-700 text-white cursor-pointer rounded-full "
-            >
-              {t('checkReels')}
-            </Button>
-
-            {isLoggedIn ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger className="outline-none">
-                  <Avatar className="size-8 cursor-pointer ring-2 ring-purple-600 ring-offset-2">
-                    <AvatarImage
-                      src={getImageUrl(user?.avatar || "")}
-                      alt={displayName}
-                    />
-                    <AvatarFallback className="text-xs font-semibold text-[#1b2149] bg-white">
-                      {displayName
-                        ?.split(" ")
-                        .map((n: string) => n[0])
-                        .join("")
-                        ?.slice(0, 2)
-                        .toUpperCase() || "CN"}
-                    </AvatarFallback>
-                  </Avatar>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 mt-2">
-                  <DropdownMenuLabel>
-                    <div className="flex flex-col space-y-1">
-                      <span className="text-sm font-medium text-gray-900 leading-none">
-                        {displayName}
-                      </span>
-                      <span className="text-xs text-gray-500 leading-none">
-                        {user?.email}
-                      </span>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link href="/profile" className="cursor-pointer">
-                      <User className="mr-2 h-4 w-4" />
-                      <span>{t('myProfile')}</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/mysubscription" className="cursor-pointer">
-                      <Crown className="mr-2 h-4 w-4" />
-                      <span>{t('mySubscription')}</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/results" className="cursor-pointer">
-                      <History className="mr-2 h-4 w-4" />
-                      <span>{t('scanHistory')}</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onSelect={(e) => {
-                      e.preventDefault();
-                      handleLogout();
-                    }}
-                    className="text-red-600 focus:text-red-600 cursor-pointer"
-                  >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>{t('logout')}</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <div className="flex items-center gap-3">
-                <Link href="/login">
-                  <Button variant="outline" className="border-purple-600 text-purple-600 hover:bg-purple-50 rounded-full font-bold bg-white cursor-pointer">
-                    {t('login')}
-                  </Button>
-                </Link>
-                <Link href="/signup">
-                  <Button variant="outline" className="border-purple-600 text-purple-600 hover:bg-purple-50 rounded-full font-bold bg-white cursor-pointer">
-                    {t('signup')}
-                  </Button>
-                </Link>
+          {/* Actions Section */}
+          <div className="flex items-center gap-2 sm:gap-4 lg:gap-5">
+            {/* Desktop Actions */}
+            <div className="hidden lg:flex items-center gap-3 xl:gap-5">
+              <div className="inline-flex items-center rounded-full overflow-hidden bg-white/10 p-1 border border-white/20">
+                <button
+                  onClick={() => handleLangChange("en")}
+                  className={`px-3 py-1.5 text-xs font-bold transition-all rounded-full ${locale === "en"
+                    ? "bg-purple-600 text-white shadow-sm"
+                    : "text-white/70 hover:text-white"
+                    }`}
+                >
+                  EN
+                </button>
+                <button
+                  onClick={() => handleLangChange("de")}
+                  className={`px-3 py-1.5 text-xs font-bold transition-all rounded-full ${locale === "de"
+                    ? "bg-purple-600 text-white shadow-sm"
+                    : "text-white/70 hover:text-white"
+                    }`}
+                >
+                  DE
+                </button>
               </div>
-            )}
-          </div>
 
-          {/* Tablet and Mobile Menu - Show language toggle and hamburger */}
-          <div className="lg:hidden flex items-center gap-2">
-            {/* Language Toggle */}
-            <div className="inline-flex items-center rounded-full overflow-hidden bg-white">
-              <button
-                onClick={() => handleLangChange("en")}
-                className={`px-3 py-2 text-xs font-medium transition-colors ${locale === "en"
-                  ? "bg-purple-600 text-white"
-                  : "bg-transparent text-[#1b2149]"
-                  }`}
+              <Button
+                onClick={() => {
+                  if (!isLoggedIn) {
+                    const isReturningUser = localStorage.getItem("returningUser") === "true";
+                    const targetPath = isReturningUser ? "/login" : "/signup";
+                    router.push(`${targetPath}?callbackUrl=/scan`);
+                  } else {
+                    router.push("/scan");
+                  }
+                }}
+                className="bg-purple-600 hover:bg-purple-700 text-white rounded-full px-4 xl:px-6 font-semibold whitespace-nowrap hidden lg:inline-flex"
               >
-                EN
-              </button>
-              <button
-                onClick={() => handleLangChange("de")}
-                className={`px-3 py-2 text-xs font-medium transition-colors ${locale === "de"
-                  ? "bg-purple-600 text-white"
-                  : "bg-transparent text-[#1b2149]"
-                  }`}
-              >
-                DE
-              </button>
+                {t('checkReels')}
+              </Button>
+
+              {isLoggedIn ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="outline-none focus:ring-2 focus:ring-purple-600 rounded-full transition-all">
+                    <Avatar className="size-9 cursor-pointer ring-2 ring-purple-600 ring-offset-2 ring-offset-[#1b2149]">
+                      <AvatarImage
+                        src={getImageUrl(user?.avatar || "")}
+                        alt={displayName}
+                      />
+                      <AvatarFallback className="text-xs font-bold text-[#1b2149] bg-white">
+                        {displayName
+                          ?.split(" ")
+                          .map((n: string) => n[0])
+                          .join("")
+                          ?.slice(0, 2)
+                          .toUpperCase() || "CN"}
+                      </AvatarFallback>
+                    </Avatar>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-64 mt-2 p-1 border-white/10 bg-white shadow-xl rounded-xl">
+                    <DropdownMenuLabel className="px-4 py-3">
+                      <div className="flex flex-col space-y-1">
+                        <span className="text-sm font-semibold text-gray-900">
+                          {displayName}
+                        </span>
+                        <span className="text-xs text-gray-500 font-medium truncate">
+                          {user?.email}
+                        </span>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <div className="p-1">
+                      <DropdownMenuItem asChild>
+                        <Link href="/profile" className="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer">
+                          <User className="mr-3 h-4 w-4 text-purple-600" />
+                          <span>{t('myProfile')}</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/mysubscription" className="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer">
+                          <Crown className="mr-3 h-4 w-4 text-purple-600" />
+                          <span>{t('mySubscription')}</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/results" className="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer">
+                          <History className="mr-3 h-4 w-4 text-purple-600" />
+                          <span>{t('scanHistory')}</span>
+                        </Link>
+                      </DropdownMenuItem>
+                    </div>
+                    <DropdownMenuSeparator />
+                    <div className="p-1">
+                      <DropdownMenuItem
+                        onSelect={(e) => {
+                          e.preventDefault();
+                          handleLogout();
+                        }}
+                        className="flex items-center px-3 py-2 text-sm text-red-600 focus:text-red-700 focus:bg-red-50 rounded-md transition-colors cursor-pointer"
+                      >
+                        <LogOut className="mr-3 h-4 w-4" />
+                        <span className="font-medium">{t('logout')}</span>
+                      </DropdownMenuItem>
+                    </div>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <div className="flex items-center gap-2 xl:gap-3">
+                  <Link href="/login">
+                    <Button variant="ghost" className="text-white hover:bg-white/10 rounded-full font-bold px-4">
+                      {t('login')}
+                    </Button>
+                  </Link>
+                  <Link href="/signup">
+                    <Button className="bg-white text-[#1b2149] hover:bg-gray-100 rounded-full font-bold px-6">
+                      {t('signup')}
+                    </Button>
+                  </Link>
+                </div>
+              )}
             </div>
 
-            {/* Hamburger Menu */}
-            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 ml-1">
-                  <Menu className="h-6 w-6" />
-                  <span className="sr-only">Toggle menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px] sm:h-[44vh] bg-white overflow-y-auto pb-0">
-                <SheetHeader className="border-b pb-4">
-                  <div className="flex items-center justify-between">
-                    <SheetTitle className="text-xl font-bold text-gray-900">{t('menu')}</SheetTitle>
-                  </div>
-                </SheetHeader>
-                <div className="flex flex-col h-full">
-                  {/* Main Navigation Links */}
-                  <nav className="py-4 px-5">
-                    <NavLinks variant="dark" />
-                  </nav>
+            {/* Mobile & Tablet Actions */}
+            <div className="lg:hidden flex items-center gap-3">
+              {/* Simplified Lang Toggle for mobile */}
+              <div className="hidden sm:inline-flex items-center rounded-full overflow-hidden bg-white/10 p-1 border border-white/20">
+                <button
+                  onClick={() => handleLangChange("en")}
+                  className={`px-3 py-1 text-[10px] font-bold transition-all rounded-full ${locale === "en" ? "bg-purple-600 text-white" : "text-white/70"}`}
+                >
+                  EN
+                </button>
+                <button
+                  onClick={() => handleLangChange("de")}
+                  className={`px-3 py-1 text-[10px] font-bold transition-all rounded-full ${locale === "de" ? "bg-purple-600 text-white" : "text-white/70"}`}
+                >
+                  DE
+                </button>
+              </div>
 
-                  {/* Auth Buttons */}
-                  <div className="border-t border-gray-200 p-4 space-y-3">
-                    {isLoggedIn ? (
-                      <>
-                        <Link href="/mysubscription" onClick={() => setMobileMenuOpen(false)} className="block">
-                          <Button variant="ghost" className="w-full justify-start">
-                            <Crown className="mr-2 h-4 w-4" /> {t('mySubscription')}
-                          </Button>
-                        </Link>
-                        <Link href="/results" onClick={() => setMobileMenuOpen(false)} className="block">
-                          <Button variant="ghost" className="w-full justify-start">
-                            <History className="mr-2 h-4 w-4" /> {t('scanHistory')}
-                          </Button>
-                        </Link>
-                        <Button
-                          variant="ghost"
-                          className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
-                          onClick={handleLogout}
-                        >
-                          <LogOut className="mr-2 h-4 w-4" /> {t('logout')}
-                        </Button>
-                      </>
-                    ) : (
-                      <div className="flex flex-col gap-3">
-                        <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="block">
-                          <Button variant="outline" className="w-full border-purple-600 text-purple-600 hover:bg-purple-50">
-                            {t('login')}
-                          </Button>
-                        </Link>
-                        <Link href="/signup" onClick={() => setMobileMenuOpen(false)} className="block">
-                          <Button className="w-full bg-white border border-purple-600 text-purple-600 hover:bg-purple-50">
-                            {t('signup')}
-                          </Button>
-                        </Link>
+              {/* Hamburger Menu */}
+              <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 h-10 w-10">
+                    <Menu className="h-6 w-6" />
+                    <span className="sr-only">Toggle menu</span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-[85vw] max-w-[360px] bg-white p-0 border-l-0">
+                  <div className="flex flex-col h-full">
+                    <SheetHeader className="p-6 border-b text-left">
+                      <SheetTitle className="text-2xl font-bold text-gray-900">{t('menu')}</SheetTitle>
+                    </SheetHeader>
+
+                    <div className="flex-1 overflow-y-auto pt-4">
+                      <nav className="px-6 pb-6">
+                        <NavLinks variant="dark" />
+                      </nav>
+
+                      <div className="px-6">
+                        <div className="h-px bg-gray-100 w-full mb-6" />
+
+                        <div className="space-y-4">
+                          {isLoggedIn ? (
+                            <>
+                              <div className="flex items-center gap-3 px-2 mb-6">
+                                <Avatar className="size-10 ring-2 ring-purple-600 ring-offset-2">
+                                  <AvatarImage src={getImageUrl(user?.avatar || "")} />
+                                  <AvatarFallback className="bg-purple-100 text-purple-700 font-bold">
+                                    {displayName?.charAt(0).toUpperCase()}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <div className="flex flex-col">
+                                  <span className="text-sm font-bold text-gray-900">{displayName}</span>
+                                  <span className="text-xs text-gray-500 truncate max-w-[180px]">{user?.email}</span>
+                                </div>
+                              </div>
+                              <Link href="/mysubscription" onClick={() => setMobileMenuOpen(false)} className="flex items-center px-2 py-3 text-gray-700 hover:text-purple-600 transition-colors">
+                                <Crown className="mr-3 h-5 w-5 text-purple-600" />
+                                <span className="font-medium">{t('mySubscription')}</span>
+                              </Link>
+                              <Link href="/results" onClick={() => setMobileMenuOpen(false)} className="flex items-center px-2 py-3 text-gray-700 hover:text-purple-600 transition-colors">
+                                <History className="mr-3 h-5 w-5 text-purple-600" />
+                                <span className="font-medium">{t('scanHistory')}</span>
+                              </Link>
+                              <Link href="/profile" onClick={() => setMobileMenuOpen(false)} className="flex items-center px-2 py-3 text-gray-700 hover:text-purple-600 transition-colors">
+                                <User className="mr-3 h-5 w-5 text-purple-600" />
+                                <span className="font-medium">{t('myProfile')}</span>
+                              </Link>
+                              <button
+                                className="flex items-center w-full px-2 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                onClick={handleLogout}
+                              >
+                                <LogOut className="mr-3 h-5 w-5" />
+                                <span className="font-medium">{t('logout')}</span>
+                              </button>
+                            </>
+                          ) : (
+                            <div className="grid grid-cols-2 gap-4">
+                              <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+                                <Button variant="outline" className="w-full border-purple-600 text-purple-600 hover:bg-purple-50 rounded-xl h-12 font-bold">
+                                  {t('login')}
+                                </Button>
+                              </Link>
+                              <Link href="/signup" onClick={() => setMobileMenuOpen(false)}>
+                                <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white rounded-xl h-12 font-bold">
+                                  {t('signup')}
+                                </Button>
+                              </Link>
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    )}
+                    </div>
 
-                    <Button
-                      className="w-full bg-purple-600 hover:bg-purple-700 text-white"
-                      onClick={() => {
-                        setMobileMenuOpen(false);
-                        if (!isLoggedIn) {
-                          const isReturningUser = localStorage.getItem("returningUser") === "true";
-                          const targetPath = isReturningUser ? "/login" : "/signup";
-                          router.push(`${targetPath}?callbackUrl=/scan`);
-                        } else {
-                          router.push("/scan");
-                        }
-                      }}
-                    >
-                      {t('checkReels')}
-                    </Button>
+                    <div className="p-6 mt-auto border-t bg-gray-50/50">
+                      <Button
+                        className="w-full bg-[#1b2149] hover:bg-[#1b2149]/90 text-white h-14 rounded-xl font-bold shadow-lg shadow-purple-200"
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          if (!isLoggedIn) {
+                            const isReturningUser = localStorage.getItem("returningUser") === "true";
+                            const targetPath = isReturningUser ? "/login" : "/signup";
+                            router.push(`${targetPath}?callbackUrl=/scan`);
+                          } else {
+                            router.push("/scan");
+                          }
+                        }}
+                      >
+                        {t('checkReels')}
+                      </Button>
+
+                      {/* Language Toggle in Bottom of Mobile Menu for small phones */}
+                      <div className="flex sm:hidden justify-center mt-6">
+                        <div className="inline-flex items-center rounded-full overflow-hidden bg-white p-1 border border-gray-200">
+                          <button
+                            onClick={() => { handleLangChange("en"); setMobileMenuOpen(false); }}
+                            className={`px-6 py-2 text-xs font-bold transition-all rounded-full ${locale === "en" ? "bg-purple-600 text-white" : "text-gray-500"}`}
+                          >
+                            EN
+                          </button>
+                          <button
+                            onClick={() => { handleLangChange("de"); setMobileMenuOpen(false); }}
+                            className={`px-6 py-2 text-xs font-bold transition-all rounded-full ${locale === "de" ? "bg-purple-600 text-white" : "text-gray-500"}`}
+                          >
+                            DE
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-
-                  {/* User Profile Section - Removed from mobile/tablet as per request */}
-                </div>
-              </SheetContent>
-            </Sheet>
+                </SheetContent>
+              </Sheet>
+            </div>
           </div>
         </div>
       </div>
