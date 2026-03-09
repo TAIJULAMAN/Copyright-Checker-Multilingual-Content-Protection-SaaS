@@ -245,11 +245,18 @@ export default function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Link href="/login">
-                <Button variant="outline" className="border-purple-600 text-purple-600 hover:bg-purple-50">
-                  {t('login')}
-                </Button>
-              </Link>
+              <div className="flex items-center gap-3">
+                <Link href="/login">
+                  <Button variant="outline" className="border-purple-600 text-purple-600 hover:bg-purple-50 rounded-full font-bold bg-white cursor-pointer">
+                    {t('login')}
+                  </Button>
+                </Link>
+                <Link href="/signup">
+                  <Button variant="outline" className="border-purple-600 text-purple-600 hover:bg-purple-50 rounded-full font-bold bg-white cursor-pointer">
+                    {t('signup')}
+                  </Button>
+                </Link>
+              </div>
             )}
           </div>
 
@@ -320,13 +327,18 @@ export default function Header() {
                         </Button>
                       </>
                     ) : (
-                      <>
+                      <div className="flex flex-col gap-3">
                         <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="block">
                           <Button variant="outline" className="w-full border-purple-600 text-purple-600 hover:bg-purple-50">
                             {t('login')}
                           </Button>
                         </Link>
-                      </>
+                        <Link href="/signup" onClick={() => setMobileMenuOpen(false)} className="block">
+                          <Button className="w-full bg-white border border-purple-600 text-purple-600 hover:bg-purple-50">
+                            {t('signup')}
+                          </Button>
+                        </Link>
+                      </div>
                     )}
 
                     <Button

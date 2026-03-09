@@ -2,12 +2,27 @@
 
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
-import { Link } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "@/redux/slices/authSlice";
 
 export default function Hero() {
   const t = useTranslations('Hero');
+  const router = useRouter();
+  const user = useSelector(selectCurrentUser);
+  const isLoggedIn = !!user;
+
+  const handleCtaClick = () => {
+    if (!isLoggedIn) {
+      const isReturningUser = localStorage.getItem("returningUser") === "true";
+      const targetPath = isReturningUser ? "/login" : "/signup";
+      router.push(`${targetPath}?callbackUrl=/scan`);
+    } else {
+      router.push("/scan");
+    }
+  };
 
   return (
     <section
@@ -26,14 +41,14 @@ export default function Hero() {
                 />
               </div> */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-              
+
             {/* Left Column: Text and Actions */}
             <div className="flex flex-col gap-6">
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight">
                 {t('titlePrefix')}{" "}
                 <br className="hidden sm:block" />
                 <span> {t('titleMiddle')} </span>
-                <br className="hidden sm:block" /> 
+                <br className="hidden sm:block" />
                 <span className="text-purple-600 inline-block max-w-[800px]">{t('titleSuffix')}</span>
               </h1>
 
@@ -43,20 +58,18 @@ export default function Hero() {
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 mb-6">
-                  <Button 
-                    asChild
+                  <Button
+                    onClick={handleCtaClick}
                     className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-4 text-base sm:text-lg w-full sm:w-auto flex-shrink-0 cursor-pointer rounded-full"
                     size="lg"
                   >
-                    <Link href="/scan">
-                      <span className=""></span> {t('cta')}
-                    </Link>
+                    {t('cta')}
                   </Button>
                   <div className="flex items-center justify-center sm:justify-start text-sm text-gray-600">
-                    
+
                   </div>
-                  
-                  
+
+
                 </div>
 
                 {/* Mobile Image */}
@@ -69,7 +82,7 @@ export default function Hero() {
                     className="object-contain"
                     sizes="100vw"
                   />
-                  <div 
+                  <div
                     className="absolute inset-0 pointer-events-none"
                     style={{
                       background: 'linear-gradient(to right, transparent 80%, white 98%)'
@@ -110,7 +123,7 @@ export default function Hero() {
                 </div>
               </div>
 
-              <p className="text-xs text-gray-500 leading-relaxed max-w-2xl" dangerouslySetInnerHTML={{__html: t.raw('disclaimer')}} />
+              <p className="text-xs text-gray-500 leading-relaxed max-w-2xl" dangerouslySetInnerHTML={{ __html: t.raw('disclaimer') }} />
             </div>
 
             {/* Right Column: Image */}
@@ -123,7 +136,7 @@ export default function Hero() {
                 className="object-contain"
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
-              <div 
+              <div
                 className="absolute inset-0 pointer-events-none"
                 style={{
                   background: 'linear-gradient(to right, transparent 80%, white 90%)'
