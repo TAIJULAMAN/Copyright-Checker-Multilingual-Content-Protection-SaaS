@@ -149,23 +149,59 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
-        {/* 1. Cookiebot - Using next/script with afterInteractive to avoid hydration errors */}
-        <Script
+        {/* 1. Cookiebot CMP - Must be a raw <script> in <head> to load FIRST.
+            Next.js <Script> with afterInteractive injects into <body>, not <head>,
+            so Cookiebot can't block other scripts in time. */}
+        <script
           id="Cookiebot"
           src="https://consent.cookiebot.com/uc.js"
           data-cbid="05ffcbf8-d6c1-49ba-8e6c-0e25caeb7e22"
           data-blockingmode="auto"
-          strategy="afterInteractive"
+          type="text/javascript"
         />
 
-        {/* 2. Google Analytics - Integrated with Cookiebot Statistics consent */}
-        <Script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-YG846MDVOJ"
-          strategy="afterInteractive"
-          data-cookieconsent="statistics"
+        {/* 2. Google Consent Mode v2 - Set defaults BEFORE any Google tags load.
+            All consent categories denied by default; Cookiebot will update them
+            when the user accepts cookies. */}
+        <script
+          id="google-consent-mode"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('consent', 'default', {
+                'ad_storage': 'denied',
+                'ad_user_data': 'denied',
+                'ad_personalization': 'denied',
+                'analytics_storage': 'denied',
+                'functionality_storage': 'denied',
+                'personalization_storage': 'denied',
+                'security_storage': 'granted',
+                'wait_for_update': 500
+              });
+            `,
+          }}
         />
-        <Script id="google-analytics" strategy="afterInteractive" data-cookieconsent="statistics">
+      </head>
+      <body className={`font-sans antialiased flex flex-col min-h-screen`} suppressHydrationWarning>
+        <noscript>
+          <img
+            height="1"
+            width="1"
+            style={{ display: "none" }}
+            src="https://www.facebook.com/tr?id=1251478372560101&ev=PageView&noscript=1"
+            alt=""
+          />
+        </noscript>
+
+        {/* 3. Google Analytics - Uses beforeInteractive so Cookiebot can manage it.
+            Consent Mode ensures no data is sent until the user grants analytics consent. */}
+        <Script
+          id="gtag-js"
+          src="https://www.googletagmanager.com/gtag/js?id=G-YG846MDVOJ"
+          strategy="beforeInteractive"
+        />
+        <Script id="google-analytics" strategy="beforeInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
@@ -174,8 +210,27 @@ export default async function LocaleLayout({
           `}
         </Script>
 
-        {/* 3. Meta Pixel - Integrated with Cookiebot Marketing consent */}
-        <Script id="facebook-pixel" strategy="afterInteractive" data-cookieconsent="marketing">
+        {/* 4. Cookiebot consent callback - Updates Google Consent Mode when user accepts.
+            This bridges Cookiebot consent categories to Google consent signals. */}
+        <Script id="cookiebot-consent-callback" strategy="afterInteractive">
+          {`
+            window.addEventListener('CookiebotOnAccept', function () {
+              if (typeof gtag === 'function') {
+                gtag('consent', 'update', {
+                  'ad_storage': Cookiebot.consent.marketing ? 'granted' : 'denied',
+                  'ad_user_data': Cookiebot.consent.marketing ? 'granted' : 'denied',
+                  'ad_personalization': Cookiebot.consent.marketing ? 'granted' : 'denied',
+                  'analytics_storage': Cookiebot.consent.statistics ? 'granted' : 'denied',
+                  'functionality_storage': Cookiebot.consent.preferences ? 'granted' : 'denied',
+                  'personalization_storage': Cookiebot.consent.preferences ? 'granted' : 'denied',
+                });
+              }
+            });
+          `}
+        </Script>
+
+        {/* 5. Meta Pixel - afterInteractive, Cookiebot auto mode will handle blocking */}
+        <Script id="facebook-pixel" strategy="afterInteractive">
           {`
             !function(f,b,e,v,n,t,s)
             {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -189,17 +244,7 @@ export default async function LocaleLayout({
             fbq('track', 'PageView');
           `}
         </Script>
-      </head>
-      <body className={`font-sans antialiased flex flex-col min-h-screen`} suppressHydrationWarning>
-        <noscript>
-          <img
-            height="1"
-            width="1"
-            style={{ display: "none" }}
-            src="https://www.facebook.com/tr?id=1251478372560101&ev=PageView&noscript=1"
-            alt=""
-          />
-        </noscript>
+
         <NextIntlClientProvider messages={messages}>
           <ReduxProvider>
             <MetaPixel />
