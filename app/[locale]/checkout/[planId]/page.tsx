@@ -140,7 +140,7 @@ export default function CheckoutPage() {
               </h3>
 
               <Button
-                className="w-full h-14 cursor-pointer transition-all rounded-full border-none shadow-md hover:shadow-xl flex items-center justify-center py-6 bg-[#ffc439] hover:bg-[#f2ba36] active:scale-[0.98] ring-offset-2 focus:ring-2 focus:ring-[#ffc439] group"
+                className="w-full h-14 cursor-pointer transition-all rounded-full border-none shadow-md hover:shadow-xl flex items-center justify-center py-6 bg-[#ffc439] active:scale-[0.98] ring-offset-2 focus:ring-2 focus:ring-[#ffc439] group"
                 onClick={handlePayment}
                 disabled={isCreatingOrder}
               >
@@ -151,8 +151,7 @@ export default function CheckoutPage() {
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
-                    <img src="/paypal.png" alt="PayPal" className="h-7 object-contain" />
-                    <span className="text-[#003087] font-extrabold text-xl italic group-hover:scale-105 transition-transform">Checkout</span>
+                    <img src="/paypalcheckout button.png" alt="PayPal" className="h-8 md:h-10 object-contain" />
                   </div>
                 )}
               </Button>

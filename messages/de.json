@@ -222,7 +222,8 @@
     "yesCancel": "Ja, kündigen!",
     "noKeepIt": "Nein, behalten",
     "cancelledTitle": "Gekündigt!",
-    "cancelledText": "Ihr Abonnement wurde gekündigt."
+    "cancelledText": "Ihr Abonnement wurde gekündigt.",
+    "vatIncl": "inkl. 19% MwSt."
   },
   "Results": {
     "title": "Ihre Copyright-Check-Ergebnisse",
@@ -254,7 +255,11 @@
     "lowRisk": "Niedriges Risiko",
     "lowRiskDesc": "Keine bekannten Urheberrechtsrisiken erkannt.",
     "noAudio": "Kein Audio erkannt",
-    "noAudioDesc": "Keine Musik gefunden oder kein relevantes Audio zum Analysieren."
+    "noAudioDesc": "Keine Musik gefunden oder kein relevantes Audio zum Analysieren.",
+    "statusPending": "Ausstehend",
+    "statusProcessing": "In Bearbeitung",
+    "statusCompleted": "Abgeschlossen",
+    "statusFailed": "Fehlgeschlagen"
   },
   "JobDetails": {
     "error": "Fehler beim Laden der Jobdetails.",

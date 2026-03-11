@@ -158,7 +158,7 @@ export default async function LocaleLayout({
           data-cbid="05ffcbf8-d6c1-49ba-8e6c-0e25caeb7e22"
           data-blockingmode="auto"
           type="text/javascript"
-        />
+        ></script>
 
         {/* 2. Google Consent Mode v2 - Set defaults BEFORE any Google tags load.
             All consent categories denied by default; Cookiebot will update them

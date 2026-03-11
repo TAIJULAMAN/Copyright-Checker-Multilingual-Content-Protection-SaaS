@@ -223,7 +223,8 @@
     "yesCancel": "Yes, cancel it!",
     "noKeepIt": "No, keep it",
     "cancelledTitle": "Cancelled!",
-    "cancelledText": "Your subscription has been cancelled."
+    "cancelledText": "Your subscription has been cancelled.",
+    "vatIncl": "incl. 19% VAT"
   },
   "Results": {
     "title": "Your Copyright Check Results",
@@ -255,7 +256,11 @@
     "lowRisk": "Low risk",
     "lowRiskDesc": "No known copyright risks detected.",
     "noAudio": "No audio detected",
-    "noAudioDesc": "No music found or no relevant audio to analyze."
+    "noAudioDesc": "No music found or no relevant audio to analyze.",
+    "statusPending": "Pending",
+    "statusProcessing": "Processing",
+    "statusCompleted": "Completed",
+    "statusFailed": "Failed"
   },
   "JobDetails": {
     "error": "Failed to load job details.",

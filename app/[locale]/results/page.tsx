@@ -242,10 +242,10 @@ export default function ResultsPage() {
                           onClick={() => router.push(`/results/${job.jobId}`)}
                           className={`border-b border-gray-100 cursor-pointer transition-colors ${styles.rowClass}`}
                         >
-                          <td className="px-6 py-4 text-sm text-gray-700">
+                          <td className="px-6 py-4 text-sm text-gray-700" suppressHydrationWarning>
                             {new Date(job.createdAt).toLocaleDateString()}
                           </td>
-                          <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                          <td className="px-6 py-4 text-sm font-medium text-gray-900 break-all">
                             @{job.instagramUsername}
                           </td>
                           <td className="px-6 py-4">
@@ -253,10 +253,12 @@ export default function ResultsPage() {
                               variant="secondary"
                               className={`capitalize ${job.status === "completed"
                                 ? "bg-green-100 text-green-700 hover:bg-green-100"
-                                : "bg-yellow-100 text-yellow-700 hover:bg-yellow-100"
+                                : job.status === "failed"
+                                  ? "bg-red-100 text-red-700 hover:bg-red-100"
+                                  : "bg-yellow-100 text-yellow-700 hover:bg-yellow-100"
                                 }`}
                             >
-                              {job.status}
+                              {t(`status${job.status.charAt(0).toUpperCase() + job.status.slice(1)}` as any)}
                             </Badge>
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-700">
@@ -333,18 +335,20 @@ export default function ResultsPage() {
                   {/* Status Stripe */}
                   <div className={`absolute top-0 left-0 w-1 h-full ${job.copyrightMatches > 0 ? 'bg-red-500' : 'bg-green-500'}`} />
 
-                  <div className="flex justify-between items-start mb-3 pl-2">
-                    <div>
-                      <p className="text-xs text-gray-500 mb-1">{new Date(job.createdAt).toLocaleDateString()}</p>
-                      <p className="text-lg font-bold text-gray-900">@{job.instagramUsername}</p>
+                  <div className="flex justify-between items-start gap-3 mb-3 pl-2">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs text-gray-500 mb-1" suppressHydrationWarning>{new Date(job.createdAt).toLocaleDateString()}</p>
+                      <p className="text-lg font-bold text-gray-900 break-all leading-tight">@{job.instagramUsername}</p>
                     </div>
                     <span
-                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${job.status === "completed"
+                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider shrink-0 ${job.status === "completed"
                         ? "bg-green-100 text-green-700"
-                        : "bg-yellow-100 text-yellow-700"
+                        : job.status === "failed"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-yellow-100 text-yellow-700"
                         }`}
                     >
-                      {job.status}
+                      {t(`status${job.status.charAt(0).toUpperCase() + job.status.slice(1)}` as any)}
                     </span>
                   </div>
 
@@ -483,7 +487,7 @@ export default function ResultsPage() {
       {/* monthly plans show if any scan history is present */}
       {jobs.length > 0 && (
         /* AVAILABLE monthly PLANS */
-        <div className="border-t border-gray-200 p-6 container mx-auto">
+        <div className="border-t border-gray-200 p-6 container mx-auto hidden">
           <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">
             {tSub("availablePlans")}
           </h2>
