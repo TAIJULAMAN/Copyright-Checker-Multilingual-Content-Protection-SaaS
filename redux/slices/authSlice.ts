@@ -12,9 +12,14 @@ export interface User {
   role: string;
   isBlocked: boolean;
   hasEverSubscribed: boolean;
-  address?: string;
+  street?: string;
+  houseNumber?: string;
+  zipCode?: string;
+  city?: string;
+  country?: string;
   company?: string;
   boundInstagramAccounts: any[];
+  hasEverUsedCoupon: boolean;
   createdAt: string;
   updatedAt: string;
   __v: number;

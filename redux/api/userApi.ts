@@ -2,10 +2,13 @@ import { baseApi } from './baseApi';
 import { User } from '../slices/authSlice';
 
 export interface UpdateUserRequest {
-  firstName?: string;
-  lastName?: string;
+  fullname?: string;
   mobile?: string;
-  address?: string;
+  street?: string;
+  houseNumber?: string;
+  zipCode?: string;
+  city?: string;
+  country?: string;
   company?: string;
 }
 
