@@ -10,6 +10,7 @@
     "myProfile": "Mein Profil",
     "mySubscription": "Meine Scans",
     "scanHistory": "Scan-Ergebnisse",
+    "invoices": "Rechnungen",
     "logout": "Abmelden",
     "menu": "Menü"
   },
@@ -62,15 +63,15 @@
   "Testimonials": {
     "title": "Das sagen unsere Nutzer",
     "subtitle": "Kundenstimmen",
-    "t1Name": "Sarah M.",
-    "t1Role": "Content Creator",
-    "t1Text": "Hat mich vor potenziellen Urheberrechtsproblemen bewahrt. Schneller und zuverlässiger Service.",
-    "t2Name": "Mike R.",
-    "t2Role": "Social Media Manager",
-    "t2Text": "Unverzichtbares Tool, die Berichte sind klar, schnell und machen das Entfernen einfach. Sehr zu empfehlen!",
-    "t3Name": "Lisa K.",
-    "t3Role": "CEO",
-    "t3Text": "Copyright Checker hilft uns bei der Überprüfung unseres Firmenkontos. Wir haben viele Reels mit Problemen gefunden – jetzt sind wir sicher. Jeden Cent wert!"
+    "t1Name": "Majena von Cappeln",
+    "t1Role": "Creator, 101.000 Follower",
+    "t1Text": "CopyrightChecker.de gibt mir endlich Gewissheit. Meine Reels werden in Minuten geprüft und ich kann riskante Inhalte direkt löschen. Eine enorme Zeitersparnis.",
+    "t2Name": "Energie Technik Becker GmbH",
+    "t2Role": "Geschäftsführer",
+    "t2Text": "Wir haben in den letzten Jahren viel in unseren Social-Media-Aufbau investiert, da wäre eine Urheberrechtsverletzung ein unnötiger Dämpfer. Mit copyrightchecker.de konnten wir unsere bestehenden Reels schnell prüfen lassen und durch die Links im Tool konnten wir sofort handeln.",
+    "t3Name": "Natascha Karamehmedovic",
+    "t3Role": "Inhaberin Kosmetikstudio Visage-Natascha",
+    "t3Text": "Ich hätte nie gedacht, dass ein einzelnes Reel so ein Risiko darstellen kann. Der Report hat mir innerhalb weniger Minuten gezeigt, welche Videos problematisch sein könnten, inklusive Direktlink. Allein die Zeitersparnis ist enorm."
   },
   "Blog": {
     "title": "Blog",
@@ -340,8 +341,16 @@
       "emailPlaceholder": "sie@beispiel.de",
       "mobile": "Mobil",
       "mobilePlaceholder": "+1234567890",
-      "address": "Adresse",
-      "addressPlaceholder": "Deine Adresse",
+      "street": "Straße",
+      "streetPlaceholder": "Deine Straße",
+      "houseNumber": "Hausnummer",
+      "houseNumberPlaceholder": "123",
+      "zipCode": "PLZ",
+      "zipCodePlaceholder": "12345",
+      "city": "Stadt",
+      "cityPlaceholder": "Deine Stadt",
+      "country": "Land",
+      "countryPlaceholder": "Dein Land",
       "company": "Firma",
       "companyPlaceholder": "Deine Firma",
       "password": "Passwort",
@@ -504,5 +513,15 @@
     "accessibility": "Barrierefreiheit",
     "denyMessage": "Sie haben Cookies abgelehnt. Möchten Sie die Website stattdessen auf Deutsch nutzen, um eine lokalisierte Erfahrung zu erhalten?",
     "switchToGerman": "Akzeptieren und auf Deutsch nutzen"
+  },
+  "Invoices": {
+    "title": "Meine Rechnungen",
+    "invoiceNumber": "Rechnungsnr.",
+    "date": "Datum",
+    "product": "Produkt",
+    "amount": "Betrag",
+    "download": "Download",
+    "noInvoices": "Keine Rechnungen gefunden.",
+    "description": "Verwalten und laden Sie Ihre Rechnungen herunter."
   }
 }

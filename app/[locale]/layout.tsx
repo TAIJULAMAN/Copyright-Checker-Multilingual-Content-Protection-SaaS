@@ -22,7 +22,7 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: {
-    default: "Instagram Reel Abmahnung vermeiden - Copyright Check für Unternehmen & Creator",
+    default: "Instagram Reels auf Musik Copyright Risiken prüfen | für Unternehmen & Creator",
     template: "%s | CopyrightChecker.de",
   },
 
@@ -160,15 +160,21 @@ export default async function LocaleLayout({
           type="text/javascript"
         ></script>
 
-        {/* 2. Google Consent Mode v2 - Set defaults BEFORE any Google tags load.
-            All consent categories denied by default; Cookiebot will update them
-            when the user accepts cookies. */}
+        {/* 2. Google Analytics */}
         <script
-          id="google-consent-mode"
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-YG846MDVOJ"
+        ></script>
+        <script
+          id="google-analytics-init"
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-YG846MDVOJ');
+
+              // Consent Mode v2 Default
               gtag('consent', 'default', {
                 'ad_storage': 'denied',
                 'ad_user_data': 'denied',
@@ -179,6 +185,25 @@ export default async function LocaleLayout({
                 'security_storage': 'granted',
                 'wait_for_update': 500
               });
+            `,
+          }}
+        />
+
+        {/* 3. Meta Pixel */}
+        <script
+          id="facebook-pixel-init"
+          dangerouslySetInnerHTML={{
+            __html: `
+              !function(f,b,e,v,n,t,s)
+              {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+              n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+              n.queue=[];t=b.createElement(e);t.async=!0;
+              t.src=v;s=b.getElementsByTagName(e)[0];
+              s.parentNode.insertBefore(t,s)}(window, document,'script',
+              'https://connect.facebook.net/en_US/fbevents.js');
+              fbq('init', '1251478372560101');
+              fbq('track', 'PageView');
             `,
           }}
         />
@@ -194,21 +219,7 @@ export default async function LocaleLayout({
           />
         </noscript>
 
-        {/* 3. Google Analytics - Uses beforeInteractive so Cookiebot can manage it.
-            Consent Mode ensures no data is sent until the user grants analytics consent. */}
-        <Script
-          id="gtag-js"
-          src="https://www.googletagmanager.com/gtag/js?id=G-YG846MDVOJ"
-          strategy="beforeInteractive"
-        />
-        <Script id="google-analytics" strategy="beforeInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-YG846MDVOJ');
-          `}
-        </Script>
+
 
         {/* 4. Cookiebot consent callback - Updates Google Consent Mode when user accepts.
             This bridges Cookiebot consent categories to Google consent signals. */}
@@ -229,21 +240,7 @@ export default async function LocaleLayout({
           `}
         </Script>
 
-        {/* 5. Meta Pixel - afterInteractive, Cookiebot auto mode will handle blocking */}
-        <Script id="facebook-pixel" strategy="afterInteractive">
-          {`
-            !function(f,b,e,v,n,t,s)
-            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-            n.queue=[];t=b.createElement(e);t.async=!0;
-            t.src=v;s=b.getElementsByTagName(e)[0];
-            s.parentNode.insertBefore(t,s)}(window, document,'script',
-            'https://connect.facebook.net/en_US/fbevents.js');
-            fbq('init', '1251478372560101');
-            fbq('track', 'PageView');
-          `}
-        </Script>
+
 
         <NextIntlClientProvider messages={messages}>
           <ReduxProvider>

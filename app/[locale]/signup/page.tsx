@@ -33,7 +33,11 @@ export default function SignupPage() {
     lastName: "",
     email: "",
     mobile: "",
-    address: "",
+    street: "",
+    houseNumber: "",
+    zipCode: "",
+    city: "",
+    country: "",
     company: "",
     password: "",
     confirmPassword: "",
@@ -63,6 +67,11 @@ export default function SignupPage() {
       !formData.lastName ||
       !formData.email ||
       !formData.mobile ||
+      !formData.street ||
+      !formData.houseNumber ||
+      !formData.zipCode ||
+      !formData.city ||
+      !formData.country ||
       !formData.password ||
       !formData.confirmPassword
     ) {
@@ -91,7 +100,11 @@ export default function SignupPage() {
         lastName: formData.lastName,
         email: formData.email,
         mobile: formData.mobile,
-        address: formData.address,
+        street: formData.street,
+        houseNumber: formData.houseNumber,
+        zipCode: formData.zipCode,
+        city: formData.city,
+        country: formData.country,
         company: formData.company,
         password: formData.password,
       }).unwrap();
@@ -217,15 +230,73 @@ export default function SignupPage() {
                 />
               </div>
 
+              <div className="grid grid-cols-3 gap-4">
+                <div className="col-span-2 space-y-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    {t('street')}
+                  </label>
+                  <Input
+                    type="text"
+                    name="street"
+                    placeholder={t('streetPlaceholder')}
+                    value={formData.street}
+                    onChange={handleChange}
+                    disabled={isLoading}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    {t('houseNumber')}
+                  </label>
+                  <Input
+                    type="text"
+                    name="houseNumber"
+                    placeholder={t('houseNumberPlaceholder')}
+                    value={formData.houseNumber}
+                    onChange={handleChange}
+                    disabled={isLoading}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    {t('zipCode')}
+                  </label>
+                  <Input
+                    type="text"
+                    name="zipCode"
+                    placeholder={t('zipCodePlaceholder')}
+                    value={formData.zipCode}
+                    onChange={handleChange}
+                    disabled={isLoading}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    {t('city')}
+                  </label>
+                  <Input
+                    type="text"
+                    name="city"
+                    placeholder={t('cityPlaceholder')}
+                    value={formData.city}
+                    onChange={handleChange}
+                    disabled={isLoading}
+                  />
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  {t('address')}
+                  {t('country')}
                 </label>
                 <Input
                   type="text"
-                  name="address"
-                  placeholder={t('addressPlaceholder')}
-                  value={formData.address}
+                  name="country"
+                  placeholder={t('countryPlaceholder')}
+                  value={formData.country}
                   onChange={handleChange}
                   disabled={isLoading}
                 />

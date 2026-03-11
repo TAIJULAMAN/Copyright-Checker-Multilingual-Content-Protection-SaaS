@@ -4,7 +4,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { CheckCircle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { useTranslations } from "next-intl";
 
 function SuccessContent() {
@@ -15,6 +15,17 @@ function SuccessContent() {
   const planName = searchParams.get("plan");
   const amount = searchParams.get("amount");
   const orderId = searchParams.get("orderId");
+
+  useEffect(() => {
+    const fbq = (window as any).fbq;
+    if (typeof fbq === 'function') {
+      fbq('track', 'Purchase', {
+        value: amount || 0,
+        currency: 'EUR',
+        content_name: planName || 'Subscription'
+      });
+    }
+  }, [amount, planName]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">

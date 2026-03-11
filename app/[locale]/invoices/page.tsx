@@ -1,225 +1,224 @@
 "use client";
-import Link from "next/link";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
-const invoices = [
-  {
-    id: "CW-2025-0001",
-    date: new Date().toLocaleDateString(),
-    total: "€9,99",
-    method: "PayPal",
-    status: "Paid",
-  },
-  {
-    id: "CW-2025-0002",
-    date: new Date().toLocaleDateString(),
-    total: "€19,98",
-    method: "Card",
-    status: "Paid",
-  },
-  {
-    id: "CW-2025-0003",
-    date: new Date().toLocaleDateString(),
-    total: "€9,99",
-    method: "PayPal",
-    status: "Refunded",
-  },
-];
+import { useGetInvoicesQuery } from "@/redux/api/userApi";
+import { useTranslations } from "next-intl";
+import { Loader2, Download, FileText, Search, Calendar, CreditCard, ShieldAlert } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import { BASE_URL } from "@/redux/api/config";
+
+interface Invoice {
+  _id: string;
+  invoice_number: string;
+  invoice_date: string;
+  product_name: string;
+  gross_amount: number;
+  currency: string;
+}
 
 export default function InvoicesPage() {
-  const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<(typeof invoices)[number] | null>(null);
+  const t = useTranslations("Invoices");
+  const { data: invoicesResponse, isLoading, isError } = useGetInvoicesQuery(undefined);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const handleDownload = (inv: (typeof invoices)[number]) => {
-    const html = `<!doctype html>
-    <html>
-      <head>
-        <meta charset='utf-8'/>
-        <meta name='viewport' content='width=device-width, initial-scale=1'/>
-        <title>Invoice ${inv.id}</title>
-        <style>
-          body { font-family: Arial, Helvetica, sans-serif; color: #0f172a; margin: 0; padding: 24px; }
-          .card { max-width: 720px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; }
-          .row { display: flex; justify-content: space-between; align-items: center; }
-          .muted { color: #6b7280; font-size: 12px; }
-          .title { font-weight: 700; font-size: 16px; }
-          .line { height: 1px; background: #e5e7eb; margin: 16px 0; }
-          .item, .total { display: flex; justify-content: space-between; font-size: 14px; }
-          .total { font-weight: 700; font-size: 16px; }
-          .brand { font-weight: 700; font-size: 18px; margin-bottom: 8px; }
-          @media print { body { padding: 0; } .card { border: 0; } }
-        </style>
-      </head>
-      <body>
-        <div class='card'>
-          <div class='brand'>Copywright Music Detect</div>
-          <div class='row'>
-            <div>
-              <div class='muted'>Invoice</div>
-              <div class='title'>${inv.id}</div>
-            </div>
-            <div style='text-align:right'>
-              <div class='muted'>Date</div>
-              <div>${inv.date}</div>
-            </div>
-          </div>
-          <div class='line'></div>
-          <div class='item'>
-            <div>Instagram Reels Copyright Scan</div>
-            <div>${inv.total}</div>
-          </div>
-          <div class='item'>
-            <div class='muted'>Payment Method</div>
-            <div>${inv.method}</div>
-          </div>
-          <div class='item'>
-            <div class='muted'>Status</div>
-            <div>${inv.status}</div>
-          </div>
-          <div class='line'></div>
-          <div class='item'>
-            <div>Subtotal (Net)</div>
-            <div id="subtotal">Calculating...</div>
-          </div>
-          <div class='item'>
-            <div>VAT (19%)</div>
-            <div id="vat">Calculating...</div>
-          </div>
-          <div class='line'></div>
-          <div class='total'>
-            <div>Total Paid (Gross)</div>
-            <div>${inv.total}</div>
-          </div>
-          <div style='font-size: 10px; color: #94a3b8; margin-top: 10px; font-style: italic;'>
-            Inkl. 19% MwSt.
-          </div>
-        </div>
-        <script>
-          window.onload = function(){
-            const totalStr = "${inv.total}".replace("€", "").replace(",", ".");
-            const total = parseFloat(totalStr);
-            const net = total / 1.19;
-            const vat = total - net;
-            document.getElementById("subtotal").innerText = "€" + net.toFixed(2).replace(".", ",");
-            document.getElementById("vat").innerText = "€" + vat.toFixed(2).replace(".", ",");
-            
-            setTimeout(() => {
-              window.print();
-              window.onafterprint = () => window.close();
-            }, 500);
-          }
-        </script>
-      </body>
-    </html>`;
-    const win = window.open("", "_blank", "width=900,height=1000");
-    if (!win) return;
-    win.document.open();
-    win.document.write(html);
-    win.document.close();
-    win.focus();
+  const invoices: Invoice[] = invoicesResponse?.data?.invoices || [];
+
+  const filteredInvoices = invoices.filter(
+    (invoice) =>
+      invoice.invoice_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      invoice.product_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleDownload = async (invoiceId: string, invoiceNumber: string) => {
+    try {
+      const response = await fetch(`${BASE_URL}/users/invoices/download/${invoiceId}`, {
+      });
+
+      if (!response.ok) throw new Error("Download failed");
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `rechnung_${invoiceNumber}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error("Error downloading invoice:", error);
+    }
   };
 
-  return (
-    <div className="container mx-auto px-5 lg:px-0 py-10 space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Invoices</h1>
+  if (isLoading) {
+    return (
+      <div className="min-h-[70vh] flex items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-purple-600" />
       </div>
+    );
+  }
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full table-auto">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Invoice #</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Date</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Total</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Method</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {invoices.map((inv) => (
-                <tr key={inv.id} className="border-b last:border-b-0">
-                  <td className="px-6 py-4 font-medium text-gray-900">{inv.id}</td>
-                  <td className="px-6 py-4 text-gray-700">{inv.date}</td>
-                  <td className="px-6 py-4 text-gray-900">{inv.total}</td>
-                  <td className="px-6 py-4 text-gray-700">{inv.method}</td>
-                  <td className="px-6 py-4">
-                    <span
-                      className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold ${inv.status === "Paid"
-                        ? "bg-green-100 text-green-700"
-                        : inv.status === "Refunded"
-                          ? "bg-yellow-100 text-yellow-700"
-                          : "bg-gray-100 text-gray-700"
-                        }`}
-                    >
-                      {inv.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        className="border-gray-300"
-                        onClick={() => {
-                          setSelected(inv);
-                          setOpen(true);
-                        }}
-                      >
-                        View
-                      </Button>
-                      <Button
-                        variant="outline"
-                        className="border-gray-300"
-                        onClick={() => handleDownload(inv)}
-                      >
-                        Download
-                      </Button>
-                    </div>
-                  </td>
+  if (isError) {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center gap-4 text-center px-4">
+        <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center text-red-500 mb-2">
+          <ShieldAlert className="w-8 h-8" />
+        </div>
+        <h2 className="text-xl font-bold text-gray-900">Oops! Something went wrong</h2>
+        <p className="text-gray-500 max-w-xs">We couldn't load your invoices. Please try again later or contact support.</p>
+        <Button onClick={() => window.location.reload()} className="bg-purple-600 hover:bg-purple-700">
+          Try Again
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto">
+        <div className="mb-10">
+          <h1 className="text-3xl font-extrabold text-gray-900 mb-2">{t("title")}</h1>
+          <p className="text-gray-500">{t("description")}</p>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="p-6 border-b border-gray-50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="relative w-full sm:max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Input
+                placeholder="Search by invoice # or product..."
+                className="pl-10 h-11 bg-gray-50 border-transparent focus:bg-white focus:ring-purple-500 transition-all"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* Desktop Table */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-gray-50/50">
+                  <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">{t("invoiceNumber")}</th>
+                  <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">{t("date")}</th>
+                  <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">{t("product")}</th>
+                  <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">{t("amount")}</th>
+                  <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">{t("download")}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {filteredInvoices.length > 0 ? (
+                  filteredInvoices.map((invoice) => (
+                    <tr key={invoice._id} className="hover:bg-gray-50/50 transition-colors group">
+                      <td className="px-6 py-5">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 group-hover:scale-110 transition-transform">
+                            <FileText className="w-5 h-5" />
+                          </div>
+                          <span className="font-bold text-gray-900 font-mono">#{invoice.invoice_number}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-5 text-sm text-gray-600">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-4 h-4 text-gray-400" />
+                          {new Date(invoice.invoice_date).toLocaleDateString()}
+                        </div>
+                      </td>
+                      <td className="px-6 py-5">
+                        <span className="text-sm font-medium text-gray-900">{invoice.product_name}</span>
+                      </td>
+                      <td className="px-6 py-5">
+                        <div className="flex items-center gap-2 font-bold text-gray-900">
+                          <CreditCard className="w-4 h-4 text-gray-400" />
+                          {invoice.gross_amount.toLocaleString(undefined, { minimumFractionDigits: 2 })} {invoice.currency}
+                        </div>
+                      </td>
+                      <td className="px-6 py-5 text-right">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="text-purple-600 hover:bg-purple-50 hover:text-purple-700 h-10 px-4 rounded-xl"
+                          onClick={() => handleDownload(invoice._id, invoice.invoice_number)}
+                        >
+                          <Download className="w-4 h-4 mr-2" />
+                          {t("download")}
+                        </Button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-20 text-center text-gray-500">
+                      <div className="flex flex-col items-center gap-2">
+                        <FileText className="w-12 h-12 text-gray-200" />
+                        <p className="text-lg font-medium text-gray-900">{t("noInvoices")}</p>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card Layout */}
+          <div className="md:hidden divide-y divide-gray-100">
+            {filteredInvoices.length > 0 ? (
+              filteredInvoices.map((invoice) => (
+                <div key={invoice._id} className="p-5 hover:bg-gray-50 transition-colors">
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600">
+                        <FileText className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">{t("invoiceNumber")}</p>
+                        <p className="text-base font-bold text-gray-900 font-mono">#{invoice.invoice_number}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">{t("amount")}</p>
+                      <p className="text-base font-bold text-gray-900">
+                        {invoice.gross_amount.toLocaleString(undefined, { minimumFractionDigits: 2 })} {invoice.currency}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div>
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">{t("date")}</p>
+                      <p className="text-sm text-gray-700 font-medium">
+                        {new Date(invoice.invoice_date).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">{t("product")}</p>
+                      <p className="text-sm text-gray-700 font-medium line-clamp-1">
+                        {invoice.product_name}
+                      </p>
+                    </div>
+                  </div>
+
+                  <Button
+                    className="w-full bg-purple-600 hover:bg-purple-700 text-white rounded-xl h-12 font-bold shadow-lg shadow-purple-100 flex items-center justify-center gap-2 transition-all active:scale-95"
+                    onClick={() => handleDownload(invoice._id, invoice.invoice_number)}
+                  >
+                    <Download className="w-5 h-5" />
+                    {t("download")} PDF
+                  </Button>
+                </div>
+              ))
+            ) : (
+              <div className="px-6 py-20 text-center text-gray-500">
+                <div className="flex flex-col items-center gap-2">
+                  <FileText className="w-12 h-12 text-gray-200" />
+                  <p className="text-lg font-medium text-gray-900">{t("noInvoices")}</p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Invoice {selected?.id}</DialogTitle>
-            <DialogDescription>
-              Summary of your purchase and payment details.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-3 text-sm">
-            <div className="flex items-center justify-between">
-              <span className="text-gray-500">Date</span>
-              <span className="text-gray-900">{selected?.date}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-gray-500">Payment Method</span>
-              <span className="text-gray-900">{selected?.method}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-gray-500">Status</span>
-              <span className="text-gray-900">{selected?.status}</span>
-            </div>
-            <div className="border-t border-gray-200 pt-3 flex items-center justify-between">
-              <span className="text-sm font-semibold text-gray-900">Total</span>
-              <span className="text-base font-bold text-gray-900">{selected?.total}</span>
-            </div>
-          </div>
-          <div className="pt-4">
-            <Button className="w-full bg-red-600 text-white" onClick={() => setOpen(false)}>
-              Close
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

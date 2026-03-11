@@ -1,12 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Download, Shield, AlertTriangle, CheckCircle, Info, ShieldCheck, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { Download, Shield, AlertTriangle, CheckCircle, ShieldCheck } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { useGetMyJobsQuery, Job, useExportJobReportMutation } from "@/redux/api/copyrightApi";
-import { useGetSubscriptionPlansQuery, useCreatePayPalOrderMutation, Plan } from "@/redux/api/subscriptionApi";
+import { useGetSubscriptionPlansQuery, Plan } from "@/redux/api/subscriptionApi";
 import { useRouter } from "@/i18n/routing";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
@@ -16,25 +15,12 @@ export default function ResultsPage() {
   const tSub = useTranslations('MySubscription');
   /* eslint-disable @typescript-eslint/no-unused-vars */
   const router = useRouter();
-  const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
-
   const { data: plansData } = useGetSubscriptionPlansQuery();
-  const [createPayPalOrder, { isLoading: isCreatingOrder }] = useCreatePayPalOrderMutation();
 
   const recurringPlans = plansData?.data?.plans.filter((plan: Plan) => plan.subscriptionType === "recurring" && plan.isActive) || [];
 
-  const handleBuyNow = async (planId: string) => {
-    setSelectedPlanId(planId);
-    try {
-      const result = await createPayPalOrder({ planId }).unwrap();
-      if (result.success && result.data.approveUrl) {
-        window.location.href = result.data.approveUrl;
-      }
-    } catch (err) {
-      console.error("Error creating order:", err);
-    } finally {
-      setSelectedPlanId(null);
-    }
+  const handleBuyNow = (planId: string) => {
+    router.push(`/checkout/${planId}`);
   };
 
   /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -481,13 +467,10 @@ export default function ResultsPage() {
         </div>
       </div>
 
-
-
-
       {/* monthly plans show if any scan history is present */}
       {jobs.length > 0 && (
         /* AVAILABLE monthly PLANS */
-        <div className="border-t border-gray-200 p-6 container mx-auto hidden">
+        <div className="border-t border-gray-200 p-6 container mx-auto">
           <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">
             {tSub("availablePlans")}
           </h2>
@@ -524,17 +507,9 @@ export default function ResultsPage() {
 
                   <Button
                     onClick={() => handleBuyNow(plan._id)}
-                    disabled={isCreatingOrder && selectedPlanId === plan._id}
                     className="w-full bg-purple-600 hover:bg-purple-700 text-white rounded-full"
                   >
-                    {isCreatingOrder && selectedPlanId === plan._id ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        {tSub("processing")}
-                      </>
-                    ) : (
-                      tSub("subscribe")
-                    )}
+                    {tSub("subscribe")}
                   </Button>
                 </div>
               ))}

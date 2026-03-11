@@ -36,7 +36,14 @@ export const userApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Auth'],
     }),
+    getInvoices: builder.query({
+      query: () => ({
+        url: '/users/invoices',
+        method: 'GET',
+      }),
+      providesTags: ['Auth'],
+    }),
   }),
 });
 
-export const { useUpdateUserMutation, useUpdateAvatarMutation } = userApi;
+export const { useUpdateUserMutation, useUpdateAvatarMutation, useGetInvoicesQuery } = userApi;

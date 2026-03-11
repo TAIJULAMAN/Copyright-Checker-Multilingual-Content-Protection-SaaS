@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Menu, LogOut, User, Crown, History } from "lucide-react";
+import { Menu, LogOut, User, Crown, History, FileText } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -23,6 +23,7 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import { selectCurrentUser, logout } from "@/redux/slices/authSlice";
 import { useLogoutMutation } from "@/redux/api/authApi";
+import { userApi, useGetInvoicesQuery } from "@/redux/api/userApi";
 import { baseApi } from "@/redux/api/baseApi";
 import Cookies from "js-cookie";
 import { Link, useRouter, usePathname } from "@/i18n/routing";
@@ -40,6 +41,8 @@ export default function Header() {
 
   const user = useSelector(selectCurrentUser);
   const isLoggedIn = !!user;
+  const { data: invoicesData } = useGetInvoicesQuery(undefined, { skip: !isLoggedIn });
+  const hasInvoices = (invoicesData?.data?.invoices?.length || 0) > 0;
   const displayName = user?.fullname || user?.name || user?.email?.split('@')[0] || "User";
 
   const handleLogout = async () => {
@@ -226,6 +229,14 @@ export default function Header() {
                           <span>{t('scanHistory')}</span>
                         </Link>
                       </DropdownMenuItem>
+                      {hasInvoices && (
+                        <DropdownMenuItem asChild>
+                          <Link href="/invoices" className="flex items-center px-3 py-2 text-sm rounded-md transition-colors cursor-pointer">
+                            <FileText className="mr-3 h-4 w-4 text-purple-600" />
+                            <span>{t('invoices')}</span>
+                          </Link>
+                        </DropdownMenuItem>
+                      )}
                     </div>
                     <DropdownMenuSeparator />
                     <div className="p-1">
@@ -321,6 +332,12 @@ export default function Header() {
                                 <History className="mr-3 h-5 w-5 text-purple-600" />
                                 <span className="font-medium">{t('scanHistory')}</span>
                               </Link>
+                              {hasInvoices && (
+                                <Link href="/invoices" onClick={() => setMobileMenuOpen(false)} className="flex items-center px-2 py-3 text-gray-700 hover:text-purple-600 transition-colors">
+                                  <FileText className="mr-3 h-5 w-5 text-purple-600" />
+                                  <span className="font-medium">{t('invoices')}</span>
+                                </Link>
+                              )}
                               <Link href="/profile" onClick={() => setMobileMenuOpen(false)} className="flex items-center px-2 py-3 text-gray-700 hover:text-purple-600 transition-colors">
                                 <User className="mr-3 h-5 w-5 text-purple-600" />
                                 <span className="font-medium">{t('myProfile')}</span>

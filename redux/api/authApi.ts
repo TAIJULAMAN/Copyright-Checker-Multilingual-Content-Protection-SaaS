@@ -23,7 +23,11 @@ export interface RegisterRequest {
   email: string;
   mobile: string;
   password?: string;
-  address?: string;
+  street?: string;
+  houseNumber?: string;
+  zipCode?: string;
+  city?: string;
+  country?: string;
   company?: string;
 }
 

@@ -10,6 +10,7 @@
     "myProfile": "My Profile",
     "mySubscription": "My Subscription",
     "scanHistory": "Scan History",
+    "invoices": "Invoices",
     "logout": "Log out",
     "menu": "Menu"
   },
@@ -62,15 +63,15 @@
   "Testimonials": {
     "title": "What Our Users Say",
     "subtitle": "Trusted by Business Accounts & Content Creators",
-    "t1Name": "Sarah M.",
-    "t1Role": "Content Creator",
-    "t1Text": "Saved me from potential copyright issues. Quick and reliable service.",
-    "t2Name": "Mike R.",
-    "t2Role": "Social Media Manager",
-    "t2Text": "Essential tool, the reports are clear, fast, and make it easy to remove. Highly recommend!",
-    "t3Name": "Lisa K.",
-    "t3Role": "CEO",
-    "t3Text": "Copyright Checker helps us review our company account. We found many Reels with issues—now we are safe. Worth every cent!"
+    "t1Name": "Majena von Cappeln",
+    "t1Role": "Creator, 101,000 Followers",
+    "t1Text": "CopyrightChecker.de finally gives me peace of mind. My Reels are checked in minutes and I can directly delete risky content. A huge time saver.",
+    "t2Name": "Energie Technik Becker GmbH",
+    "t2Role": "Managing Director",
+    "t2Text": "We have invested a lot in building up our social media in recent years, so a copyright infringement would be an unnecessary setback. With copyrightchecker.de, we were able to have our existing Reels checked quickly and through the links in the tool, we were able to act immediately.",
+    "t3Name": "Natascha Karamehmedovic",
+    "t3Role": "Owner of Cosmetic Studio Visage-Natascha",
+    "t3Text": "I never thought a single Reel could pose such a risk. The report showed me within minutes which videos could be problematic, including a direct link. The time savings alone are enormous."
   },
   "Blog": {
     "title": "Blog",
@@ -341,8 +342,16 @@
       "emailPlaceholder": "you@example.com",
       "mobile": "Mobile",
       "mobilePlaceholder": "+1234567890",
-      "address": "Address",
-      "addressPlaceholder": "Your Address",
+      "street": "Street",
+      "streetPlaceholder": "Your Street",
+      "houseNumber": "House Number",
+      "houseNumberPlaceholder": "123",
+      "zipCode": "ZIP Code",
+      "zipCodePlaceholder": "12345",
+      "city": "City",
+      "cityPlaceholder": "Your City",
+      "country": "Country",
+      "countryPlaceholder": "Your Country",
       "company": "Company",
       "companyPlaceholder": "Your Company",
       "password": "Password",
@@ -502,6 +511,16 @@
     "about": "About Us",
     "accessibility": "Accessibility",
     "denyMessage": "You have denied cookies. To focus on your preferences, would you like to switch to the German version of the website?",
-    "switchToGerman": "Allow and use website in German"
+    "switchToGerman": "Accept and use in German"
+  },
+  "Invoices": {
+    "title": "My Invoices",
+    "invoiceNumber": "Invoice #",
+    "date": "Date",
+    "product": "Product",
+    "amount": "Amount",
+    "download": "Download",
+    "noInvoices": "No invoices found.",
+    "description": "Manage and download your purchase invoices."
   }
 }
