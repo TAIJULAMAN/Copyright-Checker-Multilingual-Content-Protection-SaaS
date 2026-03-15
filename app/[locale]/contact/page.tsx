@@ -53,7 +53,7 @@ export default function ContactUs() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Contact Form */}
-          <div className="bg-white rounded-lg border border-gray-200 p-8">
+          {/* <div className="bg-white rounded-lg border border-gray-200 p-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('sendMessage')}</h2>
             <form className="space-y-6" onSubmit={handleSubmit}>
               {status.message && (
@@ -113,7 +113,7 @@ export default function ContactUs() {
                 {isLoading ? t('sendingButton') : t('sendButton')}
               </Button>
             </form>
-          </div>
+          </div> */}
 
           {/* Contact Information */}
           <div className="space-y-8">
