@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { BASE_URL } from "@/redux/api/config";
+import Cookies from "js-cookie";
 
 interface Invoice {
   _id: string;
@@ -32,7 +33,12 @@ export default function InvoicesPage() {
 
   const handleDownload = async (invoiceId: string, invoiceNumber: string) => {
     try {
+      const token = Cookies.get("accessToken");
       const response = await fetch(`${BASE_URL}/users/invoices/download/${invoiceId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
       });
 
       if (!response.ok) throw new Error("Download failed");
