@@ -262,8 +262,8 @@
     "lowRiskDesc": "Keine bekannten Urheberrechtsrisiken erkannt.",
     "noAudio": "Kein Audio erkannt",
     "noAudioDesc": "Keine Musik gefunden oder kein relevantes Audio zum Analysieren.",
-    "statusPending": "Ausstehend",
-    "statusProcessing": "In Bearbeitung",
+    "statusPending": "Vorbereitung",
+    "statusProcessing": "Scan läuft",
     "statusCompleted": "Abgeschlossen",
     "statusFailed": "Fehlgeschlagen"
   },

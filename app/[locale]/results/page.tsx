@@ -225,8 +225,14 @@ export default function ResultsPage() {
                       return (
                         <tr
                           key={job.jobId}
-                          onClick={() => router.push(`/results/${job.jobId}`)}
-                          className={`border-b border-gray-100 cursor-pointer transition-colors ${styles.rowClass}`}
+                          onClick={() => {
+                            if (job.status === "completed" || job.status === "failed") {
+                              router.push(`/results/${job.jobId}`);
+                            }
+                          }}
+                          className={`border-b border-gray-100 transition-colors ${styles.rowClass} ${
+                            job.status === "completed" || job.status === "failed" ? "cursor-pointer" : "cursor-default"
+                          }`}
                         >
                           <td className="px-6 py-4 text-sm text-gray-700" suppressHydrationWarning>
                             {new Date(job.createdAt).toLocaleDateString()}
@@ -268,6 +274,7 @@ export default function ResultsPage() {
                                   : "text-green-600 border-green-600 hover:bg-green-50"
                                   }`}
                                 onClick={() => router.push(`/results/${job.jobId}`)}
+                                disabled={job.status !== "completed" && job.status !== "failed"}
                               >
                                 {t('viewDetails')}
                               </Button>
@@ -314,9 +321,14 @@ export default function ResultsPage() {
               jobs.map((job: Job) => (
                 <div
                   key={job.jobId}
-                  onClick={() => router.push(`/results/${job.jobId}`)}
-                  className={`bg-white rounded-lg shadow-sm border p-4 cursor-pointer relative overflow-hidden ${job.copyrightMatches > 0 ? "border-red-100" : "border-green-100"
-                    }`}
+                  onClick={() => {
+                    if (job.status === "completed" || job.status === "failed") {
+                      router.push(`/results/${job.jobId}`);
+                    }
+                  }}
+                  className={`bg-white rounded-lg shadow-sm border p-4 relative overflow-hidden ${
+                    job.copyrightMatches > 0 ? "border-red-100" : "border-green-100"
+                  } ${job.status === "completed" || job.status === "failed" ? "cursor-pointer" : "cursor-default"}`}
                 >
                   {/* Status Stripe */}
                   <div className={`absolute top-0 left-0 w-1 h-full ${job.copyrightMatches > 0 ? 'bg-red-500' : 'bg-green-500'}`} />
@@ -363,6 +375,7 @@ export default function ResultsPage() {
                         e.stopPropagation();
                         router.push(`/results/${job.jobId}`);
                       }}
+                      disabled={job.status !== "completed" && job.status !== "failed"}
                     >
                       {t('viewDetails')}
                     </Button>
