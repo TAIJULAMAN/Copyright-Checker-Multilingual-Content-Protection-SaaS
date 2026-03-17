@@ -30,6 +30,7 @@ export default function ProfilePage() {
   const [profileForm, setProfileForm] = useState({
     fullname: "",
     mobile: "",
+    address: "",
     street: "",
     houseNumber: "",
     zipCode: "",
@@ -49,6 +50,7 @@ export default function ProfilePage() {
       setProfileForm({
         fullname: user.fullname || "",
         mobile: user.mobile || "",
+        address: user.address || "",
         street: user.street || "",
         houseNumber: user.houseNumber || "",
         zipCode: user.zipCode || "",
@@ -249,6 +251,17 @@ export default function ProfilePage() {
                           value={profileForm.mobile}
                           onChange={handleProfileChange}
                           placeholder="+1234567890"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="address">{t('personalInfo.address')}</Label>
+                        <Input
+                          id="address"
+                          name="address"
+                          value={profileForm.address}
+                          onChange={handleProfileChange}
+                          placeholder="Your Address"
                         />
                       </div>
 

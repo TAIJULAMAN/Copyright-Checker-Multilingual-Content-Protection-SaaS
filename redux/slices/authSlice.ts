@@ -12,6 +12,7 @@ export interface User {
   role: string;
   isBlocked: boolean;
   hasEverSubscribed: boolean;
+  address?: string;
   street?: string;
   houseNumber?: string;
   zipCode?: string;

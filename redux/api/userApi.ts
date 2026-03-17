@@ -4,6 +4,7 @@ import { User } from '../slices/authSlice';
 export interface UpdateUserRequest {
   fullname?: string;
   mobile?: string;
+  address?: string;
   street?: string;
   houseNumber?: string;
   zipCode?: string;

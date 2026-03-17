@@ -163,6 +163,7 @@
       "firstName": "First Name",
       "lastName": "Last Name",
       "mobile": "Mobile",
+      "address": "Address",
       "street": "Street",
       "houseNumber": "House Number",
       "zipCode": "ZIP Code",

@@ -162,6 +162,7 @@
       "fullname": "Vollständiger Name",
       "firstName": "Vorname",
       "lastName": "Nachname",
+      "address": "Adresse",
       "street": "Straße",
       "houseNumber": "Hausnummer",
       "zipCode": "PLZ",
