@@ -16,15 +16,7 @@ function ScanPageContent() {
   const searchParams = useSearchParams();
   const showWelcome = searchParams.get("welcome") === "true";
 
-  useEffect(() => {
-    if (!user) {
-      const isReturningUser = localStorage.getItem("returningUser") === "true";
-      const targetPath = isReturningUser ? "/login" : "/signup";
-      router.push(`${targetPath}?callbackUrl=/scan`);
-    }
-  }, [user, router]);
 
-  if (!user) return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-6 md:py-12">

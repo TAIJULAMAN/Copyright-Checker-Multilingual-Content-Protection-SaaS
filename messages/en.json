@@ -282,6 +282,7 @@
     "uniqueSongs": "Unique Songs",
     "riskLevel": "Risk Level",
     "high": "High",
+    "medium": "Medium",
     "low": "Low",
     "analyzedVideos": "Analyzed Videos",
     "thumbnail": "Thumbnail",
@@ -427,7 +428,9 @@
     "submitting": "Scanning...",
     "processing": "Processing...",
     "error": "Scan failed. Please verify the link and try again.",
-    "example": "Example:"
+    "example": "Example:",
+    "purchaseCta": "Check Account for Risks Now",
+    "purchaseSubtext": "One-time analysis - subject to charge"
   },
   "ScanBenefits": {
     "secureAnalysis": {

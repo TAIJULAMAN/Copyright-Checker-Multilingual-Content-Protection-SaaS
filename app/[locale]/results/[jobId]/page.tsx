@@ -291,11 +291,11 @@ export default function JobDetailsPage() {
                 </Popover>
               </div>
               <div className="text-sm md:text-2xl font-bold capitalize">
-                {summary.riskBreakdown.high > 0 ? (
+                {(summary.riskBreakdown?.high > 0 || (summary.copyrightedCount > 0 && (!summary.riskBreakdown || (summary.riskBreakdown.high === 0 && summary.riskBreakdown.medium === 0)))) ? (
                   <span className="text-red-600 flex items-center justify-center gap-1 md:gap-2">{t('high')} <AlertTriangle className="w-3 h-3 md:w-5 md:h-5" /></span>
-                ) : summary.riskBreakdown.medium > 0 ? (
+                ) : summary.riskBreakdown?.medium > 0 ? (
                   <span className="text-yellow-600 flex items-center justify-center gap-1 md:gap-2">{t('medium')} <AlertTriangle className="w-3 h-3 md:w-5 md:h-5" /></span>
-                ) : summary.riskBreakdown.low > 0 ? (
+                ) : summary.riskBreakdown?.low > 0 ? (
                   <span className="text-green-600 flex items-center justify-center gap-1 md:gap-2">{t('low')} <CheckCircle className="w-3 h-3 md:w-5 md:h-5" /></span>
                 ) : (
                   <span className="text-gray-500 flex items-center justify-center gap-1 md:gap-2">{t('noAudio')} <Shield className="w-3 h-3 md:w-5 md:h-5" /></span>

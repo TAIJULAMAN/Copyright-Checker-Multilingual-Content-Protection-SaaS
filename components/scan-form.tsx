@@ -10,6 +10,10 @@ import { Search, InfoIcon, Instagram, Loader2, Clock } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 import { useCheckProfileMutation, useGetMyJobsQuery, Job } from "@/redux/api/copyrightApi"
+import { useGetMySubscriptionQuery } from "@/redux/api/subscriptionApi"
+import { useSelector } from "react-redux"
+import { selectCurrentUser } from "@/redux/slices/authSlice"
+import { skipToken } from "@reduxjs/toolkit/query"
 import { useTranslations } from "next-intl"
 
 export default function ScanForm() {
@@ -18,10 +22,19 @@ export default function ScanForm() {
   const [error, setError] = useState("")
   const [scanStarted, setScanStarted] = useState(false)
   const router = useRouter()
+  const user = useSelector(selectCurrentUser)
 
-  const { data: jobsData, isLoading: isJobsLoading } = useGetMyJobsQuery(undefined, {
+  const { data: jobsData, isLoading: isJobsLoading } = useGetMyJobsQuery(user ? undefined : skipToken, {
     pollingInterval: 5000, // Poll every 5 seconds if we're on this page
   })
+
+  const { data: subData, isLoading: isSubLoading } = useGetMySubscriptionQuery(user ? undefined : skipToken, {
+    refetchOnMountOrArgChange: true
+  })
+
+  const remainingChecks = subData?.data?.remainingChecks ?? 0;
+  const hasActivePlan = subData?.data?.subscription?.status === 'active' || remainingChecks > 0;
+  const showPaymentPhase = !user || !hasActivePlan;
 
   const [checkProfile, { isLoading: isMutationLoading }] = useCheckProfileMutation()
 
@@ -67,14 +80,16 @@ export default function ScanForm() {
 
   return (
     <div className={`bg-white rounded-3xl shadow-xl shadow-purple-900/5 ring-1 ring-black/5 p-4 md:p-12 mb-12 max-w-4xl mx-auto transition-all duration-300 hover:shadow-2xl hover:shadow-purple-900/10 ${isProcessing ? 'opacity-90' : ''}`}>
-      <div className="mb-6 md:mb-10 text-center">
-        <p className="text-sm md:text-lg text-gray-600 mb-4 md:mb-6 max-w-2xl mx-auto">{t('description')}</p>
+      {!showPaymentPhase && (
+        <div className="mb-6 md:mb-10 text-center">
+          <p className="text-sm md:text-lg text-gray-600 mb-4 md:mb-6 max-w-2xl mx-auto">{t('description')}</p>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 bg-purple-50 border border-purple-100 px-3 py-2 md:px-4 md:py-3 rounded-xl sm:rounded-xl transition-colors hover:bg-purple-100/80 max-w-3xl mx-auto">
-          <span className="text-purple-700 font-medium text-xs md:text-base whitespace-nowrap">{t('example')}</span>
-          <code className="text-purple-600 font-mono text-xs md:text-base break-all">{'https://www.instagram.com/deinbenutzername'}</code>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 bg-purple-50 border border-purple-100 px-3 py-2 md:px-4 md:py-3 rounded-xl sm:rounded-xl transition-colors hover:bg-purple-100/80 max-w-3xl mx-auto">
+            <span className="text-purple-700 font-medium text-xs md:text-base whitespace-nowrap">{t('example')}</span>
+            <code className="text-purple-600 font-mono text-xs md:text-base break-all">{'https://www.instagram.com/deinbenutzername'}</code>
+          </div>
         </div>
-      </div>
+      )}
 
       <form onSubmit={handleScan} className="space-y-4 md:space-y-8 max-w-3xl mx-auto relative">
         {/* Overlay for non-clickable state when processing */}
@@ -115,46 +130,64 @@ export default function ScanForm() {
           </Alert>
         )}
 
-        {/* Input Field */}
-        <div className="relative group">
-          <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-            <Instagram className={`h-6 w-6 transition-colors duration-200 ${isProcessing ? 'text-purple-300' : 'text-gray-400 group-focus-within:text-purple-600'}`} />
+        {/* Input Field or CTA */}
+        {showPaymentPhase ? (
+          <div className="flex flex-col items-center justify-center pt-2 gap-3 pb-4">
+            <Button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                router.push("/pricing");
+              }}
+              className="w-full sm:w-auto min-w-[280px] bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white p-6 md:p-8 rounded-full shadow-lg hover:shadow-xl shadow-purple-500/20 flex flex-col items-center justify-center gap-1 md:gap-2 transition-all transform hover:-translate-y-0.5 mt-4"
+            >
+              <div className="text-lg md:text-xl font-bold">{t('purchaseCta')}</div>
+              <div className="text-xs md:text-sm font-medium bg-white/20 px-4 py-1 rounded-full">{t('purchaseSubtext')}</div>
+            </Button>
           </div>
-          <Input
-            type="url"
-            placeholder={t('placeholder')}
-            value={activeJob ? `https://www.instagram.com/${activeJob.instagramUsername}` : profileLink}
-            onChange={(e) => setProfileLink(e.target.value)}
-            className="w-full pl-14 pr-4 py-3 md:py-7 text-sm md:text-lg rounded-xl border-gray-200 bg-gray-50/50 focus:bg-white focus:ring-4 focus:ring-purple-100 focus:border-purple-500 transition-all duration-200 shadow-sm hover:shadow-md placeholder:text-gray-400 disabled:bg-gray-50 disabled:text-gray-500"
-            disabled={isProcessing || isLoading}
-          />
-        </div>
-
-        {/* Info Box */}
-        {!activeJob && (
-          <div className="bg-blue-50/80 border border-blue-100 rounded-xl p-3 md:p-5 flex gap-3 md:gap-4">
-            <div className="bg-blue-100 rounded-lg p-2 h-fit shrink-0">
-              <InfoIcon className="w-5 h-5 text-blue-600" />
+        ) : (
+          <>
+            <div className="relative group">
+              <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                <Instagram className={`h-6 w-6 transition-colors duration-200 ${isProcessing ? 'text-purple-300' : 'text-gray-400 group-focus-within:text-purple-600'}`} />
+              </div>
+              <Input
+                type="url"
+                placeholder={t('placeholder')}
+                value={activeJob ? `https://www.instagram.com/${activeJob.instagramUsername}` : profileLink}
+                onChange={(e) => setProfileLink(e.target.value)}
+                className="w-full pl-14 pr-4 py-3 md:py-7 text-sm md:text-lg rounded-xl border-gray-200 bg-gray-50/50 focus:bg-white focus:ring-4 focus:ring-purple-100 focus:border-purple-500 transition-all duration-200 shadow-sm hover:shadow-md placeholder:text-gray-400 disabled:bg-gray-50 disabled:text-gray-500"
+                disabled={isProcessing || isLoading}
+              />
             </div>
-            <p className="text-xs md:text-sm text-blue-900 leading-relaxed py-1">{t('info')}</p>
-          </div>
-        )}
 
-        {/* Scan Button */}
-        <div className="flex justify-center pt-2">
-          <Button
-            type="submit"
-            disabled={isProcessing || isLoading || (!profileLink.trim() && !activeJob)}
-            className="w-full sm:w-auto min-w-[240px] bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-3 md:py-7 text-sm md:text-lg font-bold rounded-full shadow-lg hover:shadow-xl shadow-purple-500/20 flex items-center justify-center gap-2.5 transition-all transform hover:-translate-y-0.5 disabled:opacity-70 disabled:hover:translate-y-0 disabled:shadow-none"
-          >
-            {isProcessing ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
-            ) : (
-              <Search className="w-5 h-5" />
+            {/* Info Box */}
+            {!activeJob && (
+              <div className="bg-blue-50/80 border border-blue-100 rounded-xl p-3 md:p-5 flex gap-3 md:gap-4">
+                <div className="bg-blue-100 rounded-lg p-2 h-fit shrink-0">
+                  <InfoIcon className="w-5 h-5 text-blue-600" />
+                </div>
+                <p className="text-xs md:text-sm text-blue-900 leading-relaxed py-1">{t('info')}</p>
+              </div>
             )}
-            {isProcessing ? t('processing') : t('submit')}
-          </Button>
-        </div>
+
+            {/* Scan Button */}
+            <div className="flex justify-center pt-2">
+              <Button
+                type="submit"
+                disabled={isProcessing || isLoading || (!profileLink.trim() && !activeJob)}
+                className="w-full sm:w-auto min-w-[240px] bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-3 md:py-7 text-sm md:text-lg font-bold rounded-full shadow-lg hover:shadow-xl shadow-purple-500/20 flex items-center justify-center gap-2.5 transition-all transform hover:-translate-y-0.5 disabled:opacity-70 disabled:hover:translate-y-0 disabled:shadow-none"
+              >
+                {isProcessing ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <Search className="w-5 h-5" />
+                )}
+                {isProcessing ? t('processing') : t('submit')}
+              </Button>
+            </div>
+          </>
+        )}
       </form>
     </div>
   )
