@@ -31,7 +31,7 @@ export default function Pricing() {
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
             {t('title')}
           </h2>
-          <p className="text-gray-600">{t('subtitle')}</p>
+          {/* <p className="text-gray-600">{t('subtitle')} </p> */}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">

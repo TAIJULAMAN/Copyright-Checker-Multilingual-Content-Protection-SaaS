@@ -34,9 +34,9 @@ export default function PricingClient({ planId }: PricingClientProps) {
       >
         {t('buyNow')}
       </Button>
-      <p className="text-[10px] text-gray-500 text-center mb-6">
+      {/* <p className="text-[10px] text-gray-500 text-center mb-6">
         {t('purchaseSubtext')}
-      </p>
+      </p> */}
     </div>
   );
 }
