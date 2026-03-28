@@ -224,7 +224,7 @@ export default function JobDetailsPage() {
           <Card>
             <CardContent className="p-1.5 md:pt-6 flex flex-col items-center justify-center text-center">
               <div className="text-[10px] md:text-sm text-gray-500 mb-0.5 md:mb-1 leading-tight">{t('totalAnalyzed')}</div>
-              <div className="text-sm md:text-2xl font-bold">{summary.totalAnalyzed}</div>
+              <div className="text-sm md:text-2xl font-bold">{jobDetails.totalVideos}</div>
             </CardContent>
           </Card>
           <Card>

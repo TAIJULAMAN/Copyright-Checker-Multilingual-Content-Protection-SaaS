@@ -7,20 +7,30 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "@/redux/slices/authSlice";
+import { useGetMySubscriptionQuery } from "@/redux/api/subscriptionApi";
+import { skipToken } from "@reduxjs/toolkit/query";
 
 export default function Hero() {
   const t = useTranslations('Hero');
   const router = useRouter();
   const user = useSelector(selectCurrentUser);
   const isLoggedIn = !!user;
+  const { data: subData } = useGetMySubscriptionQuery(isLoggedIn ? undefined : skipToken);
+
+  const remainingChecks = subData?.data?.remainingChecks ?? 0;
+  const hasActivePlan = subData?.data?.subscription?.status === 'active' || remainingChecks > 0;
 
   const handleCtaClick = () => {
     if (!isLoggedIn) {
       const isReturningUser = localStorage.getItem("returningUser") === "true";
       const targetPath = isReturningUser ? "/login" : "/signup";
-      router.push(`${targetPath}?callbackUrl=/scan`);
+      router.push(`${targetPath}?callbackUrl=/pricing`);
     } else {
-      router.push("/scan");
+      if (!hasActivePlan) {
+        router.push("/pricing");
+      } else {
+        router.push("/scan");
+      }
     }
   };
 

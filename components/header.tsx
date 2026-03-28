@@ -29,6 +29,8 @@ import Cookies from "js-cookie";
 import { Link, useRouter, usePathname } from "@/i18n/routing";
 import { useTranslations, useLocale } from "next-intl";
 import { getImageUrl } from "@/redux/api/config";
+import { useGetMySubscriptionQuery } from "@/redux/api/subscriptionApi";
+import { skipToken } from "@reduxjs/toolkit/query";
 
 export default function Header() {
   const router = useRouter();
@@ -42,6 +44,11 @@ export default function Header() {
   const user = useSelector(selectCurrentUser);
   const isLoggedIn = !!user;
   const { data: invoicesData } = useGetInvoicesQuery(undefined, { skip: !isLoggedIn });
+  const { data: subData } = useGetMySubscriptionQuery(isLoggedIn ? undefined : skipToken);
+  
+  const remainingChecks = subData?.data?.remainingChecks ?? 0;
+  const hasActivePlan = subData?.data?.subscription?.status === 'active' || remainingChecks > 0;
+  
   const hasInvoices = (invoicesData?.data?.invoices?.length || 0) > 0;
   const displayName = user?.fullname || user?.name || user?.email?.split('@')[0] || "User";
 
@@ -170,9 +177,13 @@ export default function Header() {
                   if (!isLoggedIn) {
                     const isReturningUser = localStorage.getItem("returningUser") === "true";
                     const targetPath = isReturningUser ? "/login" : "/signup";
-                    router.push(`${targetPath}?callbackUrl=/scan`);
+                    router.push(`${targetPath}?callbackUrl=/pricing`);
                   } else {
-                    router.push("/scan");
+                    if (!hasActivePlan) {
+                      router.push("/pricing");
+                    } else {
+                      router.push("/scan");
+                    }
                   }
                 }}
                 className="bg-purple-600 hover:bg-purple-700 text-white rounded-full px-4 xl:px-6 font-semibold whitespace-nowrap hidden lg:inline-flex"
@@ -376,9 +387,13 @@ export default function Header() {
                           if (!isLoggedIn) {
                             const isReturningUser = localStorage.getItem("returningUser") === "true";
                             const targetPath = isReturningUser ? "/login" : "/signup";
-                            router.push(`${targetPath}?callbackUrl=/scan`);
+                            router.push(`${targetPath}?callbackUrl=/pricing`);
                           } else {
-                            router.push("/scan");
+                            if (!hasActivePlan) {
+                              router.push("/pricing");
+                            } else {
+                              router.push("/scan");
+                            }
                           }
                         }}
                       >

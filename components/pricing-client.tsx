@@ -19,18 +19,24 @@ export default function PricingClient({ planId }: PricingClientProps) {
     if (!user) {
       const isReturningUser = localStorage.getItem("returningUser") === "true";
       const targetPath = isReturningUser ? "/login" : "/signup";
-      router.push(`${targetPath}?callbackUrl=/checkout/${planId}`);
+      const callbackUrl = encodeURIComponent(`/scan?planId=${planId}`);
+      router.push(`${targetPath}?callbackUrl=${callbackUrl}`);
       return;
     }
-    router.push(`/checkout/${planId}`);
+    router.push(`/scan?planId=${planId}`);
   };
 
   return (
-    <Button
-      onClick={handleBuyNow}
-      className="w-full mb-6 bg-purple-600 hover:bg-purple-700 text-white rounded-full"
-    >
-      {t('buyNow')}
-    </Button>
+    <div className="flex flex-col items-center">
+      <Button
+        onClick={handleBuyNow}
+        className="w-full mb-2 bg-purple-600 hover:bg-purple-700 text-white rounded-full"
+      >
+        {t('buyNow')}
+      </Button>
+      <p className="text-[10px] text-gray-500 text-center mb-6">
+        {t('purchaseSubtext')}
+      </p>
+    </div>
   );
 }

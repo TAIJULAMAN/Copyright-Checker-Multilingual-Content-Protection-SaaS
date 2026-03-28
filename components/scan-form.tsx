@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { useRouter } from "@/i18n/routing"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,11 +10,12 @@ import { Search, InfoIcon, Instagram, Loader2, Clock } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 import { useCheckProfileMutation, useGetMyJobsQuery, Job } from "@/redux/api/copyrightApi"
-import { useGetMySubscriptionQuery } from "@/redux/api/subscriptionApi"
+import { useGetMySubscriptionQuery, useGetSubscriptionPlansQuery, useCreatePayPalOrderMutation } from "@/redux/api/subscriptionApi"
 import { useSelector } from "react-redux"
 import { selectCurrentUser } from "@/redux/slices/authSlice"
 import { skipToken } from "@reduxjs/toolkit/query"
 import { useTranslations } from "next-intl"
+import { useSearchParams } from "next/navigation"
 
 export default function ScanForm() {
   const t = useTranslations('ScanForm');
@@ -32,11 +33,26 @@ export default function ScanForm() {
     refetchOnMountOrArgChange: true
   })
 
+  const { data: plansData } = useGetSubscriptionPlansQuery()
+  const [createPayPalOrder, { isLoading: isCreatingOrder }] = useCreatePayPalOrderMutation()
+
+  const searchParams = useSearchParams()
+  const planId = searchParams.get("planId")
+
   const remainingChecks = subData?.data?.remainingChecks ?? 0;
   const hasActivePlan = subData?.data?.subscription?.status === 'active' || remainingChecks > 0;
-  const showPaymentPhase = !user || !hasActivePlan;
+  const showPaymentPhase = (!user || !hasActivePlan) && !planId;
 
   const [checkProfile, { isLoading: isMutationLoading }] = useCheckProfileMutation()
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedLink = sessionStorage.getItem("instagramProfileLink")
+      if (savedLink && !profileLink) {
+        setProfileLink(savedLink)
+      }
+    }
+  }, [])
 
   const activeJob = useMemo(() => {
     return jobsData?.data?.jobs.find((job: Job) =>
@@ -54,6 +70,40 @@ export default function ScanForm() {
 
     try {
       sessionStorage.setItem("instagramProfileLink", profileLink)
+
+      if (planId && !hasActivePlan) {
+        // Redirection to PayPal logic directly from Scan Page
+        const selectedPlan = plansData?.data?.plans.find(p => p._id === planId);
+        if (!selectedPlan) {
+          setError("Plan not found");
+          return;
+        }
+
+        const grossAmount = selectedPlan.price;
+        const netAmount = Math.round((grossAmount / 1.19) * 100) / 100;
+        const taxAmount = Math.round((grossAmount - netAmount) * 100) / 100;
+
+        const payload = {
+          planId,
+          paypalInfo: {
+            description: "Copyrightchecker.de - Instagram Account Check (Einmalzahlung)",
+            currency: "EUR",
+            breakdown: {
+              item_total: netAmount,
+              tax_total: taxAmount,
+              total: grossAmount
+            }
+          }
+        };
+
+        const result = await createPayPalOrder(payload).unwrap();
+        if (result.success && result.data.approveUrl) {
+          window.location.href = result.data.approveUrl;
+        } else {
+          setError(result.message || "Failed to initiate payment");
+        }
+        return;
+      }
 
       const result = await checkProfile({
         profileUrl: profileLink
@@ -139,11 +189,13 @@ export default function ScanForm() {
                 e.preventDefault();
                 router.push("/pricing");
               }}
-              className="w-full sm:w-auto min-w-[280px] bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white p-6 md:p-8 rounded-full shadow-lg hover:shadow-xl shadow-purple-500/20 flex flex-col items-center justify-center gap-1 md:gap-2 transition-all transform hover:-translate-y-0.5 mt-4"
+              className="w-full sm:w-auto min-w-[280px] bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white p-6 md:p-8 rounded-full shadow-lg hover:shadow-xl shadow-purple-500/20 flex flex-col items-center justify-center gap-1 transition-all transform hover:-translate-y-0.5 mt-4"
             >
               <div className="text-lg md:text-xl font-bold">{t('purchaseCta')}</div>
-              <div className="text-xs md:text-sm font-medium bg-white/20 px-4 py-1 rounded-full">{t('purchaseSubtext')}</div>
             </Button>
+            <p className="text-xs md:text-sm text-gray-500 font-medium">
+              {t('purchaseSubtext')}
+            </p>
           </div>
         ) : (
           <>
@@ -157,7 +209,7 @@ export default function ScanForm() {
                 value={activeJob ? `https://www.instagram.com/${activeJob.instagramUsername}` : profileLink}
                 onChange={(e) => setProfileLink(e.target.value)}
                 className="w-full pl-14 pr-4 py-3 md:py-7 text-sm md:text-lg rounded-xl border-gray-200 bg-gray-50/50 focus:bg-white focus:ring-4 focus:ring-purple-100 focus:border-purple-500 transition-all duration-200 shadow-sm hover:shadow-md placeholder:text-gray-400 disabled:bg-gray-50 disabled:text-gray-500"
-                disabled={isProcessing || isLoading}
+                disabled={isProcessing || isLoading || isCreatingOrder}
               />
             </div>
 
@@ -172,19 +224,24 @@ export default function ScanForm() {
             )}
 
             {/* Scan Button */}
-            <div className="flex justify-center pt-2">
+            <div className="flex flex-col items-center pt-2">
               <Button
                 type="submit"
-                disabled={isProcessing || isLoading || (!profileLink.trim() && !activeJob)}
-                className="w-full sm:w-auto min-w-[240px] bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-3 md:py-7 text-sm md:text-lg font-bold rounded-full shadow-lg hover:shadow-xl shadow-purple-500/20 flex items-center justify-center gap-2.5 transition-all transform hover:-translate-y-0.5 disabled:opacity-70 disabled:hover:translate-y-0 disabled:shadow-none"
+                disabled={isProcessing || isLoading || isCreatingOrder || (!profileLink.trim() && !activeJob)}
+                className="w-full sm:w-auto min-w-[240px] bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-3 md:py-7 text-sm md:text-lg font-bold rounded-full shadow-lg hover:shadow-xl shadow-purple-500/20 flex items-center justify-center gap-2.5 transition-all transform hover:-translate-y-0.5 disabled:opacity-70 disabled:hover:translate-y-0 disabled:shadow-none mb-3"
               >
-                {isProcessing ? (
+                {isProcessing || isCreatingOrder ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
                   <Search className="w-5 h-5" />
                 )}
-                {isProcessing ? t('processing') : t('submit')}
+                {isProcessing || isCreatingOrder ? t('processing') : t('submit')}
               </Button>
+              {planId && !hasActivePlan && (
+                <p className="text-xs md:text-sm text-gray-500 font-medium">
+                  {t('purchaseSubtext')}
+                </p>
+              )}
             </div>
           </>
         )}
