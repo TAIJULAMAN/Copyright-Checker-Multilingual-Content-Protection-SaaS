@@ -19,11 +19,11 @@ export default function PricingClient({ planId }: PricingClientProps) {
     if (!user) {
       const isReturningUser = localStorage.getItem("returningUser") === "true";
       const targetPath = isReturningUser ? "/login" : "/signup";
-      const callbackUrl = encodeURIComponent(`/scan?planId=${planId}`);
+      const callbackUrl = encodeURIComponent(`/checkout/${planId}`);
       router.push(`${targetPath}?callbackUrl=${callbackUrl}`);
       return;
     }
-    router.push(`/scan?planId=${planId}`);
+    router.push(`/checkout/${planId}`);
   };
 
   return (

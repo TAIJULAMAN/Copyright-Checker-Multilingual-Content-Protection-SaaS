@@ -11,12 +11,22 @@ import { useGetSubscriptionPlansQuery, useCreatePayPalOrderMutation } from "@/re
 import { toast } from "sonner";
 import PageHeader from "@/components/page-header";
 import { useParams } from "next/navigation";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "@/redux/slices/authSlice";
 
 export default function CheckoutPage() {
   const t = useTranslations('Pricing'); // Reusing pricing translations or add new ones
   const router = useRouter();
   const params = useParams();
   const planId = params?.planId as string;
+  const user = useSelector(selectCurrentUser);
+
+  useEffect(() => {
+    if (!user) {
+      const callbackUrl = encodeURIComponent(`/checkout/${planId}`);
+      router.push(`/signup?callbackUrl=${callbackUrl}`);
+    }
+  }, [user, planId, router]);
 
   const [couponCode, setCouponCode] = useState("");
   const { data: plansData, isLoading: isPlansLoading } = useGetSubscriptionPlansQuery();

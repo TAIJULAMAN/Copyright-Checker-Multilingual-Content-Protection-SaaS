@@ -128,7 +128,10 @@ function LoginForm() {
 
           <p className="text-center text-sm text-gray-600">
             {t('noAccount')}{" "}
-            <Link href="/signup" className="text-purple-600 hover:text-purple-700 font-medium">
+            <Link 
+              href={`/signup${callbackUrl !== '/scan' ? `?callbackUrl=${callbackUrl}` : ''}`} 
+              className="text-purple-600 hover:text-purple-700 font-medium"
+            >
               {t('signUp')}
             </Link>
           </p>

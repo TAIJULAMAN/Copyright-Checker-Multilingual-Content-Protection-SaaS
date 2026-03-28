@@ -41,18 +41,22 @@ export default function ScanForm() {
 
   const remainingChecks = subData?.data?.remainingChecks ?? 0;
   const hasActivePlan = subData?.data?.subscription?.status === 'active' || remainingChecks > 0;
-  const showPaymentPhase = (!user || !hasActivePlan) && !planId;
+  const showPaymentPhase = (!user || !hasActivePlan);
 
   const [checkProfile, { isLoading: isMutationLoading }] = useCheckProfileMutation()
 
   useEffect(() => {
+    if (!isSubLoading && planId && !hasActivePlan) {
+      router.push(`/checkout/${planId}`);
+    }
+    
     if (typeof window !== 'undefined') {
       const savedLink = sessionStorage.getItem("instagramProfileLink")
       if (savedLink && !profileLink) {
         setProfileLink(savedLink)
       }
     }
-  }, [])
+  }, [planId, hasActivePlan, isSubLoading, router])
 
   const activeJob = useMemo(() => {
     return jobsData?.data?.jobs.find((job: Job) =>
@@ -72,36 +76,7 @@ export default function ScanForm() {
       sessionStorage.setItem("instagramProfileLink", profileLink)
 
       if (planId && !hasActivePlan) {
-        // Redirection to PayPal logic directly from Scan Page
-        const selectedPlan = plansData?.data?.plans.find(p => p._id === planId);
-        if (!selectedPlan) {
-          setError("Plan not found");
-          return;
-        }
-
-        const grossAmount = selectedPlan.price;
-        const netAmount = Math.round((grossAmount / 1.19) * 100) / 100;
-        const taxAmount = Math.round((grossAmount - netAmount) * 100) / 100;
-
-        const payload = {
-          planId,
-          paypalInfo: {
-            description: "Copyrightchecker.de - Instagram Account Check (Einmalzahlung)",
-            currency: "EUR",
-            breakdown: {
-              item_total: netAmount,
-              tax_total: taxAmount,
-              total: grossAmount
-            }
-          }
-        };
-
-        const result = await createPayPalOrder(payload).unwrap();
-        if (result.success && result.data.approveUrl) {
-          window.location.href = result.data.approveUrl;
-        } else {
-          setError(result.message || "Failed to initiate payment");
-        }
+        router.push(`/checkout/${planId}`);
         return;
       }
 
