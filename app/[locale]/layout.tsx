@@ -149,44 +149,12 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
-        {/* 1. Cookiebot CMP - Must be a raw <script> in <head> to load FIRST.
-            Next.js <Script> with afterInteractive injects into <body>, not <head>,
-            so Cookiebot can't block other scripts in time. */}
+        {/* 1. Google Consent Mode v2 Default - Must be first to set default state */}
         <script
-          id="Cookiebot"
-          src="https://consent.cookiebot.com/uc.js"
-          data-cbid="05ffcbf8-d6c1-49ba-8e6c-0e25caeb7e22"
-          data-blockingmode="auto"
-          type="text/javascript"
-        ></script>
-
-        {/* Google Tag Manager */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-5SRN3D33');`
-          }}
-        />
-        {/* End Google Tag Manager */}
-
-        {/* 2. Google Analytics */}
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-YG846MDVOJ"
-        ></script>
-        <script
-          id="google-analytics-init"
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-YG846MDVOJ');
-
-              // Consent Mode v2 Default
               gtag('consent', 'default', {
                 'ad_storage': 'denied',
                 'ad_user_data': 'denied',
@@ -201,9 +169,57 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           }}
         />
 
-        {/* 3. Meta Pixel */}
+        {/* 2. Cookiebot CMP - Must be a raw <script> in <head> to load FIRST.
+            Next.js <Script> with afterInteractive injects into <body>, not <head>,
+            so Cookiebot can't block other scripts in time. */}
+        <script
+          id="Cookiebot"
+          src="https://consent.cookiebot.com/uc.js"
+          data-cbid="05ffcbf8-d6c1-49ba-8e6c-0e25caeb7e22"
+          data-blockingmode="auto"
+          type="text/javascript"
+          async
+        ></script>
+
+        {/* 3. Google Tag Manager - Modified for Cookiebot */}
+        <script
+          type="text/plain"
+          data-cookieconsent="statistics,marketing"
+          dangerouslySetInnerHTML={{
+            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5SRN3D33');`
+          }}
+        />
+
+        {/* 4. Google Analytics - Modified for Cookiebot */}
+        <script
+          type="text/plain"
+          data-cookieconsent="statistics"
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-YG846MDVOJ"
+        ></script>
+        <script
+          id="google-analytics-init"
+          type="text/plain"
+          data-cookieconsent="statistics"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-YG846MDVOJ');
+            `,
+          }}
+        />
+
+        {/* 5. Meta Pixel - Modified for Cookiebot */}
         <script
           id="facebook-pixel-init"
+          type="text/plain"
+          data-cookieconsent="marketing"
           dangerouslySetInnerHTML={{
             __html: `
               !function(f,b,e,v,n,t,s)
