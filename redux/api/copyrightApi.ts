@@ -117,9 +117,11 @@ export const copyrightApi = baseApi.injectEndpoints({
         method: 'POST',
         body: data,
       }),
+      invalidatesTags: ['Jobs'],
     }),
     getMyJobs: builder.query<MyJobsResponse, void>({
       query: () => '/copyright/my-jobs',
+      providesTags: ['Jobs'],
     }),
     getJobDetails: builder.query<JobDetailsResponse, { jobId: string; page: number; limit: number }>({
       query: ({ jobId, page, limit }) => `/copyright/my-jobs/${jobId}?page=${page}&limit=${limit}`,
