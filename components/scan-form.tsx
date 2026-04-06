@@ -25,9 +25,7 @@ export default function ScanForm() {
   const router = useRouter()
   const user = useSelector(selectCurrentUser)
 
-  const { data: jobsData, isLoading: isJobsLoading } = useGetMyJobsQuery(user ? undefined : skipToken, {
-    pollingInterval: 5000, // Poll every 5 seconds if we're on this page
-  })
+
 
   const { data: subData, isLoading: isSubLoading } = useGetMySubscriptionQuery(user ? undefined : skipToken, {
     refetchOnMountOrArgChange: true
@@ -58,11 +56,20 @@ export default function ScanForm() {
     }
   }, [planId, hasActivePlan, isSubLoading, router])
 
+  const { data: jobsData, isLoading: isJobsLoading } = useGetMyJobsQuery(user ? undefined : skipToken)
+  const activeJobStatus = jobsData?.data?.jobs.some((job: Job) => job.status === 'pending' || job.status === 'processing')
+
+  const { data: polledJobsData } = useGetMyJobsQuery(user ? undefined : skipToken, {
+    pollingInterval: activeJobStatus ? 5000 : 0,
+  })
+
+  const currentJobs = polledJobsData?.data?.jobs || jobsData?.data?.jobs || []
+
   const activeJob = useMemo(() => {
-    return jobsData?.data?.jobs.find((job: Job) =>
+    return currentJobs.find((job: Job) =>
       job.status === 'pending' || job.status === 'processing'
     )
-  }, [jobsData])
+  }, [currentJobs])
 
   const isProcessing = isMutationLoading || !!activeJob
   const isLoading = isJobsLoading
@@ -89,7 +96,7 @@ export default function ScanForm() {
         // Keep the alert visible for a bit or until redirect
         setTimeout(() => {
           router.push("/results")
-        }, 1500)
+        }, 500)
       }
     } catch (err: any) {
       console.error("Scan failed:", err)
