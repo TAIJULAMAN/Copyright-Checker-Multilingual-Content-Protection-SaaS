@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Download, Shield, AlertTriangle, CheckCircle, ShieldCheck } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -42,12 +43,19 @@ export default function ResultsPage() {
       console.error('Error downloading report:', error);
     }
   };
-  const { data, isLoading } = useGetMyJobsQuery(undefined, { pollingInterval: 30000 });
-  const jobs = data?.data?.jobs || [];
 
-  // Calculate total statistics across all jobs
-  const totalSafeReels = jobs.reduce((acc: number, job: Job) => acc + (job.totalVideos - job.copyrightMatches), 0);
-  const totalFlaggedReels = jobs.reduce((acc: number, job: Job) => acc + job.copyrightMatches, 0);
+  const { data, isLoading } = useGetMyJobsQuery(undefined);
+  const jobs = data?.data?.jobs || [];
+  const hasActiveJob = jobs.some((job: Job) => job.status === 'pending' || job.status === 'processing');
+
+  const { data: polledData } = useGetMyJobsQuery(undefined, {
+    pollingInterval: hasActiveJob ? 5000 : 0,
+  });
+
+  // Use the freshest data from either the initial load or the poll
+  const displayJobs = polledData?.data?.jobs || jobs;
+  const totalSafeReels = displayJobs.reduce((acc: number, job: Job) => acc + (job.totalVideos - job.copyrightMatches), 0);
+  const totalFlaggedReels = displayJobs.reduce((acc: number, job: Job) => acc + job.copyrightMatches, 0);
 
   // Helper to determine risk level for a job
   const getJobRiskLevel = (job: Job) => {
@@ -200,7 +208,7 @@ export default function ResultsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {jobs.length === 0 ? (
+                  {displayJobs.length === 0 ? (
                     <tr>
                       <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
                         <div className="flex flex-col items-center gap-3">
@@ -218,7 +226,7 @@ export default function ResultsPage() {
                       </td>
                     </tr>
                   ) : (
-                    jobs.map((job: Job) => {
+                    displayJobs.map((job: Job) => {
                       const riskLevel = getJobRiskLevel(job);
                       const styles = getRiskStyles(riskLevel);
 
@@ -285,7 +293,7 @@ export default function ResultsPage() {
                                   : "bg-green-600 hover:bg-green-700 text-white"
                                   }`}
                                 onClick={() => handleDownloadReport(job.jobId)}
-                                disabled={isDownloading}
+                                disabled={isDownloading || (job.status !== "completed" && job.status !== "failed")}
                               >
                                 <Download className="w-4 h-4" />
                               </Button>
@@ -305,7 +313,7 @@ export default function ResultsPage() {
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-xl font-bold text-gray-900">{t('history')}</h2>
             </div>
-            {jobs.length === 0 ? (
+            {displayJobs.length === 0 ? (
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
                 <div className="flex flex-col items-center gap-3">
                   <Shield className="w-12 h-12 text-gray-300" />
@@ -318,7 +326,7 @@ export default function ResultsPage() {
                 </div>
               </div>
             ) : (
-              jobs.map((job: Job) => (
+              displayJobs.map((job: Job) => (
                 <div
                   key={job.jobId}
                   onClick={() => {
@@ -387,7 +395,7 @@ export default function ResultsPage() {
                         e.stopPropagation();
                         handleDownloadReport(job.jobId);
                       }}
-                      disabled={isDownloading}
+                      disabled={isDownloading || (job.status !== "completed" && job.status !== "failed")}
                     >
                       <Download className="w-4 h-4" />
                     </Button>
@@ -481,7 +489,7 @@ export default function ResultsPage() {
       </div>
 
       {/* monthly plans show if any scan history is present */}
-      {jobs.length > 0 && (
+      {displayJobs.length > 0 && (
         /* AVAILABLE monthly PLANS */
         <div className="border-t border-gray-200 p-6 container mx-auto">
           <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">
