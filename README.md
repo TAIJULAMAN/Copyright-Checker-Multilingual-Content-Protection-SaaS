@@ -78,19 +78,19 @@
 
 <a id="interface-preview"></a>
 
-## 🖼️ Interface Preview
+## Interface Preview
 
 Experience automated Instagram copyright auditing, waveform analysis, and multilingual localization engineered with Next.js 16, Tailwind CSS 4, Radix UI, and next-intl.
 
-|                                  **Instagram Reels Scanner & Profile Analyzer**                                  |                                     **Audio Waveform & Copyright Match Breakdown**                                     |
-| :--------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------: |
-| <img src="./public/preview/reels-scanner.jpg" alt="Instagram Reels Scanner Interface" width="480" />              | <img src="./public/preview/waveform-risk.jpg" alt="Audio Waveform Risk Breakdown" width="480" />                       |
-|           _Instant profile URL input, batch extraction & real-time audio analysis progress_                      |                  _Granular acoustic inspection, matched track metadata & timestamped risk flags_                     |
+|                            **Instagram Reels Scanner & Profile Analyzer**                            |                          **Audio Waveform & Copyright Match Breakdown**                          |
+| :--------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------: |
+| <img src="./public/preview/reels-scanner.jpg" alt="Instagram Reels Scanner Interface" width="480" /> | <img src="./public/preview/waveform-risk.jpg" alt="Audio Waveform Risk Breakdown" width="480" /> |
+|          _Instant profile URL input, batch extraction & real-time audio analysis progress_           |         _Granular acoustic inspection, matched track metadata & timestamped risk flags_          |
 
-|                                  **Account Audit History & Risk Analytics**                                      |                                       **Subscription Plans & VAT Invoicing**                                           |
-| :--------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------: |
-| <img src="./public/preview/audit-dashboard.jpg" alt="Audit History & Risk Analytics" width="480" />              | <img src="./public/preview/pricing-invoicing.jpg" alt="Subscription Plans & PayPal Checkout" width="480" />            |
-|                _Executive creator dashboard, risk score distribution & downloadable PDF audit logs_              |             _Transparent credit tiers, PayPal checkout, coupon validation & 19% MwSt. invoicing_                       |
+|                             **Account Audit History & Risk Analytics**                              |                                   **Subscription Plans & VAT Invoicing**                                    |
+| :-------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------: |
+| <img src="./public/preview/audit-dashboard.jpg" alt="Audit History & Risk Analytics" width="480" /> | <img src="./public/preview/pricing-invoicing.jpg" alt="Subscription Plans & PayPal Checkout" width="480" /> |
+|        _Executive creator dashboard, risk score distribution & downloadable PDF audit logs_         |            _Transparent credit tiers, PayPal checkout, coupon validation & 19% MwSt. invoicing_             |
 
 ---
 
