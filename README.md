@@ -82,15 +82,15 @@
 
 Experience automated Instagram copyright auditing, waveform analysis, and multilingual localization engineered with Next.js 16, Tailwind CSS 4, Radix UI, and next-intl.
 
-|                         **Automated Audio & Reel Scanner**                          |                             **Detailed Audio Match Breakdown**                              |
-| :---------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------: |
-| <img src="./public/heroupdateimg.png" alt="Reels Scanning Interface" width="480" /> | <img src="./public/imagepart.png" alt="Copyright Detection Results Overview" width="480" /> |
-|               _Instant profile URL input with non-invasive scanning_                |                   _Risk evaluation, matched song data & timestamp alerts_                   |
+|                         **Automated Audio & Reel Scanner**                          |                             **Detailed Audio Match Breakdown**                             |
+| :---------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------: |
+| <img src="./public/heroupdateimg.png" alt="Reels Scanning Interface" width="480" /> | <img src="./public/heroimg.jpeg" alt="Copyright Detection Results Overview" width="480" /> |
+|               _Instant profile URL input with non-invasive scanning_                |                  _Risk evaluation, matched song data & timestamp alerts_                   |
 
-|                         **Secure PayPal Integration**                          |                         **Verified Creator Ratings**                          |
-| :----------------------------------------------------------------------------: | :---------------------------------------------------------------------------: |
-| <img src="./public/b1.png" alt="Credit Tiers & PayPal Checkout" width="480" /> | <img src="./public/googlerating.png" alt="Creator Trust Score" width="480" /> |
-|                _One-time scans & tiered subscription packages_                 |              _Trusted by influencers, talent managers & brands_               |
+|                         **Secure PayPal Integration**                          |                       **Verified Creator Ratings**                        |
+| :----------------------------------------------------------------------------: | :-----------------------------------------------------------------------: |
+| <img src="./public/b1.png" alt="Credit Tiers & PayPal Checkout" width="480" /> | <img src="./public/og-image.png" alt="Creator Trust Score" width="480" /> |
+|                _One-time scans & tiered subscription packages_                 |            _Trusted by influencers, talent managers & brands_             |
 
 ---
 
