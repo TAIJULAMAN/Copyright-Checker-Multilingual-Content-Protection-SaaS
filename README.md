@@ -295,7 +295,7 @@ CopyrightChecker is architected and maintained by specialized full-stack enginee
 
 - **Md Shah Aman Patwary** — _Lead Full-Stack Software Engineer & Maintainer_
   - 🌐 GitHub: [@TAIJULAMAN](https://github.com/TAIJULAMAN)
-  - 📧 Email: [taijulaman8@gmail.com](mailto:taijulaman8@gmail.com)
+  - 📧 Email: [mdshahamanpatwary@gmail.com](mailto:mdshahamanpatwary@gmail.com)
 
 - **Md. Parves Mosarof** — _Full-Stack Software Engineer & Contributor_
   - 🌐 GitHub: [@parvesmosarof35](https://github.com/parvesmosarof35)
