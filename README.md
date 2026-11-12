@@ -2,7 +2,7 @@
 
 <!-- Hero Banner & Header Logo -->
 <a href="https://github.com/TAIJULAMAN/copywright-music-detect-website">
-  <img src="./public/logo.png" alt="CopyrightChecker Logo" width="240" />
+  <img src="./public/hero.png" alt="CopyrightChecker Logo" width="240" />
 </a>
 
 <br />
@@ -82,15 +82,15 @@
 
 Experience automated Instagram copyright auditing, waveform analysis, and multilingual localization engineered with Next.js 16, Tailwind CSS 4, Radix UI, and next-intl.
 
-|                         **Automated Audio & Reel Scanner**                         |                            **Detailed Audio Match Breakdown**                             |
-| :--------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------: |
+|                         **Automated Audio & Reel Scanner**                          |                             **Detailed Audio Match Breakdown**                              |
+| :---------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------: |
 | <img src="./public/heroupdateimg.png" alt="Reels Scanning Interface" width="480" /> | <img src="./public/imagepart.png" alt="Copyright Detection Results Overview" width="480" /> |
-|              _Instant profile URL input with non-invasive scanning_                |                  _Risk evaluation, matched song data & timestamp alerts_                  |
+|               _Instant profile URL input with non-invasive scanning_                |                   _Risk evaluation, matched song data & timestamp alerts_                   |
 
-|                          **Secure PayPal Integration**                             |                            **Verified Creator Ratings**                                   |
-| :--------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------: |
-|   <img src="./public/b1.png" alt="Credit Tiers & PayPal Checkout" width="480" />   |       <img src="./public/googlerating.png" alt="Creator Trust Score" width="480" />       |
-|                 _One-time scans & tiered subscription packages_                    |                  _Trusted by influencers, talent managers & brands_                      |
+|                         **Secure PayPal Integration**                          |                         **Verified Creator Ratings**                          |
+| :----------------------------------------------------------------------------: | :---------------------------------------------------------------------------: |
+| <img src="./public/b1.png" alt="Credit Tiers & PayPal Checkout" width="480" /> | <img src="./public/googlerating.png" alt="Creator Trust Score" width="480" /> |
+|                _One-time scans & tiered subscription packages_                 |              _Trusted by influencers, talent managers & brands_               |
 
 ---
 
@@ -202,7 +202,7 @@ CopyrightChecker is built upon Next.js 16 App Router, `next-intl` localization m
 | :----------------------------- | :---------------: | :-------------: | :---------------: |
 | **Browse Landing, Blog & FAQ** |    Full Access    |   Full Access   |    Full Access    |
 | **Switch Language (EN / DE)**  |    Full Access    |   Full Access   |    Full Access    |
-| **Submit Profile for Scan**    |  Single Reel Test | Quota Dependent | Unlimited / Tier  |
+| **Submit Profile for Scan**    | Single Reel Test  | Quota Dependent | Unlimited / Tier  |
 | **View Summary Results**       |    Full Access    |   Full Access   |    Full Access    |
 | **Detailed Waveform & Songs**  |   Requires Auth   |   Full Access   |    Full Access    |
 | **Download PDF Audit Reports** |        ❌         |    Available    |    Full Access    |
