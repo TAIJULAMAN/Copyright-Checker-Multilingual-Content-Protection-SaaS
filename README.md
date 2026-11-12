@@ -78,19 +78,19 @@
 
 <a id="interface-preview"></a>
 
-## Interface Preview
+## 🖼️ Interface Preview
 
 Experience automated Instagram copyright auditing, waveform analysis, and multilingual localization engineered with Next.js 16, Tailwind CSS 4, Radix UI, and next-intl.
 
-|                         **Automated Audio & Reel Scanner**                          |                             **Detailed Audio Match Breakdown**                             |
-| :---------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------: |
-| <img src="./public/heroupdateimg.png" alt="Reels Scanning Interface" width="480" /> | <img src="./public/heroimg.jpeg" alt="Copyright Detection Results Overview" width="480" /> |
-|               _Instant profile URL input with non-invasive scanning_                |                  _Risk evaluation, matched song data & timestamp alerts_                   |
+|                                  **Instagram Reels Scanner & Profile Analyzer**                                  |                                     **Audio Waveform & Copyright Match Breakdown**                                     |
+| :--------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------: |
+| <img src="./public/preview/reels-scanner.jpg" alt="Instagram Reels Scanner Interface" width="480" />              | <img src="./public/preview/waveform-risk.jpg" alt="Audio Waveform Risk Breakdown" width="480" />                       |
+|           _Instant profile URL input, batch extraction & real-time audio analysis progress_                      |                  _Granular acoustic inspection, matched track metadata & timestamped risk flags_                     |
 
-|                         **Secure PayPal Integration**                          |                       **Verified Creator Ratings**                        |
-| :----------------------------------------------------------------------------: | :-----------------------------------------------------------------------: |
-| <img src="./public/b1.png" alt="Credit Tiers & PayPal Checkout" width="480" /> | <img src="./public/og-image.png" alt="Creator Trust Score" width="480" /> |
-|                _One-time scans & tiered subscription packages_                 |            _Trusted by influencers, talent managers & brands_             |
+|                                  **Account Audit History & Risk Analytics**                                      |                                       **Subscription Plans & VAT Invoicing**                                           |
+| :--------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------: |
+| <img src="./public/preview/audit-dashboard.jpg" alt="Audit History & Risk Analytics" width="480" />              | <img src="./public/preview/pricing-invoicing.jpg" alt="Subscription Plans & PayPal Checkout" width="480" />            |
+|                _Executive creator dashboard, risk score distribution & downloadable PDF audit logs_              |             _Transparent credit tiers, PayPal checkout, coupon validation & 19% MwSt. invoicing_                       |
 
 ---
 
@@ -259,6 +259,7 @@ copywright-music-detect-website/
 │   ├── en.json                         # English translation strings
 │   └── de.json                         # German translation strings (inkl. 19% MwSt.)
 ├── public/                             # Public static assets (logos, illustrations, payment badges)
+│   └── preview/                        # High-resolution UI mockup previews (Scanner, Waveform, Dashboard)
 ├── redux/                              # Global state management with Redux Toolkit
 │   ├── api/                            # RTK Query API slices
 │   │   ├── aboutApi.ts                 # About page dynamic content endpoint
