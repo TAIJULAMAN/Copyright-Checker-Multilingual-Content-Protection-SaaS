@@ -53,7 +53,7 @@
 
 ---
 
-## 📑 Table of Contents
+## Table of Contents
 
 - [ Title & Value Proposition](#overview)
 - [ Tech Stack Badges](#tech-stack)
@@ -78,7 +78,7 @@
 
 <a id="interface-preview"></a>
 
-## 🖼️ Interface Preview
+## Interface Preview
 
 Experience automated Instagram copyright auditing, waveform analysis, and multilingual localization engineered with Next.js 16, Tailwind CSS 4, Radix UI, and next-intl.
 
@@ -96,7 +96,7 @@ Experience automated Instagram copyright auditing, waveform analysis, and multil
 
 <a id="core-features"></a>
 
-## ✨ Core Features & Platform Modules
+## Core Features & Platform Modules
 
 CopyrightChecker delivers professional acoustic intelligence, automated audio fingerprinting, and risk detection for digital agencies, influencers, and brands.
 
@@ -161,7 +161,7 @@ CopyrightChecker delivers professional acoustic intelligence, automated audio fi
 
 <a id="architecture"></a>
 
-## 🏗️ Engineering Highlights & Architecture
+## Engineering Highlights & Architecture
 
 <a id="system-architecture"></a>
 
@@ -213,7 +213,7 @@ CopyrightChecker is built upon Next.js 16 App Router, `next-intl` localization m
 
 <a id="project-structure"></a>
 
-## 📂 Project Directory Structure
+## Project Directory Structure
 
 ```plaintext
 copywright-music-detect-website/
@@ -289,7 +289,7 @@ copywright-music-detect-website/
 
 <a id="developer-info"></a>
 
-## 👨‍💻 Developer Info & Socials
+## Developer Info & Socials
 
 CopyrightChecker is architected and maintained by specialized full-stack engineers and multimedia system developers.
 
@@ -305,7 +305,7 @@ CopyrightChecker is architected and maintained by specialized full-stack enginee
 
 <a id="license"></a>
 
-## 📄 License & Proprietary Notice
+## License & Proprietary Notice
 
 Copyright © 2026 CopyrightChecker. All rights reserved.
 
